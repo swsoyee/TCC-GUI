@@ -16,9 +16,11 @@ shinyUI(fluidPage(
              theme = shinytheme("cosmo"),
              tabsetPanel(
                tabPanel("Computation",
-                  source(file = "ui-data-import.R", local = TRUE, encoding = "UTF-8")$value
-               ),
-               tabPanel("MA Plot")
+                        source(file = "ui-data-import.R", local = TRUE, encoding = "UTF-8")$value
+                        ),
+               tabPanel("MA Plot",
+                        source(file = "ui-ma-plot.R", local = TRUE, encoding = "UTF-8")$value
+                        )
              )
   )#navbarPage
 ))

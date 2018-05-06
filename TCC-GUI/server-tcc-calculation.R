@@ -1,7 +1,5 @@
 # server-tcc-calculation.R
 
-
-
 observeEvent(input$TCC, {
   withProgress(message = 'TCC Calculation: ', value = 0, {
     data <- variables$CountData
@@ -47,6 +45,7 @@ output$resultTable <- DT::renderDataTable({
     DT::datatable(
       resultTable(),
       option = list(
+        dom = "tpi",
         pageLength = 10,
         searchHighlight = TRUE,
         orderClasses = TRUE
@@ -72,6 +71,16 @@ output$fdrCutoffTable <- DT::renderDataTable({
                   dom = "tp"
                 )
   )
+})
+
+observeEvent(input$TCC, {
+  output$mainResultTable <- renderUI({
+    tagList(
+      tags$hr(),
+      tags$h3("Result Table"),
+      DT::dataTableOutput('resultTable')
+    )
+  })
 })
 
 output$degCutOffPlot <- renderPlotly({

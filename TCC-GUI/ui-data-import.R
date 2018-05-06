@@ -26,9 +26,7 @@ fluidRow(
          tags$hr(),
          tags$h3("Raw Count Table"),
          DT::dataTableOutput('table'),
-         tags$hr(),
-         tags$h3("Result Table"),
-         DT::dataTableOutput('resultTable')
+         uiOutput("mainResultTable")
   ),#column
   column(3,
          tags$hr(),
