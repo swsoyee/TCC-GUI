@@ -19,8 +19,7 @@ fluidRow(
   column(3,
          tags$hr(),
          wellPanel(
-           tags$h4("Other"),
-           tags$hr()
+           plotlyOutput("geneBarPlot")
          )
   )
 )

@@ -56,7 +56,8 @@ observeEvent(input$makeMAPlot, {
                 text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
                               "</br>A value:", round(a.value, 4),
                               "</br>M value:", round(m.value, 4),
-                              "</br>Rank:", rank)) %>%
+                              "</br>Rank:", rank),
+                source = "ma") %>%
           layout(xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
                  yaxis = list(title = "M = log2(G2)-log2(G1)"),
                  title = paste("MA Plot with FDR <", input$maFDR),
@@ -64,17 +65,18 @@ observeEvent(input$makeMAPlot, {
       } else {
         incProgress(0.5, detail = "Ploting...")
         plot_ly(data = resultTable(),
-                x = ~a.value,
-                y = ~m.value,
+                x = ~as.numeric(a.value),
+                y = ~as.numeric(m.value),
                 type = "scatter",
                 mode = "markers",
                 colors = c("#000000"),
                 marker = list(size = 3),
                 hoverinfo = "text",
                 text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
-                              "</br>A value:", round(a.value, 4),
-                              "</br>M value:", round(m.value, 4),
-                              "</br>Rank:", rank)) %>%
+                              "</br>A value:", round(as.numeric(a.value), 4),
+                              "</br>M value:", round(as.numeric(m.value), 4),
+                              "</br>Rank:", rank),
+                source = "ma") %>%
           layout(xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
                  yaxis = list(title = "M = log2(G2)-log2(G1)"),
                  title = "MA Plot",
@@ -84,6 +86,25 @@ observeEvent(input$makeMAPlot, {
     })
   })
 })
+
+output$geneBarPlot <- renderPlotly({
+  # Read in hover data
+  eventdata <- event_data("plotly_hover", source = "ma")
+  validate(need(!is.null(eventdata), 
+                "Hover over the point to show expression plot"))
+  # Get point number
+  datapoint <- as.numeric(eventdata$pointNumber)[1]
+  # Get expression level
+  expression <- t(variables$CountData[datapoint, ])
+  
+  plot_ly(x = ~row.names(expression),
+          y = ~expression[, 1],
+          type = "bar") %>%
+    layout(xaxis = list(title = "Sample Name"),
+           yaxis = list(title = "Raw Count"),
+           title = "Expression Plot")
+})
+
 
 output$resultTableInPlot <- DT::renderDataTable({
   if (nrow(resultTable()) == 0) {
