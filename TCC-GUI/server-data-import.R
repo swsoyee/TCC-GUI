@@ -1,16 +1,23 @@
 # server-data-import.R
 # 如果点击了加载sample data按键(input$CountDataSample)，加载sample
-
 observeEvent(input$CountDataSample, {
   variables$CountData <- read.table(sample_data_url, 
-                                    header=TRUE, 
-                                    row.names=1, 
+                                    header = TRUE, 
+                                    row.names = 1, 
                                     sep="\t", 
                                     quote="")
   print("Count data sample load")
 })
 
-
+# 如果点击了上传文件(input$uploadCountData)，则更新variables$CountData
+observeEvent(input$uploadCountData, {
+  print("Received uploaded file")
+  variables$CountData <- read.table(input$uploadCountData$datapath,
+                                    header = TRUE,
+                                    row.names = 1,
+                                    sep="\t", 
+                                    quote="")
+})
 
 datasetInput <- reactive({
   variables$CountData

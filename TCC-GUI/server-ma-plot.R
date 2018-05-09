@@ -39,7 +39,7 @@ observeEvent(input$makeMAPlot, {
           )
         }
       
-      if(input$testMethod != "WAD"){
+      if(input$testMethod != "wad"){
         x <- cut(resultTable()$q.value, breaks = c(0, input$maFDR, 1))
         levels(x) <- list("DEG"=paste("(0,", input$maFDR,"]", sep = ""),
                           "non-DEG"=paste("(", input$maFDR, ",1]", sep = ""))
