@@ -29,7 +29,7 @@ observeEvent(input$TCC, {
                       FDR = input$fdr)       #DEG検出を実行した結果をtccに格納
     incProgress(1, detail = "Done.")
     #p値などの計算結果をresultに格納
-    variables$result <- getResult(tcc, sort = FALSE)   
+    variables$result <- getResult(tcc, sort = FALSE)
     
   })
 })
@@ -77,11 +77,28 @@ observeEvent(input$TCC, {
   output$mainResultTable <- renderUI({
     tagList(
       tags$hr(),
-      tags$h3("Result Table"),
+      # tags$h3("Result Table"),
+      # Generate Result file download button
+      downloadButton("downLoadResultTable", "Download TCC Result"),
       DT::dataTableOutput('resultTable')
     )
   })
 })
+
+# Download TCC Result Table function
+output$downLoadResultTable <- downloadHandler(
+  filename = function() {
+    paste(Sys.Date(), 
+          input$normMethod,
+          input$testMethod,
+          input$iteration,
+          input$fdr,
+          input$floorpdeg, "TCC.csv", sep = "_")
+  },
+  content = function(file) {
+    write.csv(resultTable(), file, row.names = FALSE)
+  }
+)
 
 output$degCutOffPlot <- renderPlotly({
   deg_in_cutoff <- sapply(c(0.01, seq(0.05, 1, 0.05)), sum_gene, resultTable())
