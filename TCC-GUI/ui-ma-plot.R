@@ -3,7 +3,7 @@
 fluidRow(
   column(3, 
          wellPanel(
-           tags$h4("MA-Plot"),
+           tags$h4("MA-Plot Parameter"),
            tags$hr(),
            uiOutput("MAPlotParameter"),
            DT::dataTableOutput("fdrCutoffTableInMAPage")

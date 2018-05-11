@@ -1,0 +1,12 @@
+name: TCC-GUI
+title: TCC-GUI
+username:
+account: infinityloop
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 340384
+bundleId: 1368574
+url: https://infinityloop.shinyapps.io/TCC-GUI/
+when: 1526044010.46468
+asMultiple: FALSE
+asStatic: FALSE

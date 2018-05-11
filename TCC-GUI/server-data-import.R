@@ -93,8 +93,8 @@ observeEvent(input$confirmedGroupList, {
       sliderInput("floorpdeg", "Elimination of Potential DEGs:", min = 0, max = 1, value = 0.05, step = 0.05),
       actionButton("TCC", "Run TCC"),
       tags$hr(),
-      plotlyOutput("degCutOffPlot"),
-      DT::dataTableOutput("fdrCutoffTable")
+      plotlyOutput("degCutOffPlot")
+      # DT::dataTableOutput("fdrCutoffTable")
     )
   })
 })

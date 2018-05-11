@@ -1,4 +1,4 @@
-library(shiny)
+library(shiny) 
 
 shinyUI(fluidPage(
   
@@ -10,7 +10,10 @@ shinyUI(fluidPage(
                         ),
                tabPanel("MA Plot",
                         source(file = "ui-ma-plot.R", local = TRUE, encoding = "UTF-8")$value
-                        )
+                        ),
+               tabPanel("Volcano Plot",
+                        source(file = "ui-volcano-plot.R", local = TRUE, encoding = "UTF-8")$value
+               )
              )
   )#navbarPage
 ))
