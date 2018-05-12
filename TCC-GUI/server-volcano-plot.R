@@ -2,6 +2,8 @@
 
 # 如果运行了TCC之后，方法不是'WAD'的话，则有pvalue和qvalue值，可绘制火山图
 observeEvent(input$TCC, {
+  # output$resultTableInVolcanalPlot <- output$resultTableInPlot
+  
   if (input$testMethod != "wad") {
     output$valcanoParameter <- renderUI({
       tagList(
@@ -10,26 +12,6 @@ observeEvent(input$TCC, {
           "Hover info：",
           choices = colnames(resultTable())
         ),
-        # radioButtons(
-        #   "FoldChangeLogScale",
-        #   "Fold change scale:",
-        #   c(
-        #     "log10" = "log10",
-        #     "log2" = "log2",
-        #     "None" = "none"
-        #   ),
-        #   selected = "log2"
-        # ),
-        # radioButtons(
-        #   "pValueLogScale",
-        #   "p-value scale:",
-        #   c(
-        #     "log10" = "log10",
-        #     "log2" = "log2",
-        #     "None" = "none"
-        #   ),
-        #   selected = "log10"
-        # ),
         tags$hr(),
         sliderInput(
           "CutFC",
@@ -70,26 +52,10 @@ observeEvent(input$makeVolcanoPlot, {
     isolate({
       # 数据集整理
       dt <- resultTable()
-      # dt$m.value.origin <- dt$m.value
-      # dt$m.value <- switch(input$FoldChangeLogScale,
-      #                     "log10" = log10(2 ** as.numeric(dt$m.value)),
-      #                     "log2" = as.numeric(dt$m.value),
-      #                     "none" = (2 ** as.numeric(dt$m.value)))
-      # dt$p.value.origin <- dt$p.value
-      # dt$p.value <- switch(input$pValueLogScale,
-      #                     "log10" = log10(as.numeric(dt$p.value)),
-      #                     "log2" = log2(as.numeric(dt$p.value)),
-      #                     "none" = as.numeric(dt$p.value))
-      # dt$a.value <- as.numeric(dt$a.value)
-      # dt$q.value <- as.numeric(dt$q.value)
       
       downCut <- input$CutFC[1]
       upCut <- input$CutFC[2]
       pCut <- log2(as.numeric(input$Cutpvalue))
-      # pCut <- switch(input$pValueLogScale,
-      #                "log10" = log10(as.numeric(input$Cutpvalue)),
-      #                "log2" = log2(as.numeric(input$Cutpvalue)),
-      #                "none" = as.numeric(input$Cutpvalue))
       
       dt$color <- ""
       dt[dt$m.value <= downCut, ]$color <- "Down"
@@ -103,16 +69,16 @@ observeEvent(input$makeVolcanoPlot, {
       # 添加注释
       key <- row.names(dt)
       
-      print(head(dt, n=10))
+      # print(head(dt, n=10))
       
-      if(is.null(input$resultTableInPlot_rows_selected)) {
+      if(is.null(input$resultTableInVolcanalPlot_rows_selected)) {
         annotation <- list()
       } else {
-        markerSelect <- dt[input$resultTableInPlot_rows_selected,]
+        markerSelect <- dt[input$resultTableInVolcanalPlot_rows_selected,]
         
         annotation <- list(
           x = markerSelect$m.value,
-          y = markerSelect$p.value,
+          y = -log10(markerSelect$p.value),
           text = markerSelect[, input$GeneAttribute],
           xref = "x",
           yref = "y",
@@ -163,4 +129,48 @@ observeEvent(input$makeVolcanoPlot, {
                                  line=list(dash='dot', width=2))))
     })
   })
+})
+
+
+output$geneBarPlotInVolcano <- renderPlotly({
+  # Read in hover data
+  eventdata <- event_data("plotly_hover", source = "volcano")
+  validate(need(!is.null(eventdata), 
+                "Hover over the point to show original expression plot"))
+  # Get point number
+  datapoint <- as.numeric(eventdata$pointNumber)[1]
+  # Get expression level (Original)
+  expression <- t(variables$CountData[datapoint, ])
+  # Get expression level (Normalized)
+  expressionNor <- t(t(variables$norData[datapoint, ]))
+
+  
+  data <- variables$CountData
+  data.cl <- rep(0, ncol(data))
+  convert2cl <- function(x, df) {
+    grep(x, colnames(df))
+  }
+  for (i in 1:length(variables$groupList)) {
+    data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
+  }
+  
+  plot_ly(x = ~row.names(expression),
+          y = ~expression[, 1],
+          color = as.factor(data.cl),
+          text = expression[, 1], 
+          textposition = 'auto',
+          type = "bar",
+          name = "Original") %>%
+    add_trace(y = ~expressionNor[, 1],
+              text = round(expressionNor[, 1], 2), 
+              textposition = 'auto',
+              name = "Normalized",
+              type = "scatter",
+              mode = "lines+markers",
+              marker = list(size = 10,
+                            line = list(color = 'rgba(0, 0, 0, 0)',
+                                        width = 2))) %>%
+    layout(xaxis = list(title = "Sample Name"),
+           yaxis = list(title = "Raw Count"),
+           title = "Expression Plot")
 })

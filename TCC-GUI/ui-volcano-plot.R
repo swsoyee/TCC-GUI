@@ -12,13 +12,13 @@ fluidRow(
          tags$hr(),
          tags$h3("Volcano Plot"),
          plotlyOutput("volcanoPloty"),
-         tags$h3("Result Table")
-         # DT::dataTableOutput('resultTableInPlot')
+         tags$h3("Result Table"),
+         DT::dataTableOutput('resultTableInVolcanalPlot')
   ),#column
   column(3,
-         tags$hr()
-         # wellPanel(
-         #   plotlyOutput("geneBarPlot")
-         # )
+         tags$hr(),
+         wellPanel(
+           plotlyOutput("geneBarPlotInVolcano")
+         )
   )
 )

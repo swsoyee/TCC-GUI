@@ -30,6 +30,7 @@ observeEvent(input$TCC, {
     incProgress(1, detail = "Done.")
     #p値などの計算結果をresultに格納
     variables$result <- getResult(tcc, sort = FALSE)
+    variables$norData <- tcc$getNormalizedData()
     
   })
 })

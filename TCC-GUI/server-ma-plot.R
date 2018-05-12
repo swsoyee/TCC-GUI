@@ -94,19 +94,43 @@ output$geneBarPlot <- renderPlotly({
                 "Hover over the point to show expression plot"))
   # Get point number
   datapoint <- as.numeric(eventdata$pointNumber)[1]
-  # Get expression level
+  # Get expression level (Original)
   expression <- t(variables$CountData[datapoint, ])
+  # Get expression level (Normalized)
+  expressionNor <- t(t(variables$norData[datapoint, ]))
+  
+  data <- variables$CountData
+  data.cl <- rep(0, ncol(data))
+  convert2cl <- function(x, df) {
+    grep(x, colnames(df))
+  }
+  for (i in 1:length(variables$groupList)) {
+    data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
+  }
   
   plot_ly(x = ~row.names(expression),
           y = ~expression[, 1],
-          type = "bar") %>%
+          color = as.factor(data.cl),
+          text = expression[, 1], 
+          textposition = 'auto',
+          type = "bar",
+          name = "Original") %>%
+    add_trace(y = ~expressionNor[, 1],
+              text = round(expressionNor[, 1], 2), 
+              textposition = 'auto',
+              name = "Normalized",
+              type = "scatter",
+              mode = "lines+markers",
+              marker = list(size = 10,
+                            line = list(color = 'rgba(0, 0, 0, 0)',
+                                        width = 2))) %>%
     layout(xaxis = list(title = "Sample Name"),
            yaxis = list(title = "Raw Count"),
            title = "Expression Plot")
 })
 
 
-output$resultTableInPlot <- DT::renderDataTable({
+output$resultTableInVolcanalPlot <- output$resultTableInPlot <- DT::renderDataTable({
   if (nrow(resultTable()) == 0) {
     DT::datatable(resultTable())
   } else {
