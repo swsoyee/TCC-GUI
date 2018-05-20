@@ -91,7 +91,10 @@ observeEvent(input$confirmedGroupList, {
       sliderInput("iteration", "Interation:", min = 1, max = 50, value = 3),
       sliderInput("fdr", "FDR:", min = 0, max = 1, value = 0.1, step = 0.05),
       sliderInput("floorpdeg", "Elimination of Potential DEGs:", min = 0, max = 1, value = 0.05, step = 0.05),
-      actionButton("TCC", "Run TCC"),
+      fluidRow(
+        column(6, actionButton("TCC", "Run TCC")),
+        column(6, uiOutput("runTCCCode"))
+      ),
       tags$hr(),
       plotlyOutput("degCutOffPlot")
       # DT::dataTableOutput("fdrCutoffTable")

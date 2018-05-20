@@ -1,7 +1,7 @@
 library(shiny) 
 
 shinyUI(fluidPage(
-  
+  useShinyalert(),
   navbarPage("TCC GUI Version",
              theme = shinytheme("cosmo"),
              tabsetPanel(id = "tabs",

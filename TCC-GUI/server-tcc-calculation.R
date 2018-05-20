@@ -11,9 +11,9 @@ observeEvent(input$TCC, {
     for (i in 1:length(variables$groupList)) {
       data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
     }
-    
+
     incProgress(0.2, detail = "Creating TCC Object...")
-    tcc <- new("TCC", data, data.cl)
+    tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
     incProgress(0.5, detail = "Calculating normalization factors using DEGES...")
     tcc <- calcNormFactors(
       tcc,
@@ -31,7 +31,7 @@ observeEvent(input$TCC, {
     #p値などの計算結果をresultに格納
     variables$result <- getResult(tcc, sort = FALSE)
     variables$norData <- tcc$getNormalizedData()
-    
+    variables$runTimes <- variables$runTimes + 1
   })
 })
 
@@ -84,8 +84,27 @@ observeEvent(input$TCC, {
       DT::dataTableOutput('resultTable')
     )
   })
+  
+  output$runTCCCode <- renderUI({
+    actionButton("showTCCCode", "Show R code")
+  })
 })
 
+observeEvent(input$showTCCCode, {
+  shinyalert(
+    title = "TCC Run code",
+    text = variables$runTCCCode,
+    closeOnEsc = TRUE,
+    closeOnClickOutside = TRUE,
+    html = TRUE,
+    type = "info",
+    showConfirmButton = TRUE,
+    confirmButtonText = "OK",
+    confirmButtonCol = "#AEDEF4",
+    cancelButtonText = "Close",
+    animation = TRUE
+  )
+})
 # Download TCC Result Table function
 output$downLoadResultTable <- downloadHandler(
   filename = function() {
