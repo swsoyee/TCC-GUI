@@ -48,6 +48,11 @@ observeEvent(input$TCC, {
 # 点击了绘图按钮后进行绘制
 observeEvent(input$makeVolcanoPlot, {
   output$volcanoPloty <- renderPlotly({
+    
+    validate(
+      need(resultTable()$p.value != "", "No p-values for ploting.")
+    )
+    
     req(input$makeVolcanoPlot)
     isolate({
       # 数据集整理
@@ -140,7 +145,7 @@ output$geneBarPlotInVolcano <- renderPlotly({
   # Get point number
   datapoint <- as.numeric(eventdata$pointNumber)[1]
   # Get expression level (Original)
-  expression <- t(variables$CountData[datapoint, ])
+  expression <- variables$CountData[datapoint, ]
   # Get expression level (Normalized)
   expressionNor <- t(t(variables$norData[datapoint, ]))
 
@@ -153,6 +158,9 @@ output$geneBarPlotInVolcano <- renderPlotly({
   for (i in 1:length(variables$groupList)) {
     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
   }
+  
+  expression <- t(expression[data.cl != 0])
+  data.cl <- data.cl[data.cl != 0]
   
   plot_ly(x = ~row.names(expression),
           y = ~expression[, 1],
@@ -172,5 +180,6 @@ output$geneBarPlotInVolcano <- renderPlotly({
                                         width = 2))) %>%
     layout(xaxis = list(title = "Sample Name"),
            yaxis = list(title = "Raw Count"),
-           title = "Expression Plot")
+           title = "Expression Plot",
+           legend = list(orientation = 'h'))
 })

@@ -14,5 +14,11 @@ observeEvent(input$TCC, {
                source(file = "ui-volcano-plot.R", local = TRUE, encoding = "UTF-8")$value
       )
     )
+    appendTab(
+      inputId = "tabs",
+      tabPanel("PCA",
+               source(file = "ui-pca.R", local = TRUE, encoding = "UTF-8")$value
+      )
+    )
   }
 })

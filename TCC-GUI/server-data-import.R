@@ -6,12 +6,12 @@ observeEvent(input$CountDataSample, {
                                     row.names = 1, 
                                     sep="\t", 
                                     quote="")
-  print("Count data sample load")
+  showNotification("Count data sample load", type = "message")
 })
 
 # 如果点击了上传文件(input$uploadCountData)，则更新variables$CountData
 observeEvent(input$uploadCountData, {
-  print("Received uploaded file")
+  showNotification("Received uploaded file", type = "message")
   variables$CountData <- read.table(input$uploadCountData$datapath,
                                     header = TRUE,
                                     row.names = 1,
@@ -41,7 +41,7 @@ output$groupSlide <- renderUI({
 })
 
 observeEvent(input$confirmedGroupNum, {
-  print("Group number changed.")
+  showNotification("Group number changed.", type = "message")
   colname <- colnames(datasetInput())
   names(colname) <- colname
   
@@ -67,14 +67,13 @@ observeEvent(input$confirmedGroupList, {
   groupList <- lapply(1:input$groupNum, function(x){
     input[[paste0("group", x)]]
   })
-  print("Log: Group information has been update.")
-  print(groupList)
+  showNotification("Group information has been update.", type = "message")
   variables$groupList <- groupList
 })
 
 # Generate TCC Parameters
 observeEvent(input$confirmedGroupList, {
-  print("Generate Test run TCC.")
+  showNotification("Generate TCC Parameters.", type = "message")
   output$TCC <- renderUI({
     tagList(
       selectInput("normMethod", "Normalization method:",

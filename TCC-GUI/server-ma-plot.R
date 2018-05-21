@@ -16,6 +16,9 @@ observeEvent(input$TCC, {
 observeEvent(input$makeMAPlot, {
   withProgress(message = 'MA Ploting: ', value = 0, {
     output$maploty <- renderPlotly({
+      validate(
+        need(resultTable()$a.value != "", "No MA values for ploting.")
+      )
       
       req(input$makeMAPlot)
       isolate({
@@ -64,6 +67,7 @@ observeEvent(input$makeMAPlot, {
                  annotations = annotation)
       } else {
         incProgress(0.5, detail = "Ploting...")
+        
         plot_ly(data = resultTable(),
                 x = ~as.numeric(a.value),
                 y = ~as.numeric(m.value),
@@ -87,6 +91,7 @@ observeEvent(input$makeMAPlot, {
   })
 })
 
+# When hover on the point, show a expresion plot of specific gene.
 output$geneBarPlot <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "ma")
@@ -95,18 +100,22 @@ output$geneBarPlot <- renderPlotly({
   # Get point number
   datapoint <- as.numeric(eventdata$pointNumber)[1]
   # Get expression level (Original)
-  expression <- t(variables$CountData[datapoint, ])
+  expression <- variables$CountData[datapoint, ]
   # Get expression level (Normalized)
   expressionNor <- t(t(variables$norData[datapoint, ]))
   
   data <- variables$CountData
   data.cl <- rep(0, ncol(data))
-  convert2cl <- function(x, df) {
-    grep(x, colnames(df))
-  }
+  
   for (i in 1:length(variables$groupList)) {
     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
   }
+  
+  expression <- t(expression[data.cl != 0])
+  data.cl <- data.cl[data.cl != 0]
+  
+  print(expression)
+  print(expressionNor)
   
   plot_ly(x = ~row.names(expression),
           y = ~expression[, 1],
@@ -126,7 +135,8 @@ output$geneBarPlot <- renderPlotly({
                                         width = 2))) %>%
     layout(xaxis = list(title = "Sample Name"),
            yaxis = list(title = "Raw Count"),
-           title = "Expression Plot")
+           title = "Expression Plot",
+           legend = list(orientation = 'h'))
 })
 
 

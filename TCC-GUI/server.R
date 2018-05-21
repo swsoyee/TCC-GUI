@@ -17,6 +17,7 @@ shinyServer(function(input, output) {
   source(file = "server-tcc-calculation.R", local = TRUE, encoding = "UTF-8")
   source(file = "server-ma-plot.R", local = TRUE, encoding = "UTF-8")
   source(file = "server-volcano-plot.R", local = TRUE, encoding = "UTF-8")
+  source(file = "server-pca.R", local = TRUE, encoding = "UTF-8")
   source(file = "server-tabPanel.R", local = TRUE, encoding = "UTF-8")
   source(file = "R-code.R", local = TRUE, encoding = "UTF-8")
   

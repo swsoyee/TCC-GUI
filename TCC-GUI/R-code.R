@@ -1,9 +1,11 @@
 # R-code.R
+
+#### TCC Runing Code
 observeEvent(input$TCC, {
   group <- paste(variables$groupList, collapse = ", ")
   runTCCCode <- paste0(
 '<p style="text-align: left;">
-# Load library
+<font color="red"># Load library</font>
 <br>library(TCC)
 <br><font color="red"># Read Data</font>
 <br>data <- read.table(FILE_PATH, header = TRUE, row.names = 1, sep="\t", quote="")
@@ -34,5 +36,5 @@ observeEvent(input$TCC, {
 <br>normalizedData <- tcc$getNormalizedData()
 </p">
 ')
-  variables$runTCCCode <- runTCCCode[1]
+  variables$runTCCCode <- runTCCCode
 })
