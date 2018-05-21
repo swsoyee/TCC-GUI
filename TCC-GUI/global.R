@@ -5,6 +5,7 @@ library(colourpicker)
 library(dplyr)
 library(TCC)
 library(DT)
+library(heatmaply)
 
 sample_data_url <- "sample_data/data_hypodata_3vs3.txt"
 

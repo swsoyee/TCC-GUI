@@ -20,5 +20,11 @@ observeEvent(input$TCC, {
                source(file = "ui-pca.R", local = TRUE, encoding = "UTF-8")$value
       )
     )
+    appendTab(
+      inputId = "tabs",
+      tabPanel("Heatmap",
+               source(file = "ui-heatmap.R", local = TRUE, encoding = "UTF-8")$value
+      )
+    )
   }
 })

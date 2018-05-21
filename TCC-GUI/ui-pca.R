@@ -11,7 +11,7 @@ fluidPage(
   column(9,
     fluidRow(
       tags$hr(),
-      column(3,
+      column(6,
              plotlyOutput("pcabiplot3d")),
       column(3,
              plotlyOutput("pcabiplot")),
