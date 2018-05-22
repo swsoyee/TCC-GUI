@@ -1,5 +1,5 @@
 ---
-typora-root-url: www
+typora-root-url: TCC-GUI\www
 ---
 
 # TCC-GUI
