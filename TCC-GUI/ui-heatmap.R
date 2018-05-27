@@ -9,6 +9,7 @@ fluidPage(
            )
          ),
   column(9,
+         tags$hr(),
          plotlyOutput("heatmap")
          )
 )

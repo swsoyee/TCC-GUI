@@ -5,8 +5,15 @@ fluidRow(
          wellPanel(
            tags$h4("MA-Plot Parameter"),
            tags$hr(),
-           uiOutput("MAPlotParameter"),
-           DT::dataTableOutput("fdrCutoffTableInMAPage")
+           uiOutput("MAPlotParameter")
+           ),
+         wellPanel(
+           tags$h4("FDR vs DEGs"),
+           tags$hr(),
+           tags$p("DEGs count under different FDR cutoff."),
+           tabsetPanel(id = "maplot", 
+                       tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInMAPage")),
+                       tabPanel("Plot", plotlyOutput("fdrCutoffPlotInMAPage")))
          )
   ),#column
   column(6,

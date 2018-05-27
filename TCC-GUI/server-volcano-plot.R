@@ -33,6 +33,8 @@ observeEvent(input$TCC, {
         textInput("xlabs", "X-axis (Fold Change) label:", value = "log2(Fold Change)"),
         textInput("ylabs", "Y-axis (P-value) label:", value = "-log10(P-value)"),
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
+        colourInput("downColor", "Down-regulate：", "green"),
+        colourInput("upColor", "Up-regulate：", "red"),
         actionButton("makeVolcanoPlot", "Generate Volcano Plot")
       )
     })
@@ -100,7 +102,7 @@ observeEvent(input$makeVolcanoPlot, {
               type = "scatter",
               mode = "markers",
               color = ~x,
-              colors = c("green", "black", "red"),
+              colors = c(input$downColor, "black", input$upColor),
               marker = list(size = 3),
               hoverinfo = "text",
               text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
@@ -136,7 +138,10 @@ observeEvent(input$makeVolcanoPlot, {
   })
 })
 
-
+# ====================================
+# This function render a plotly of specific gene expression value in barplot.
+# Position: In Volcano Plot, upper right.
+# ====================================
 output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "volcano")
@@ -149,12 +154,9 @@ output$geneBarPlotInVolcano <- renderPlotly({
   # Get expression level (Normalized)
   expressionNor <- t(t(variables$norData[datapoint, ]))
 
-  
   data <- variables$CountData
   data.cl <- rep(0, ncol(data))
-  convert2cl <- function(x, df) {
-    grep(x, colnames(df))
-  }
+
   for (i in 1:length(variables$groupList)) {
     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
   }
@@ -178,8 +180,101 @@ output$geneBarPlotInVolcano <- renderPlotly({
               marker = list(size = 10,
                             line = list(color = 'rgba(0, 0, 0, 0)',
                                         width = 2))) %>%
-    layout(xaxis = list(title = "Sample Name"),
+    layout(xaxis = list(title = ""),
            yaxis = list(title = "Raw Count"),
-           title = "Expression Plot",
+           title = paste(colnames(expression), "Expression Plot"),
            legend = list(orientation = 'h'))
+})
+
+# ====================================
+# This function render a plotly of specific gene expression value in boxplot.
+# Position: In Volcano Plot, upper right.
+# Warining: It's time comsuming, so we don't render it any more.
+# ====================================
+# output$geneBoxPlotInVolcano <- renderPlotly({
+#   # Read in hover data
+#   eventdata <- event_data("plotly_hover", source = "volcano")
+#   validate(need(!is.null(eventdata), 
+#                 "Hover over the point to show original expression plot"))
+#   # Get point number
+#   datapoint <- as.numeric(eventdata$pointNumber)[1]
+#   # Get expression level (Original)
+#   expression <- variables$CountData[datapoint, ]
+#   # Get expression level (Normalized)
+#   expressionNor <- t(t(variables$norData[datapoint, ]))
+#   
+#   data <- variables$CountData
+#   data.cl <- rep(0, ncol(data))
+#   
+#   for (i in 1:length(variables$groupList)) {
+#     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
+#   }
+#   
+#   expression <- t(expression[data.cl != 0])
+#   data.cl <- data.cl[data.cl != 0]
+#   
+#   plot_ly(x = as.factor(data.cl),
+#           y = t(expression[, 1]),
+#           color = as.factor(data.cl),
+#           type = "box",
+#           name = "Original") %>%
+#     add_trace(y = t(expressionNor[, 1]),
+#               name = "Normalized",
+#               type = "box") %>%
+#     layout(xaxis = list(title = "Group"),
+#            yaxis = list(title = "Raw Count"),
+#            title = paste(colnames(expression), "Expression boxplot"),
+#            legend = list(orientation = 'h'))
+# })
+
+# ====================================
+# This function render a table of different gene count under specific FDR cutoff
+# condition.
+# Position: In Volcano Plot, under right.
+# ====================================
+
+output$fdrCutoffTableInVolcano <- DT::renderDataTable({
+  # Create Table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  # Render Table
+  DT::datatable(df[, c("Cutoff", "Count", "Percentage")],
+                option = list(
+                  pageLength = 10,
+                  columnDefs = list(list(
+                    className = 'dt-right', targets = "_all"
+                  )),
+                  dom = "tp"
+                ),
+                rownames = FALSE)
+})
+
+# ====================================
+# This function render a plotly of different gene count under specific FDR cutoff
+# condition.
+# Position: In Volcano Plot tab, under right.
+# ====================================
+output$fdrCutoffPlotInVolcano <- renderPlotly({
+  # Create table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  # Render Plotly
+  plot_ly(data = df,
+          x = ~as.numeric(Cutoff),
+          y = ~Between_Count,
+          type = "bar",
+          hoverinfo = "text",
+          text = ~paste("</br>FDR Cutoff: ", Cutoff,
+                        "</br>DEGs Count: ", Between_Count)) %>%
+    add_trace(y = ~Under_Count,
+              yaxis = "y2",
+              type = "scatter",
+              mode = "lines+markers",
+              hoverinfo = "text",
+              text = ~paste("</br>FDR Cutoff: ", Cutoff,
+                            "</br>Cumulative curve: ", Percentage)) %>%
+    layout(xaxis = list(title = "FDR Cutoff"),
+           yaxis = list(title = "DEGs Count"),
+           yaxis2 = list(overlaying = "y", side = "right"),
+           showlegend = FALSE)
 })

@@ -26,5 +26,11 @@ observeEvent(input$TCC, {
                source(file = "ui-heatmap.R", local = TRUE, encoding = "UTF-8")$value
       )
     )
+    appendTab(
+      inputId = "tabs",
+      tabPanel("Expression",
+               source(file = "ui-expression-plot.R", local = TRUE, encoding = "UTF-8")$value
+      )
+    )
   }
 })

@@ -2,12 +2,13 @@
 
 # Generate MA Plot Parameters
 observeEvent(input$TCC, {
-  print("Generate MA Plot Parameters.")
+  showNotification("Generate MA Plot Parameters.", type = "message")
   output$MAPlotParameter <- renderUI({
     tagList(
       selectInput("GeneAttribute", "Hover info：", choices = colnames(resultTable())),
       sliderInput("pointSize", "Point Size:", min = 1, max = 5, value = 3, step = 0.2),
       sliderInput("maFDR", "FDR:", min = 0, max = 1, value = input$fdr),
+      colourInput("fdrColor", "DEGs color：", "#B22222"),
       actionButton("makeMAPlot", "Generate MA-Plot")
     )
   })
@@ -53,7 +54,7 @@ observeEvent(input$makeMAPlot, {
                 type = "scatter",
                 mode = "markers",
                 color = ~x,
-                colors = c("#B22222", "#000000"),
+                colors = c(input$fdrColor, "#000000"),
                 marker = list(size = 3),
                 hoverinfo = "text",
                 text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
@@ -114,9 +115,6 @@ output$geneBarPlot <- renderPlotly({
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
   
-  print(expression)
-  print(expressionNor)
-  
   plot_ly(x = ~row.names(expression),
           y = ~expression[, 1],
           color = as.factor(data.cl),
@@ -133,9 +131,9 @@ output$geneBarPlot <- renderPlotly({
               marker = list(size = 10,
                             line = list(color = 'rgba(0, 0, 0, 0)',
                                         width = 2))) %>%
-    layout(xaxis = list(title = "Sample Name"),
+    layout(xaxis = list(title = ""),
            yaxis = list(title = "Raw Count"),
-           title = "Expression Plot",
+           title = paste(colnames(expression), "Expression Plot"),
            legend = list(orientation = 'h'))
 })
 
@@ -161,15 +159,54 @@ output$resultTableInVolcanalPlot <- output$resultTableInPlot <- DT::renderDataTa
   }
 })
 
+# ====================================
+# This function render a table of different gene count under specific FDR cutoff
+# condition.
+# Position: In MA plot tab, under left.
+# ====================================
+
 output$fdrCutoffTableInMAPage <- DT::renderDataTable({
-  deg_in_cutoff <- sapply(c(0.01, seq(0.05, 1, 0.05)), sum_gene, resultTable())
-  total_gene <- nrow(resultTable())
-  DT::datatable(data.frame("FDR Cutoff" = c(0.01, seq(0.05, 1, 0.05)), 
-                           "DEGs Count" = deg_in_cutoff,
-                           "Percentage" = paste(deg_in_cutoff/total_gene * 100, "%")),
+  # Create Table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  # Render Table
+  DT::datatable(df[, c("Cutoff", "Count", "Percentage")],
                 option = list(
-                  pageLength = 5,
+                  pageLength = 10,
+                  columnDefs = list(list(
+                    className = 'dt-right', targets = "_all"
+                  )),
                   dom = "tp"
-                )
-  )
+                ),
+                rownames = FALSE)
+})
+
+# ====================================
+# This function render a plotly of different gene count under specific FDR cutoff
+# condition.
+# Position: In MA plot tab, under left.
+# ====================================
+output$fdrCutoffPlotInMAPage <- renderPlotly({
+  # Create table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  # Render Plotly
+  plot_ly(data = df,
+          x = ~as.numeric(Cutoff),
+          y = ~Between_Count,
+          type = "bar",
+          hoverinfo = "text",
+          text = ~paste("</br>FDR Cutoff: ", Cutoff,
+                        "</br>DEGs Count: ", Between_Count)) %>%
+    add_trace(y = ~Under_Count,
+              yaxis = "y2",
+              type = "scatter",
+              mode = "lines+markers",
+              hoverinfo = "text",
+              text = ~paste("</br>FDR Cutoff: ", Cutoff,
+                            "</br>Cumulative curve: ", Percentage)) %>%
+    layout(xaxis = list(title = "FDR Cutoff"),
+           yaxis = list(title = "DEGs Count"),
+           yaxis2 = list(overlaying = "y", side = "right"),
+           showlegend = FALSE)
 })

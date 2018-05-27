@@ -61,19 +61,6 @@ output$resultTable <- DT::renderDataTable({
   }
 })
 
-output$fdrCutoffTable <- DT::renderDataTable({
-  deg_in_cutoff <- sapply(c(0.01, seq(0.05, 1, 0.05)), sum_gene, resultTable())
-  total_gene <- nrow(resultTable())
-  DT::datatable(data.frame("FDR Cutoff" = c(0.01, seq(0.05, 1, 0.05)), 
-                           "DEGs Count" = deg_in_cutoff,
-                           "Percentage" = paste(deg_in_cutoff/total_gene * 100, "%")),
-                option = list(
-                  pageLength = 5,
-                  dom = "tp"
-                )
-  )
-})
-
 observeEvent(input$TCC, {
   output$mainResultTable <- renderUI({
     tagList(
@@ -120,20 +107,54 @@ output$downLoadResultTable <- downloadHandler(
   }
 )
 
-output$degCutOffPlot <- renderPlotly({
-  deg_in_cutoff <- sapply(c(0.01, seq(0.05, 1, 0.05)), sum_gene, resultTable())
-  total_gene <- nrow(resultTable())
-  df <- data.frame("FDR_Cutoff" = c(0.01, seq(0.05, 1, 0.05)), 
-                   "DEGs_Count" = deg_in_cutoff,
-                   "Percentage" = paste(deg_in_cutoff/total_gene * 100, "%"))
+# ====================================
+# This function render a table of different gene count under specific FDR cutoff
+# condition.
+# Position: In Computation tab, under right.
+# ====================================
+
+output$fdrCutoffTableInTCC <- DT::renderDataTable({
+  # Create Table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  # Render Table
+  DT::datatable(df[, c("Cutoff", "Count", "Percentage")],
+                option = list(
+                  pageLength = 10,
+                  columnDefs = list(list(
+                    className = 'dt-right', targets = "_all"
+                  )),
+                  dom = "tp"
+                ),
+                rownames = FALSE)
+})
+
+# ====================================
+# This function render a plotly of different gene count under specific FDR cutoff
+# condition.
+# Position: In Computation tab, under right.
+# ====================================
+output$fdrCutoffPlotInTCC <- renderPlotly({
+  # Create table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  # Render Plotly
   plot_ly(data = df,
-          x = ~FDR_Cutoff,
-          y = ~DEGs_Count,
-          type = "scatter",
-          mode = "lines+markers",
+          x = ~as.numeric(Cutoff),
+          y = ~Between_Count,
+          type = "bar",
           hoverinfo = "text",
-          text = ~paste("</br>FDR Cutoff: ", FDR_Cutoff,
-                        "</br>DEGs Count: ", DEGs_Count)) %>%
+          text = ~paste("</br>FDR Cutoff: ", Cutoff,
+                        "</br>DEGs Count: ", Between_Count)) %>%
+    add_trace(y = ~Under_Count,
+              yaxis = "y2",
+              type = "scatter",
+              mode = "lines+markers",
+              hoverinfo = "text",
+              text = ~paste("</br>FDR Cutoff: ", Cutoff,
+                            "</br>Cumulative curve: ", Percentage)) %>%
     layout(xaxis = list(title = "FDR Cutoff"),
-           yaxis = list(title = "DEGs Count"))
+           yaxis = list(title = "DEGs Count"),
+           yaxis2 = list(overlaying = "y", side = "right"),
+           showlegend = FALSE)
 })

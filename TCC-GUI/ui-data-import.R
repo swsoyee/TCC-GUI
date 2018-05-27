@@ -34,6 +34,7 @@ fluidRow(
            tags$h4("TCC Parameters"),
            tags$hr(),
            uiOutput("TCC")
-         )
+         ),
+         uiOutput("summaryTCC")
   )
 )

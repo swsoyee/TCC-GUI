@@ -1,22 +1,25 @@
 # server-data-import.R
-# 如果点击了加载sample data按键(input$CountDataSample)，加载sample
+
+# ====================================
+# If Sample Data button has been clicked, load sample data. 
+# Position: In Computation tab, upper left. Button action.
+# ====================================
+# 2018-5-23 Change read.table to fread.
+
 observeEvent(input$CountDataSample, {
-  variables$CountData <- read.table(sample_data_url, 
-                                    header = TRUE, 
-                                    row.names = 1, 
-                                    sep="\t", 
-                                    quote="")
+  variables$CountData <- data.frame(fread(sample_data_url), row.names=1)
   showNotification("Count data sample load", type = "message")
 })
 
-# 如果点击了上传文件(input$uploadCountData)，则更新variables$CountData
+# ====================================
+# If Upload Data button has been clicked, load the data via upload. 
+# Position: In Computation tab, upper left. Button action.
+# ====================================
+# 2018-5-23 Change read.table to fread.
+
 observeEvent(input$uploadCountData, {
   showNotification("Received uploaded file", type = "message")
-  variables$CountData <- read.table(input$uploadCountData$datapath,
-                                    header = TRUE,
-                                    row.names = 1,
-                                    sep="\t", 
-                                    quote="")
+  variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
 })
 
 datasetInput <- reactive({
@@ -93,10 +96,7 @@ observeEvent(input$confirmedGroupList, {
       fluidRow(
         column(6, actionButton("TCC", "Run TCC")),
         column(6, uiOutput("runTCCCode"))
-      ),
-      tags$hr(),
-      plotlyOutput("degCutOffPlot")
-      # DT::dataTableOutput("fdrCutoffTable")
+      )
     )
   })
 })
@@ -109,4 +109,24 @@ output$groupSelect <- renderUI({
       })
     )
   }
+})
+
+# ====================================
+# This function render a wellPanel (Table + Plotly) of different 
+# gene count under specific FDR cutoff condition.
+# Position: In Computation tab, under right.
+# ====================================
+observeEvent(input$TCC,{
+  output$summaryTCC <- renderUI({
+    tagList(
+      wellPanel(
+        tags$h4("FDR vs DEGs"),
+        tags$hr(),
+        tags$p("DEGs count under different FDR cutoff."),
+        tabsetPanel(id = "maplot", 
+                    tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInTCC")),
+                    tabPanel("Plot", plotlyOutput("fdrCutoffPlotInTCC")))
+      )
+    )
+  })
 })

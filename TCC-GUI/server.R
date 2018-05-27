@@ -20,6 +20,7 @@ shinyServer(function(input, output) {
   source(file = "server-pca.R", local = TRUE, encoding = "UTF-8")
   source(file = "server-tabPanel.R", local = TRUE, encoding = "UTF-8")
   source(file = "server-heatmap.R", local = TRUE, encoding = "UTF-8")
+  source(file = "server-expression-plot.R", local = TRUE, encoding = "UTF-8")
   source(file = "R-code.R", local = TRUE, encoding = "UTF-8")
   
 })
