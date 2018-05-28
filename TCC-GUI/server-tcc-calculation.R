@@ -137,7 +137,7 @@ output$fdrCutoffTableInTCC <- DT::renderDataTable({
 output$fdrCutoffPlotInTCC <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
-  
+
   # Render Plotly
   plot_ly(data = df,
           x = ~as.numeric(Cutoff),

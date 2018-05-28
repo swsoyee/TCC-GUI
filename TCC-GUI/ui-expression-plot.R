@@ -11,13 +11,14 @@ fluidPage(
          )
   ),
   column(9,
+         tags$hr(),
          tabsetPanel(id = "expressionPlotTab",
                      tabPanel("Barplot",
-                              plotlyOutput("geneBarPlot")
-                     )#,
-                     # tabPanel("Boxplot",
-                     #          plotlyOutput("pcabiplot")
-                     # )
+                              plotlyOutput("geneBarPlotExpression")
+                     ),
+                     tabPanel("Boxplot",
+                              plotlyOutput("geneBoxPlotExpression")
+                     )
          )
   )
 )
