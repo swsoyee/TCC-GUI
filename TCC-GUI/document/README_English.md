@@ -1,5 +1,6 @@
 ---
 typora-root-url: ..\www
+output: html_document
 ---
 
 # TCC-GUI
@@ -14,12 +15,12 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 GUI Version Developer: Wei Su
 
-### 1. Data input
+### <a name="Datainput"></a> 1. Data input
 ---
 - Click **"Computation"** tab on the top;
 - Click **"Load Sample Data"** button for test or Click **"Upload..."** button if you want to used your own count dataset.
 
-### 2. Computation
+### <a name="Computation"></a> 2. Computation
 
 ---
 - Select **"Group Count"** and click **"Confirmed"** button;
@@ -27,7 +28,7 @@ GUI Version Developer: Wei Su
 - Change the parameters for computation (if you wish), and click the **"Run TCC"**.
 - After computation, **"Result Table"**, and series tab for other analysis will show up.
 
-### 3.1 MA plot
+### <a name="MAplot"></a> 3.1 MA plot
 
 ---
 - After computation, switch to **"MA Plot"** tab, and click **"Generate MA-Plot"** button;
@@ -42,14 +43,14 @@ GUI Version Developer: Wei Su
 
 - (This is prerelease version. more functions need to be add in)
 
-### 3.2 Volcano plot
+### <a name="Volcanoplot"></a> 3.2 Volcano plot
 
 ---
 - Same as part of **MA Plot**.
  ![volcanoplot](/volcanoplot.png)
 - (This is prerelease version. more functions need to be add in)
 
-### 3.3 PCA analysis
+### <a name="PCAanalysis"></a> 3.3 PCA analysis
 
 ---
 - Change the parameters for PCA (if you wish), and click the **"Run"** button.
@@ -58,12 +59,12 @@ GUI Version Developer: Wei Su
 
 - (This is prerelease version. more functions need to be add in)
 
-### 3.4 Heatmap
+### <a name="Heatmap"></a> 3.4 Heatmap
 
 ---
 - Change the parameters for heatmap (if you wish), and click the **"Run"** button.![heatmap](/heatmap.png)
 - (This is prerelease version. more functions need to be add in)
 
-### 4. More helps
+### <a name="Morehelps"></a> 4. More helps
 
 - [Install Original TCC package from Bioconductor](http://www.bioconductor.org/packages/release/bioc/html/TCC.html)

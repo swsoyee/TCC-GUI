@@ -73,7 +73,7 @@ observeEvent(input$TCC, {
   })
   
   output$runTCCCode <- renderUI({
-    actionButton("showTCCCode", "Show R code")
+    actionButton("showTCCCode", "Show R code", icon = icon("r-project"))
   })
 })
 
