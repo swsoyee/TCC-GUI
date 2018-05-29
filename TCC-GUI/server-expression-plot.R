@@ -21,6 +21,69 @@ output$geneBarPlotExpression <- renderPlotly({
   }
   data <- data[, data.cl != 0]
   data.cl <- data.cl[data.cl != 0]
+  
+  # ====================================
+  # This function render a Data.Table of specific gene expression level.
+  # Position: In Expression Plot, bottom.
+  # ====================================
+  
+  output$geneTable <- DT::renderDataTable({
+    DT::datatable(data,
+                  options = list(dom = "t"))
+  })
+  
+  # ====================================
+  # This function render a Data.Table of specific gene calculated result.
+  # Position: In Expression Plot, bottom.
+  # ====================================
+  
+  output$geneTableCal <- DT::renderDataTable({
+    DT::datatable(resultTable()[resultTable()$gene_id %in% row.names(data),],
+                  options = list(dom = "t")) %>% formatRound(
+                    columns = c("a.value",
+                                "m.value",
+                                "p.value",
+                                "q.value"),
+                    digits = 3
+                  )
+  })
+  
+  # ====================================
+  # This function render a plotly of specific gene expression value in boxplot.
+  # Position: In Expression Plot, bottom right.
+  # ====================================
+  
+  output$geneBoxPlotExpression <- renderPlotly({
+    
+    p <- list(0)
+    
+    for (i in 1:nrow(data)) {
+      p[[i]] <- plot_ly(
+        x = as.factor(data.cl),
+        y = t(data[i, ]),
+        color = as.factor(data.cl),
+        type = "box"
+      ) %>%
+        layout(
+          annotations = list(
+            x = 0.5,
+            y = 1.05,
+            text = row.names(data[i, ]),
+            showarrow = F,
+            xref = 'paper',
+            yref = 'paper'
+          ),
+          showlegend = FALSE
+        )
+    }
+    subplot(p)
+  })
+  
+  # ====================================
+  # This function render a plotly of specific gene expression value in barplot.
+  # Position: In Expression Plot, upper right.
+  # ====================================
+  
   p <- list(0)
   
   for (i in 1:nrow(data)) {
@@ -45,47 +108,47 @@ output$geneBarPlotExpression <- renderPlotly({
   subplot(p)
 })
 
-# ====================================
-# This function render a plotly of specific gene expression value in boxplot.
-# Position: In Expression Plot, bottom right.
-# ====================================
-
-output$geneBoxPlotExpression <- renderPlotly({
-  
-  validate(
-    need(input$expressionGene != "", "Please select gene(s).")
-  )
-  
-  # Get expression level (Original)
-  data <-
-    variables$CountData[row.names(variables$CountData) %in% input$expressionGene,]
-  data.cl <- rep(0, ncol(data))
-  
-  for (i in 1:length(variables$groupList)) {
-    data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
-  }
-  data <- data[, data.cl != 0]
-  data.cl <- data.cl[data.cl != 0]
-  p <- list(0)
-  
-  for (i in 1:nrow(data)) {
-    p[[i]] <- plot_ly(
-      x = as.factor(data.cl),
-      y = t(data[i, ]),
-      color = as.factor(data.cl),
-      type = "box"
-    ) %>%
-      layout(
-        annotations = list(
-          x = 0.5,
-          y = 1.05,
-          text = row.names(data[i, ]),
-          showarrow = F,
-          xref = 'paper',
-          yref = 'paper'
-        ),
-        showlegend = FALSE
-      )
-  }
-  subplot(p)
-})
+# # ====================================
+# # This function render a plotly of specific gene expression value in boxplot.
+# # Position: In Expression Plot, bottom right.
+# # ====================================
+# 
+# output$geneBoxPlotExpression <- renderPlotly({
+#   
+#   validate(
+#     need(input$expressionGene != "", "Please select gene(s).")
+#   )
+#   
+#   # Get expression level (Original)
+#   data <-
+#     variables$CountData[row.names(variables$CountData) %in% input$expressionGene,]
+#   data.cl <- rep(0, ncol(data))
+#   
+#   for (i in 1:length(variables$groupList)) {
+#     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
+#   }
+#   data <- data[, data.cl != 0]
+#   data.cl <- data.cl[data.cl != 0]
+#   p <- list(0)
+#   
+#   for (i in 1:nrow(data)) {
+#     p[[i]] <- plot_ly(
+#       x = as.factor(data.cl),
+#       y = t(data[i, ]),
+#       color = as.factor(data.cl),
+#       type = "box"
+#     ) %>%
+#       layout(
+#         annotations = list(
+#           x = 0.5,
+#           y = 1.05,
+#           text = row.names(data[i, ]),
+#           showarrow = F,
+#           xref = 'paper',
+#           yref = 'paper'
+#         ),
+#         showlegend = FALSE
+#       )
+#   }
+#   subplot(p)
+# })
