@@ -28,8 +28,17 @@ output$geneBarPlotExpression <- renderPlotly({
   # ====================================
   
   output$geneTable <- DT::renderDataTable({
-    DT::datatable(data,
-                  options = list(dom = "t"))
+    df <- data
+    # Create 19 breaks and 20 rgb color values ranging from white to red
+    brks <- quantile(df, probs = seq(.05, .95, .05), na.rm = TRUE)
+    clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
+    {
+      paste0("rgb(255,", ., ",", ., ")")
+    }
+    
+    DT::datatable(df,
+                  options = list(dom = "t")) %>%
+      formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
   })
   
   # ====================================

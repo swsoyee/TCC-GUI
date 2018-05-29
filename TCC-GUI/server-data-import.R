@@ -27,10 +27,21 @@ datasetInput <- reactive({
 })
 
 output$table <- DT::renderDataTable({
-  DT::datatable(datasetInput(),
-                option = list(pageLength = 10,
-                              searchHighlight = TRUE,
-                              orderClasses = TRUE))
+  df <- datasetInput()
+  # Create 19 breaks and 20 rgb color values ranging from white to red
+  brks <- quantile(df, probs = seq(.05, .95, .05), na.rm = TRUE)
+  clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
+  {
+    paste0("rgb(255,", ., ",", ., ")")
+  }
+  
+  DT::datatable(df,
+                option = list(
+                  pageLength = 10,
+                  searchHighlight = TRUE,
+                  orderClasses = TRUE
+                )) %>%
+    formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
 })
 
 output$groupSlide <- renderUI({
