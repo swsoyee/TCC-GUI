@@ -8,6 +8,7 @@ library(DT)
 library(heatmaply)
 library(data.table)
 library(colourpicker)
+library(markdown)
 
 sample_data_url <- "sample_data/data_hypodata_3vs3.txt"
 
@@ -42,7 +43,7 @@ make_summary_for_tcc_result <- function(df){
   )
   df <-
     tbl_df(df) %>% mutate(Between_Count = Under_Count - lag(Under_Count)) %>%
-    mutate(Count = paste0(Under_Count, "(▲", Between_Count, ")"))
+    mutate(Count = paste0(Under_Count, "(+", Between_Count, ")"))
   
   return(df)
 }

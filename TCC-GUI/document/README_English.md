@@ -1,5 +1,4 @@
 ---
-typora-root-url: ..\www
 output: html_document
 ---
 

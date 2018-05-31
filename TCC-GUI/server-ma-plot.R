@@ -5,11 +5,13 @@ observeEvent(input$TCC, {
   showNotification("Generate MA Plot Parameters.", type = "message")
   output$MAPlotParameter <- renderUI({
     tagList(
-      selectInput("GeneAttribute", "Hover info：", choices = colnames(resultTable())),
+      selectInput("GeneAttribute", "Hover info:", choices = colnames(resultTable())),
       sliderInput("pointSize", "Point Size:", min = 1, max = 5, value = 3, step = 0.2),
       sliderInput("maFDR", "FDR:", min = 0, max = 1, value = input$fdr),
       colourInput("fdrColor", "DEGs color：", "#B22222"),
-      actionButton("makeMAPlot", "Generate MA-Plot")
+      fluidRow(column(6, actionButton("makeMAPlot", "Generate MA-Plot")),
+               column(6, uiOutput("runMAPlot")))
+      
     )
   })
 })
@@ -90,6 +92,36 @@ observeEvent(input$makeMAPlot, {
       })
     })
   })
+  
+  # ====================================
+  # This function render a button of R code of making MA plot.
+  # Position: In Volcano Plot, upper left, parameter panel.
+  # ====================================
+  
+  output$runMAPlot <- renderUI({
+    actionButton("showMACode", "Show R code")
+  })
+})
+
+# ====================================
+# This function popup a window of R code of making MA plot.
+# Position: In MA Plot, middle.
+# ====================================
+
+observeEvent(input$showMACode, {
+  shinyalert(
+    title = "MA Plot code",
+    text = variables$runMAPlot,
+    closeOnEsc = TRUE,
+    closeOnClickOutside = TRUE,
+    html = TRUE,
+    type = "info",
+    showConfirmButton = TRUE,
+    confirmButtonText = "OK",
+    confirmButtonCol = "#AEDEF4",
+    cancelButtonText = "Close",
+    animation = TRUE
+  )
 })
 
 # When hover on the point, show a expresion plot of specific gene.

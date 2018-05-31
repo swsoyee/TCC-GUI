@@ -10,7 +10,9 @@ shinyServer(function(input, output) {
                              runTimes = 0,
                              result = data.frame("Results will show here." = character(0)),
                              norData = "",
-                             runTCCCode = ""
+                             runTCCCode = "",
+                             runMAPlot = "",
+                             runVolcanoPlot = ""
                              )
   
   source(file = "server-data-import.R", local = TRUE, encoding = "UTF-8")

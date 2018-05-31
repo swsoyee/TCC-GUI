@@ -1,6 +1,5 @@
 # server-volcano-plot.R
 
-# 如果运行了TCC之后，方法不是'WAD'的话，则有pvalue和qvalue值，可绘制火山图
 observeEvent(input$TCC, {
   # output$resultTableInVolcanalPlot <- output$resultTableInPlot
   
@@ -35,29 +34,33 @@ observeEvent(input$TCC, {
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
         colourInput("downColor", "Down-regulate：", "green"),
         colourInput("upColor", "Up-regulate：", "red"),
-        actionButton("makeVolcanoPlot", "Generate Volcano Plot")
+        fluidRow(column(
+          6,
+          actionButton("makeVolcanoPlot", "Generate Volcano Plot")
+        ),
+        column(6, uiOutput(
+          "runVolcanoPlot"
+        )))
       )
     })
   } else {
     output$valcanoParameter <- renderUI({
       tagList(
-        tags$p("Because you have chosen \"WAD\" test method, there is no p-value and q-value result for plotting.")
+        tags$p(
+          "Because you have chosen \"WAD\" test method, there is no p-value and q-value result for plotting."
+        )
       )
     })
   }
 })
 
-# 点击了绘图按钮后进行绘制
+
 observeEvent(input$makeVolcanoPlot, {
   output$volcanoPloty <- renderPlotly({
-    
-    validate(
-      need(resultTable()$p.value != "", "No p-values for ploting.")
-    )
+    validate(need(resultTable()$p.value != "", "No p-values for ploting."))
     
     req(input$makeVolcanoPlot)
     isolate({
-      # 数据集整理
       dt <- resultTable()
       
       downCut <- input$CutFC[1]
@@ -68,17 +71,20 @@ observeEvent(input$makeVolcanoPlot, {
       dt[dt$m.value <= downCut, ]$color <- "Down"
       dt[dt$m.value >= upCut, ]$color <- "Up"
       dt[dt$p.value > as.numeric(input$Cutpvalue), ]$color <- "None"
-      dt[dt$m.value <= upCut & dt$m.value >= downCut, ]$color <- "None"
+      dt[dt$m.value <= upCut &
+           dt$m.value >= downCut, ]$color <- "None"
       
       x <- factor(dt$color)
-      levels(x) <- list("Down"=0, "None"=1, "Up"=2)  #LegendのLevelをリネームする
+      levels(x) <- list("Down" = 0,
+                        "None" = 1,
+                        "Up" = 2)
       
-      # 添加注释
+      # Add annotation
       key <- row.names(dt)
       
       # print(head(dt, n=10))
       
-      if(is.null(input$resultTableInVolcanalPlot_rows_selected)) {
+      if (is.null(input$resultTableInVolcanalPlot_rows_selected)) {
         annotation <- list()
       } else {
         markerSelect <- dt[input$resultTableInVolcanalPlot_rows_selected,]
@@ -96,46 +102,96 @@ observeEvent(input$makeVolcanoPlot, {
         )
       }
       
-      plot_ly(data = dt,
-              x = ~m.value,
-              y = ~-log10(p.value),
-              type = "scatter",
-              mode = "markers",
-              color = ~x,
-              colors = c(input$downColor, "black", input$upColor),
-              marker = list(size = 3),
-              hoverinfo = "text",
-              text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
-                            "</br>A value:", round(a.value, 4),
-                            "</br>M value:", round(m.value, 4),
-                            "</br>p-value:", round(p.value, 4),
-                            "</br>q-value:", round(q.value, 4),
-                            "</br>Rank:", rank),
-              source = "volcano") %>%
-        layout(xaxis = list(title = input$xlabs),
-               yaxis = list(title = input$ylabs),
-               title = input$graphicTitle,
-               annotations = annotation,
-               shapes= list(list(type='line', 
-                                 y0=~min(-log10(p.value)),
-                                 y1=~max(-log10(p.value)), 
-                                 x0= upCut, 
-                                 x1= upCut,
-                                 line=list(dash='dot', width=2)),
-                            list(type='line', 
-                                 y0=~min(-log10(p.value)),
-                                 y1=~max(-log10(p.value)), 
-                                 x0= downCut, 
-                                 x1= downCut,
-                                 line=list(dash='dot', width=2)),
-                            list(type='line', 
-                                 y0= -log10(as.numeric(input$Cutpvalue)),
-                                 y1= -log10(as.numeric(input$Cutpvalue)), 
-                                 x0=~min(m.value), 
-                                 x1=~max(m.value),
-                                 line=list(dash='dot', width=2))))
+      plot_ly(
+        data = dt,
+        x = ~ m.value,
+        y = ~ -log10(p.value),
+        type = "scatter",
+        mode = "markers",
+        color = ~ x,
+        colors = c(input$downColor, "black", input$upColor),
+        marker = list(size = 3),
+        hoverinfo = "text",
+        text = ~ paste(
+          "</br>Gene:",
+          resultTable()[, input$GeneAttribute],
+          "</br>A value:",
+          round(a.value, 4),
+          "</br>M value:",
+          round(m.value, 4),
+          "</br>p-value:",
+          round(p.value, 4),
+          "</br>q-value:",
+          round(q.value, 4),
+          "</br>Rank:",
+          rank
+        ),
+        source = "volcano"
+      ) %>%
+        layout(
+          xaxis = list(title = input$xlabs),
+          yaxis = list(title = input$ylabs),
+          title = input$graphicTitle,
+          annotations = annotation,
+          shapes = list(
+            list(
+              type = 'line',
+              y0 =  ~ min(-log10(p.value)),
+              y1 =  ~ max(-log10(p.value)),
+              x0 = upCut,
+              x1 = upCut,
+              line = list(dash = 'dot', width = 2)
+            ),
+            list(
+              type = 'line',
+              y0 =  ~ min(-log10(p.value)),
+              y1 =  ~ max(-log10(p.value)),
+              x0 = downCut,
+              x1 = downCut,
+              line = list(dash = 'dot', width = 2)
+            ),
+            list(
+              type = 'line',
+              y0 = -log10(as.numeric(input$Cutpvalue)),
+              y1 = -log10(as.numeric(input$Cutpvalue)),
+              x0 =  ~ min(m.value),
+              x1 =  ~ max(m.value),
+              line = list(dash = 'dot', width = 2)
+            )
+          )
+        )
     })
   })
+  
+  # ====================================
+  # This function render a button of R code of making vocalno plot.
+  # Position: In Volcano Plot, upper left, parameter panel.
+  # ====================================
+  
+  output$runVolcanoPlot <- renderUI({
+    actionButton("showVolcanoCode", "Show R code")
+  })
+})
+
+# ====================================
+# This function popup a window of R code of making vocalno plot.
+# Position: In Volcano Plot, middle.
+# ====================================
+
+observeEvent(input$showVolcanoCode, {
+  shinyalert(
+    title = "Volcano Plot code",
+    text = variables$runVolcanoPlot,
+    closeOnEsc = TRUE,
+    closeOnClickOutside = TRUE,
+    html = TRUE,
+    type = "info",
+    showConfirmButton = TRUE,
+    confirmButtonText = "OK",
+    confirmButtonCol = "#AEDEF4",
+    cancelButtonText = "Close",
+    animation = TRUE
+  )
 })
 
 # ====================================
@@ -145,18 +201,20 @@ observeEvent(input$makeVolcanoPlot, {
 output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "volcano")
-  validate(need(!is.null(eventdata), 
-                "Hover over the point to show original expression plot"))
+  validate(need(
+    !is.null(eventdata),
+    "Hover over the point to show original expression plot"
+  ))
   # Get point number
   datapoint <- as.numeric(eventdata$pointNumber)[1]
   # Get expression level (Original)
   expression <- variables$CountData[datapoint, ]
   # Get expression level (Normalized)
   expressionNor <- t(t(variables$norData[datapoint, ]))
-
+  
   data <- variables$CountData
   data.cl <- rep(0, ncol(data))
-
+  
   for (i in 1:length(variables$groupList)) {
     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
   }
@@ -164,26 +222,34 @@ output$geneBarPlotInVolcano <- renderPlotly({
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
   
-  plot_ly(x = ~row.names(expression),
-          y = ~expression[, 1],
-          color = as.factor(data.cl),
-          text = expression[, 1], 
-          textposition = 'auto',
-          type = "bar",
-          name = "Original") %>%
-    add_trace(y = ~expressionNor[, 1],
-              text = round(expressionNor[, 1], 2), 
-              textposition = 'auto',
-              name = "Normalized",
-              type = "scatter",
-              mode = "lines+markers",
-              marker = list(size = 10,
-                            line = list(color = 'rgba(0, 0, 0, 0)',
-                                        width = 2))) %>%
-    layout(xaxis = list(title = ""),
-           yaxis = list(title = "Raw Count"),
-           title = paste(colnames(expression), "Expression Plot"),
-           legend = list(orientation = 'h'))
+  plot_ly(
+    x = ~ row.names(expression),
+    y = ~ expression[, 1],
+    color = as.factor(data.cl),
+    text = expression[, 1],
+    textposition = 'auto',
+    type = "bar",
+    name = "Original"
+  ) %>%
+    add_trace(
+      y = ~ expressionNor[, 1],
+      text = round(expressionNor[, 1], 2),
+      textposition = 'auto',
+      name = "Normalized",
+      type = "scatter",
+      mode = "lines+markers",
+      marker = list(
+        size = 10,
+        line = list(color = 'rgba(0, 0, 0, 0)',
+                    width = 2)
+      )
+    ) %>%
+    layout(
+      xaxis = list(title = ""),
+      yaxis = list(title = "Raw Count"),
+      title = paste(colnames(expression), "Expression Plot"),
+      legend = list(orientation = 'h')
+    )
 })
 
 # ====================================
@@ -194,7 +260,7 @@ output$geneBarPlotInVolcano <- renderPlotly({
 # output$geneBoxPlotInVolcano <- renderPlotly({
 #   # Read in hover data
 #   eventdata <- event_data("plotly_hover", source = "volcano")
-#   validate(need(!is.null(eventdata), 
+#   validate(need(!is.null(eventdata),
 #                 "Hover over the point to show original expression plot"))
 #   # Get point number
 #   datapoint <- as.numeric(eventdata$pointNumber)[1]
@@ -202,17 +268,17 @@ output$geneBarPlotInVolcano <- renderPlotly({
 #   expression <- variables$CountData[datapoint, ]
 #   # Get expression level (Normalized)
 #   expressionNor <- t(t(variables$norData[datapoint, ]))
-#   
+#
 #   data <- variables$CountData
 #   data.cl <- rep(0, ncol(data))
-#   
+#
 #   for (i in 1:length(variables$groupList)) {
 #     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
 #   }
-#   
+#
 #   expression <- t(expression[data.cl != 0])
 #   data.cl <- data.cl[data.cl != 0]
-#   
+#
 #   plot_ly(x = as.factor(data.cl),
 #           y = t(expression[, 1]),
 #           color = as.factor(data.cl),
@@ -238,15 +304,17 @@ output$fdrCutoffTableInVolcano <- DT::renderDataTable({
   df <- make_summary_for_tcc_result(resultTable())
   
   # Render Table
-  DT::datatable(df[, c("Cutoff", "Count", "Percentage")],
-                option = list(
-                  pageLength = 10,
-                  columnDefs = list(list(
-                    className = 'dt-right', targets = "_all"
-                  )),
-                  dom = "tp"
-                ),
-                rownames = FALSE)
+  DT::datatable(
+    df[, c("Cutoff", "Count", "Percentage")],
+    option = list(
+      pageLength = 10,
+      columnDefs = list(list(
+        className = 'dt-right', targets = "_all"
+      )),
+      dom = "tp"
+    ),
+    rownames = FALSE
+  )
 })
 
 # ====================================
@@ -259,22 +327,32 @@ output$fdrCutoffPlotInVolcano <- renderPlotly({
   df <- make_summary_for_tcc_result(resultTable())
   
   # Render Plotly
-  plot_ly(data = df,
-          x = ~as.numeric(Cutoff),
-          y = ~Between_Count,
-          type = "bar",
-          hoverinfo = "text",
-          text = ~paste("</br>FDR Cutoff: ", Cutoff,
-                        "</br>DEGs Count: ", Between_Count)) %>%
-    add_trace(y = ~Under_Count,
-              yaxis = "y2",
-              type = "scatter",
-              mode = "lines+markers",
-              hoverinfo = "text",
-              text = ~paste("</br>FDR Cutoff: ", Cutoff,
-                            "</br>Cumulative curve: ", Percentage)) %>%
-    layout(xaxis = list(title = "FDR Cutoff"),
-           yaxis = list(title = "DEGs Count"),
-           yaxis2 = list(overlaying = "y", side = "right"),
-           showlegend = FALSE)
+  plot_ly(
+    data = df,
+    x = ~ as.numeric(Cutoff),
+    y = ~ Between_Count,
+    type = "bar",
+    hoverinfo = "text",
+    text = ~ paste("</br>FDR Cutoff: ", Cutoff,
+                   "</br>DEGs Count: ", Between_Count)
+  ) %>%
+    add_trace(
+      y = ~ Under_Count,
+      yaxis = "y2",
+      type = "scatter",
+      mode = "lines+markers",
+      hoverinfo = "text",
+      text = ~ paste(
+        "</br>FDR Cutoff: ",
+        Cutoff,
+        "</br>Cumulative curve: ",
+        Percentage
+      )
+    ) %>%
+    layout(
+      xaxis = list(title = "FDR Cutoff"),
+      yaxis = list(title = "DEGs Count"),
+      yaxis2 = list(overlaying = "y", side = "right"),
+      showlegend = FALSE
+    )
 })
