@@ -1,7 +1,3 @@
----
-output: html_document
----
-
 # TCC-GUI
 
 **TCC: Differential expression analysis for tag count data with robust normalization strategies**

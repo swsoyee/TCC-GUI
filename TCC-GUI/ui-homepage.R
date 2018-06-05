@@ -19,6 +19,8 @@ fluidPage(fluidRow(
       tags$a("3.3 PCA analysis", href = "#PCAanalysis"),
       tags$br(),
       tags$a("3.4 Heatmap", href = "#Heatmap"),
+      tags$br(),
+      tags$a("3.5 Expression", href = "#Expression"),
       tags$hr(),
       tags$a("4. More helps", href = "#Morehelps")
     )
@@ -32,6 +34,7 @@ fluidPage(fluidRow(
            tabPanel(title = "中文", div(HTML(
              markdownToHTML(
                fragment.only = TRUE,
+               options = c("skip_images"), # Need to be fixed
                text = readLines("document/README_Chinese.md", encoding = "UTF-8")
              )
            ))),

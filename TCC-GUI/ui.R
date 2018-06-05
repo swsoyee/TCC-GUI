@@ -51,18 +51,26 @@ shinyUI(fluidPage(
     #          )),
     # Footer
     tags$hr(),
+    tags$br(),
+    tags$br(),
+    tags$br(),
     absolutePanel(
-      bottom = 0, left = 0, right = 0,
+      bottom = 0,
+      left = 0,
+      right = 0,
       fixed = TRUE,
       div(style = "padding: 10px; border-bottom: 1px solid #CCC; background: #222222; color: #FFFFFF; opacity: 0.9",
-          HTML(markdownToHTML(
-            fragment.only = TRUE,
-            text = c(
-              "Copyright (c)2018 Bioinformation Engineering Lab  
-              Department of Biotechnology, Graduate School of Agricultural and Life Science, The University of Tokyo All Rights Reserved.  
-              Code available on Github: [TCC-GUI](https://github.com/swsoyee/TCC-GUI)
-              "
-            )
-            ))))
-  )#navbarPage
-))
+          HTML(
+            markdownToHTML(
+              fragment.only = TRUE,
+              text = c(
+                "Copyright (c)2018 Bioinformation Engineering Lab  
+                Department of Biotechnology, Graduate School of Agricultural and Life Science, The University of Tokyo All Rights Reserved.  
+                Code available on Github: [TCC-GUI](https://github.com/swsoyee/TCC-GUI)
+                "
+              )
+              )
+              ))
+              )
+            )#navbarPage
+          ))
