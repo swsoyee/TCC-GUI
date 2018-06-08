@@ -56,6 +56,7 @@ observeEvent(input$TCC, {
 
 
 observeEvent(input$makeVolcanoPlot, {
+  withBars(
   output$volcanoPloty <- renderPlotly({
     validate(need(resultTable()$p.value != "", "No p-values for ploting."))
     
@@ -162,6 +163,7 @@ observeEvent(input$makeVolcanoPlot, {
         )
     })
   })
+  )
   
   # ====================================
   # This function render a button of R code of making vocalno plot.
@@ -198,6 +200,7 @@ observeEvent(input$showVolcanoCode, {
 # This function render a plotly of specific gene expression value in barplot.
 # Position: In Volcano Plot, upper right.
 # ====================================
+withBars(
 output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "volcano")
@@ -251,6 +254,7 @@ output$geneBarPlotInVolcano <- renderPlotly({
       legend = list(orientation = 'h')
     )
 })
+)
 
 # ====================================
 # This function render a plotly of specific gene expression value in boxplot.
@@ -322,6 +326,7 @@ output$fdrCutoffTableInVolcano <- DT::renderDataTable({
 # condition.
 # Position: In Volcano Plot tab, under right.
 # ====================================
+withBars(
 output$fdrCutoffPlotInVolcano <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
@@ -356,3 +361,4 @@ output$fdrCutoffPlotInVolcano <- renderPlotly({
       showlegend = FALSE
     )
 })
+)

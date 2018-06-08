@@ -9,6 +9,7 @@ library(heatmaply)
 library(data.table)
 library(colourpicker)
 library(markdown)
+library(plotlyBars)
 
 sample_data_url <- "sample_data/data_hypodata_3vs3.txt"
 

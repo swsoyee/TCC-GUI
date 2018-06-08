@@ -17,7 +17,9 @@ observeEvent(input$TCC, {
 })
 
 observeEvent(input$makeMAPlot, {
+
   withProgress(message = 'MA Ploting: ', value = 0, {
+    withBars(
     output$maploty <- renderPlotly({
       validate(
         need(resultTable()$a.value != "", "No MA values for ploting.")
@@ -91,6 +93,7 @@ observeEvent(input$makeMAPlot, {
       }
       })
     })
+    )
   })
   
   # ====================================
@@ -125,6 +128,7 @@ observeEvent(input$showMACode, {
 })
 
 # When hover on the point, show a expresion plot of specific gene.
+withBars(
 output$geneBarPlot <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "ma")
@@ -168,7 +172,7 @@ output$geneBarPlot <- renderPlotly({
            title = paste(colnames(expression), "Expression Plot"),
            legend = list(orientation = 'h'))
 })
-
+)
 
 output$resultTableInVolcanalPlot <- output$resultTableInPlot <- DT::renderDataTable({
   if (nrow(resultTable()) == 0) {
@@ -218,6 +222,7 @@ output$fdrCutoffTableInMAPage <- DT::renderDataTable({
 # condition.
 # Position: In MA plot tab, under left.
 # ====================================
+withBars(
 output$fdrCutoffPlotInMAPage <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
@@ -242,3 +247,4 @@ output$fdrCutoffPlotInMAPage <- renderPlotly({
            yaxis2 = list(overlaying = "y", side = "right"),
            showlegend = FALSE)
 })
+)

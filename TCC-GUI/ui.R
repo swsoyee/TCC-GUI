@@ -3,7 +3,7 @@ library(shiny)
 shinyUI(fluidPage(
   useShinyalert(),
   navbarPage(
-    "TCC GUI Version",
+    "TCC GUI Version: Graphical User Interface for Tag Count Comparison (TCC) package",
     # position = "fixed-top",
     theme = shinytheme("cosmo"),
     # TCC Narvbar

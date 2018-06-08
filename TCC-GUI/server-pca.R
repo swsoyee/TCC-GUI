@@ -64,7 +64,7 @@ observeEvent(input$pcRun, {
   } else {
     data <- t(data)
   }
-  data.pca <- prcomp(data,
+  data.pca <- prcomp(data[ , apply(data, 2, var) != 0],
                      center = input$pcCenter,
                      scale. = input$pcScale) 
   
@@ -124,4 +124,12 @@ observeEvent(input$pcRun, {
   output$pcacluster <- renderPlot(
     plot(data.cluster, xlab = "Sample")
   )
+  
+  # Summary Table
+  output$summaryPCA <- DT::renderDataTable({
+    DT::datatable(summaryTable, options = list(dom = "t")) %>% 
+      formatRound(
+        columns = colnames(summaryTable),
+      digits = 3)
+  })
 })

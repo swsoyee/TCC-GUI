@@ -15,7 +15,7 @@ fluidPage(fluidRow(
       tabsetPanel(
         id = "volcanoplot",
         tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInVolcano")),
-        tabPanel("Plot", plotlyOutput("fdrCutoffPlotInVolcano"))
+        tabPanel("Plot", withBarsUI(plotlyOutput("fdrCutoffPlotInVolcano")))
       )
     )
   ),
@@ -24,14 +24,14 @@ fluidPage(fluidRow(
     6,
     tags$hr(),
     tags$h3("Volcano Plot"),
-    plotlyOutput("volcanoPloty"),
+    withBarsUI(plotlyOutput("volcanoPloty")),
     tags$h3("Result Table"),
     DT::dataTableOutput('resultTableInVolcanalPlot')
   ),
   #column
   column(3,
          tags$hr(),
-         wellPanel(plotlyOutput(
+         wellPanel(withBarsUI(plotlyOutput(
            "geneBarPlotInVolcano"
-         )))
+         ))))
 ))

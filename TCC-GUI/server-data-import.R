@@ -26,10 +26,15 @@ datasetInput <- reactive({
   variables$CountData
 })
 
+# ====================================
+# Render a table of raw count data, adding color.
+# Position: In Computation tab, upper middle. 
+# ====================================
+
 output$table <- DT::renderDataTable({
-  df <- datasetInput()
+  df <- datasetInput() 
   # Create 19 breaks and 20 rgb color values ranging from white to red
-  brks <- quantile(df, probs = seq(.05, .95, .05), na.rm = TRUE)
+  brks <- quantile(df %>% select_if(is.numeric), probs = seq(.05, .95, .05), na.rm = TRUE)
   clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
   {
     paste0("rgb(255,", ., ",", ., ")")
@@ -41,7 +46,7 @@ output$table <- DT::renderDataTable({
                   searchHighlight = TRUE,
                   orderClasses = TRUE
                 )) %>%
-    formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
+    formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, clrs))
 })
 
 output$groupSlide <- renderUI({
@@ -101,6 +106,7 @@ observeEvent(input$confirmedGroupList, {
                   "SAMSeq" = "samseq",
                   "Voom" = "voom",
                   "WAD" = "wad")),
+      numericInput("filterLowCount", "Filter low count genes threshold:", value = 0, min = 0),
       sliderInput("iteration", "Interation:", min = 1, max = 50, value = 3),
       sliderInput("fdr", "FDR:", min = 0, max = 1, value = 0.1, step = 0.05),
       sliderInput("floorpdeg", "Elimination of Potential DEGs:", min = 0, max = 1, value = 0.05, step = 0.05),

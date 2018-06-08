@@ -15,7 +15,7 @@ fluidPage(fluidRow(
       tabsetPanel(
         id = "maplot",
         tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInMAPage")),
-        tabPanel("Plot", plotlyOutput("fdrCutoffPlotInMAPage"))
+        tabPanel("Plot", withBarsUI(plotlyOutput("fdrCutoffPlotInMAPage")))
       )
     )
   ),
@@ -24,12 +24,12 @@ fluidPage(fluidRow(
     6,
     tags$hr(),
     tags$h3("MA Plot"),
-    plotlyOutput("maploty"),
+    withBarsUI(plotlyOutput("maploty")),
     tags$h3("Result Table"),
     DT::dataTableOutput('resultTableInPlot')
   ),
   #column
   column(3,
          tags$hr(),
-         wellPanel(plotlyOutput("geneBarPlot")))
+         wellPanel(withBarsUI(plotlyOutput("geneBarPlot"))))
 ))

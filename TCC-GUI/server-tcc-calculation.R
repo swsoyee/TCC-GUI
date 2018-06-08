@@ -2,18 +2,23 @@
 
 observeEvent(input$TCC, {
   withProgress(message = 'TCC Calculation: ', value = 0, {
+    # Set time start
+    start_time <- Sys.time()
+
     data <- variables$CountData
     
     data.cl <- rep(0, ncol(data))
     convert2cl <- function(x, df) {
       grep(x, colnames(df))
     }
+    
     for (i in 1:length(variables$groupList)) {
       data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
     }
 
     incProgress(0.2, detail = "Creating TCC Object...")
     tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
+    tcc <- filterLowCountGenes(tcc, low.count = input$filterLowCount)
     incProgress(0.5, detail = "Calculating normalization factors using DEGES...")
     tcc <- calcNormFactors(
       tcc,
@@ -32,6 +37,11 @@ observeEvent(input$TCC, {
     variables$result <- getResult(tcc, sort = FALSE)
     variables$norData <- tcc$getNormalizedData()
     variables$runTimes <- variables$runTimes + 1
+    # Show computation time notification
+    # Set time end
+    end_time <- Sys.time()
+    runtime <- round(as.numeric(end_time - start_time), 3)
+    showNotification(paste("Running time:", runtime, "seconds"), type = "message")
   })
 })
 

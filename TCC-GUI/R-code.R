@@ -26,6 +26,7 @@ observeEvent(input$TCC, {
     <br>
     <br><font color="red"># Create TCC Object</font>
     <br>tcc <- new("TCC", data, data.cl)
+    <br>tcc <- filterLowCountGenes(tcc, low.count = ',input$filterLowCount, ')
     <br><font color="red"># Run TCC</font>
     <br>tcc <- calcNormFactors(tcc, norm.method = ',
     input$normMethod,

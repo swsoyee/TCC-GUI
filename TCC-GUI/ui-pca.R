@@ -20,5 +20,6 @@ fluidPage(column(3,
                        plotOutput("pcacluster")),
               tabPanel("Variances",
                        plotlyOutput("pcaVariances"))
-            )
+            ),
+            DT::dataTableOutput("summaryPCA")
           ))
