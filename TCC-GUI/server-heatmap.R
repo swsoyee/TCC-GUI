@@ -3,10 +3,13 @@
 observeEvent(input$TCC, {
   output$heatmapParameter <- renderUI({
     tagList(
-      if(input$testMethod != 'wad') {
-        sliderInput("heatmapFDR", "FDR:", min = 0.01, max = 1, value = 0.05)
-      },
-      numericInput("heatmapFDRTop", "Top gene count:", value = 50),
+      radioButtons("heatmapGeneSelectType", "Ways of select gene",
+                   choices = c("Paste a list of genes",
+                               "Select genes by name",
+                               "Select genes according FDR")),
+      
+      uiOutput("heatmapSelectGene"),
+      
       radioButtons("heatmapData", "Source:", 
                    choices = c("Original" = "o",
                                "Normalized" = "n")),
@@ -40,6 +43,39 @@ observeEvent(input$TCC, {
   })
 })
 
+# ====================================
+# This function render UI of ways of gene selection.
+# Position: In Heatmap tab, upper left.
+# ====================================
+
+output$heatmapSelectGene <- renderUI({
+  switch(
+    input$heatmapGeneSelectType,
+    "Paste a list of genes" = textAreaInput("heatmapTextList",
+                                            "Paste a list of genes",
+                                            rows = 5,
+                                            placeholder = "Input gene's name (first column in the dataset), one gene per line."), 
+    "Select genes by name" = selectInput(
+      "heatmapSelectList",
+      "Select genes by name",
+      choices = row.names(variables$CountData),
+      multiple = TRUE
+    ),
+    "Select genes according FDR" = tagList(
+      if (input$testMethod != 'wad') {
+        sliderInput(
+          "heatmapFDR",
+          "FDR:",
+          min = 0.01,
+          max = 1,
+          value = 0.05
+        )
+      },
+      numericInput("heatmapFDRTop", "Top gene count:", value = 50)
+    )
+  )
+})
+
 observeEvent(input$heatmapRun, {
   req(input$heatmapRun)
   isolate({
@@ -59,11 +95,20 @@ observeEvent(input$heatmapRun, {
     data.cl <- data.cl[data.cl != 0]
     
     # Select DEGs (Row)
-    if(input$testMethod == 'wad') {
-      data <- data[resultTable()$rank <= input$heatmapFDRTop, ]
-    } else {
-      data <- data[resultTable()$q.value <= input$heatmapFDR & resultTable()$rank <= input$heatmapFDRTop, ]
+    if (input$heatmapGeneSelectType == "Paste a list of genes") {
+      data <- data[row.names(data) %in% unlist(strsplit(x =input$heatmapTextList,split = '[\r\n]' )),]
     }
+    if (input$heatmapGeneSelectType == "Select genes by name") {
+      data <- data[row.names(data) %in% input$heatmapSelectList,]
+    }
+    if (input$heatmapGeneSelectType == "Select genes according FDR") {
+      if (input$testMethod == 'wad') {
+        data <- data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop, ]$gene_id, ]
+      } else {
+        data <- data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop & resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
+      }
+    }
+    
     showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
     showNotification("Generating, please be patient...", type = "message")
     
