@@ -111,7 +111,7 @@ observeEvent(input$heatmapRun, {
     
     showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
     showNotification("Generating, please be patient...", type = "message")
-    
+    withBars(
     output$heatmap <- renderPlotly({
       heatmaply(t(data), 
                 k_row = length(variables$groupList),
@@ -127,5 +127,6 @@ observeEvent(input$heatmapRun, {
                 labRow = row.names(t(data))
                 )
     })
+    )
   })
 })

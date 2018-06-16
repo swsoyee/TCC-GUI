@@ -9,4 +9,4 @@ fluidPage(column(3,
                  )),
           column(9,
                  tags$hr(),
-                 plotlyOutput("heatmap")))
+                 withBarsUI(plotlyOutput("heatmap"))))
