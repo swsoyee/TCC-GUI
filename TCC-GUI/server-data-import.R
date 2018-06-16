@@ -7,7 +7,7 @@
 # 2018-5-23 Change read.table to fread.
 
 observeEvent(input$CountDataSample, {
-  variables$CountData <- data.frame(fread(sample_data_url), row.names=1)
+  variables$CountData <- data.frame(fread(input$SampleDatabase), row.names=1)
   showNotification("Count data sample load", type = "message")
 })
 
@@ -49,84 +49,184 @@ output$table <- DT::renderDataTable({
     formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, clrs))
 })
 
-output$groupSlide <- renderUI({
-  if(nrow(datasetInput())>0){
-    tagList(
-      sliderInput("groupNum", "Group Count", min = 2, max = 4, value = 2),
-      actionButton("confirmedGroupNum", "Confirmed"),
-      tags$hr()
-    )
-  }
-})
+# 2018-6-16 Unused
+# output$groupSlide <- renderUI({
+#   if(nrow(datasetInput())>0){
+#     tagList(
+#       sliderInput("groupNum", "Group Count", min = 2, max = 4, value = 2),
+#       actionButton("confirmedGroupNum", "Confirmed"),
+#       tags$hr()
+#     )
+#   }
+# })
 
-observeEvent(input$confirmedGroupNum, {
-  showNotification("Group number changed.", type = "message")
-  colname <- colnames(datasetInput())
-  names(colname) <- colname
-  
-  groupSelectList <- lapply(1:input$groupNum, function(x){
-    output[[paste0("group", x)]] <- renderUI({
-      selectInput(inputId = paste0("group", x),
-                  label = paste0("Group", x),
-                  choices = colname,
-                  multiple = TRUE
-      )
-    })
-  })
-})
+# 2018-6-16 Unused
+# observeEvent(input$confirmedGroupNum, {
+#   showNotification("Group number changed.", type = "message")
+#   colname <- colnames(datasetInput())
+#   names(colname) <- colname
+#   
+#   groupSelectList <- lapply(1:input$groupNum, function(x){
+#     output[[paste0("group", x)]] <- renderUI({
+#       selectInput(inputId = paste0("group", x),
+#                   label = paste0("Group", x),
+#                   choices = colname,
+#                   multiple = TRUE
+#       )
+#     })
+#   })
+# })
 
-observeEvent(input$confirmedGroupNum, {
-  output$confirmedGroupList <- renderUI({
-    actionButton("confirmedGroupList", "Confirmed")
-  })
-})
+# 2018-6-16 Unused
+# observeEvent(input$confirmedGroupNum, {
+#   output$confirmedGroupList <- renderUI({
+#     actionButton("confirmedGroupList", "Confirmed")
+#   })
+# })
+
+# 2018-6-16 Unused
+# observeEvent(input$confirmedGroupList, {
+#   variables$groupList <- list
+#   groupList <- lapply(1:input$groupNum, function(x){
+#     input[[paste0("group", x)]]
+#   })
+#   showNotification("Group information has been update.", type = "message")
+#   variables$groupList <- groupList
+# })
 
 observeEvent(input$confirmedGroupList, {
-  variables$groupList <- list
-  groupList <- lapply(1:input$groupNum, function(x){
-    input[[paste0("group", x)]]
-  })
-  showNotification("Group information has been update.", type = "message")
-  variables$groupList <- groupList
+  if (nrow(variables$CountData) == 0) {
+    showNotification("Please input count data table!", type = "error")
+    return()
+  }
+  if (input$groupSelectViaText == "") {
+    showNotification("Please input group information!", type = "error")
+    return()
+  }
+
+  tryCatch(
+    {
+      group <- fread(input$groupSelectViaText)
+      variables$groupList <-
+        lapply(unique(group$V2), function(x) {
+          group[group$V2 == x,]$V1
+        })
+      
+      showNotification("Group information has been update.", type = "message")
+      showNotification("Generate TCC Parameters.", type = "message")
+      
+      output$TCC <- renderUI({
+        tagList(
+          selectInput(
+            "normMethod",
+            "Normalization method:",
+            c("TMM" = "tmm",
+              "DESeq" = "deseq")
+          ),
+          selectInput(
+            "testMethod",
+            "DEGs identify method:",
+            c(
+              "edgeR" = "edger",
+              "DESeq" = "deseq",
+              "DESeq2" = "deseq2",
+              "baySeq" = "bayseq",
+              "SAMSeq" = "samseq",
+              "Voom" = "voom",
+              "WAD" = "wad"
+            )
+          ),
+          numericInput(
+            "filterLowCount",
+            "Filter low count genes threshold:",
+            value = 0,
+            min = 0
+          ),
+          sliderInput(
+            "iteration",
+            "Interation:",
+            min = 1,
+            max = 50,
+            value = 3
+          ),
+          sliderInput(
+            "fdr",
+            "FDR:",
+            min = 0,
+            max = 1,
+            value = 0.1,
+            step = 0.05
+          ),
+          sliderInput(
+            "floorpdeg",
+            "Elimination of Potential DEGs:",
+            min = 0,
+            max = 1,
+            value = 0.05,
+            step = 0.05
+          ),
+          fluidRow(column(6, actionButton("TCC", "Run TCC")),
+                   column(6, uiOutput("runTCCCode")))
+        )
+      })
+    },
+    error = function(e) {
+      showNotification("Check your group information format!", type = "error")
+      return()
+    },
+    warning = function(w) {
+      showNotification("Check your group information format!", type = "error")
+      return()
+    }
+  )
 })
+  
+  # validate(
+  #   need(input$groupSelectViaText != "", "Please input group information!")
+  # )
+  # group <- fread(input$groupSelectViaText)
+  # variables$groupList <- lapply(unique(group()$V2), function(x) {group()[group()$V2 == x, ]$V1})
+  # showNotification("Group information has been update.", type = "message")
+# })
 
 # Generate TCC Parameters
-observeEvent(input$confirmedGroupList, {
-  showNotification("Generate TCC Parameters.", type = "message")
-  output$TCC <- renderUI({
-    tagList(
-      selectInput("normMethod", "Normalization method:",
-                c("TMM" = "tmm",
-                  "DESeq" = "deseq")),
-      selectInput("testMethod", "DEGs identify method:",
-                c("edgeR" = "edger",
-                  "DESeq" = "deseq",
-                  "DESeq2" = "deseq2",
-                  "baySeq" = "bayseq",
-                  "SAMSeq" = "samseq",
-                  "Voom" = "voom",
-                  "WAD" = "wad")),
-      numericInput("filterLowCount", "Filter low count genes threshold:", value = 0, min = 0),
-      sliderInput("iteration", "Interation:", min = 1, max = 50, value = 3),
-      sliderInput("fdr", "FDR:", min = 0, max = 1, value = 0.1, step = 0.05),
-      sliderInput("floorpdeg", "Elimination of Potential DEGs:", min = 0, max = 1, value = 0.05, step = 0.05),
-      fluidRow(
-        column(6, actionButton("TCC", "Run TCC")),
-        column(6, uiOutput("runTCCCode"))
-      )
-    )
-  })
-})
+# observeEvent(input$confirmedGroupList, {
+#   showNotification("Generate TCC Parameters.", type = "message")
+#   output$TCC <- renderUI({
+#     tagList(
+#       selectInput("normMethod", "Normalization method:",
+#                 c("TMM" = "tmm",
+#                   "DESeq" = "deseq")),
+#       selectInput("testMethod", "DEGs identify method:",
+#                 c("edgeR" = "edger",
+#                   "DESeq" = "deseq",
+#                   "DESeq2" = "deseq2",
+#                   "baySeq" = "bayseq",
+#                   "SAMSeq" = "samseq",
+#                   "Voom" = "voom",
+#                   "WAD" = "wad")),
+#       numericInput("filterLowCount", "Filter low count genes threshold:", value = 0, min = 0),
+#       sliderInput("iteration", "Interation:", min = 1, max = 50, value = 3),
+#       sliderInput("fdr", "FDR:", min = 0, max = 1, value = 0.1, step = 0.05),
+#       sliderInput("floorpdeg", "Elimination of Potential DEGs:", min = 0, max = 1, value = 0.05, step = 0.05),
+#       fluidRow(
+#         column(6, actionButton("TCC", "Run TCC")),
+#         column(6, uiOutput("runTCCCode"))
+#       )
+#     )
+#   })
+# })
 
-output$groupSelect <- renderUI({
-  if(!is.null(input$groupNum)){
-    tagList(
-      lapply(1:input$groupNum, function(i) {
-        uiOutput(paste0("group", i))
-      })
-    )
-  }
-})
+# 2018-6-16 Unused
+# output$groupSelect <- renderUI({
+#   if(!is.null(input$groupNum)){
+#     tagList(
+#       lapply(1:input$groupNum, function(i) {
+#         uiOutput(paste0("group", i))
+#       })
+#     )
+#   }
+# })
 
 # ====================================
 # This function render a wellPanel (Table + Plotly) of different 

@@ -7,7 +7,10 @@ fluidPage(fluidRow(
     wellPanel(
       tags$h4("Count Data Input"),
       tags$hr(),
-      actionButton("CountDataSample", "Load Sample Data", icon = icon("database")),
+      selectInput("SampleDatabase", "Select Sample Data",
+                  choices = c("hypodata" = "sample_data/data_hypodata_3vs3.txt")
+                  ),
+      actionButton("CountDataSample", "Load Sample Data"),
       tags$hr(),
       fileInput(
         "uploadCountData",
@@ -22,9 +25,21 @@ fluidPage(fluidRow(
     #wellPanel
     wellPanel(
       tags$h4("Group Selection"),
-      uiOutput("groupSlide"),
-      uiOutput("groupSelect"),
-      uiOutput("confirmedGroupList")
+      textAreaInput(
+        "groupSelectViaText",
+        "Input your group info:",
+        rows = 6,
+        placeholder = paste(
+          "G1_rep1,1",
+          "G1_rep2,1",
+          "G1_rep3,1",
+          "G2_rep1,2",
+          "G2_rep2,2",
+          "G2_rep3,2",
+          sep = '\n'
+        )
+      ),
+      actionButton("confirmedGroupList", "Confirmed")
     )#wellPanel
     
   ),
