@@ -77,7 +77,14 @@ observeEvent(input$TCC, {
       tags$hr(),
       # tags$h3("Result Table"),
       # Generate Result file download button
-      downloadButton("downLoadResultTable", "Download TCC Result"),
+      fluidRow(column(
+        3,
+        downloadButton("downLoadResultTable", "Download TCC Result")
+      ),
+      column(
+        3,
+        downloadButton("downLoadNormalized", "Download Normalized Data")
+      )),
       DT::dataTableOutput('resultTable')
     )
   })
@@ -114,6 +121,21 @@ output$downLoadResultTable <- downloadHandler(
   },
   content = function(file) {
     write.csv(resultTable(), file, row.names = FALSE)
+  }
+)
+
+# Download TCC Normalized Table function
+output$downLoadNormalized <- downloadHandler(
+  filename = function() {
+    paste(Sys.Date(), 
+          input$normMethod,
+          input$testMethod,
+          input$iteration,
+          input$fdr,
+          input$floorpdeg, "TCC_Normalized.csv", sep = "_")
+  },
+  content = function(file) {
+    write.csv(variables$norData, file)
   }
 )
 
