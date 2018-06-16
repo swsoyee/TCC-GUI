@@ -1,0 +1,22 @@
+---
+title: "report"
+output: html_document
+params:
+  CountData: NA
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+Test.  
+
+```{r tcc-calculation}
+library(knitr)
+
+kable(head(params$CountData))
+```
+
+

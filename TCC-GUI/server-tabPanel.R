@@ -37,6 +37,13 @@ observeEvent(input$TCC, {
                          local = TRUE,
                          encoding = "UTF-8"
                        )$value))
+    appendTab(inputId = "tabs",
+              tabPanel("Report",
+                       source(
+                         file = "ui-report.R",
+                         local = TRUE,
+                         encoding = "UTF-8"
+                       )$value))
     # appendTab(
     #   inputId = "tabs",
     #   tabsetPanel("tabs",
