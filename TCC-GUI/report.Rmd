@@ -3,20 +3,89 @@ title: "report"
 output: html_document
 params:
   CountData: NA
+  groupList: NA
+  filterLowCount: NA
+  normMethod: NA
+  testMethod: NA
+  iteration: NA
+  fdr: NA
+  floorpdeg: NA
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## TCC Report
 
 Test.  
 
-```{r tcc-calculation}
-library(knitr)
+### 0. Setting and read file.
 
+```{r setting, results='hold'}
+library(knitr)
+library(TCC)
+
+# Parameters: 
+print(params$groupList)
+print(params$filterLowCount)
+print(params$normMethod)
+print(params$testMethod)
+print(params$iteration)
+print(params$fdr)
+print(params$floorpdeg)
+
+# Input Count Data:
 kable(head(params$CountData))
+```
+
+Parameters: 
+
+### 1. Processing  
+
+Creat TCC Object.
+
+```{r tcc-calculation}
+# Get count data table
+data <- params$CountData
+
+# Get group information
+data.cl <- rep(0, ncol(data))
+convert2cl <- function(x, df) {
+  grep(x, colnames(df))
+}
+
+# Covert group information format
+for (i in 1:length(params$groupList)) {
+  data.cl[unlist(lapply(params$groupList[[i]], convert2cl, df = data))] = i
+}
+
+# Creat TCC Object
+tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
+# Filter low count genes (if necessary).
+tcc <- filterLowCountGenes(tcc, low.count = params$filterLowCount)
+# Run TCC
+tcc <- calcNormFactors(
+  tcc,
+  norm.method = params$normMethod,
+  test.method = params$testMethod,
+  iteration = params$iteration,
+  FDR = params$fdr,
+  floorPDEG = params$floorpdeg
+  )
+
+# Estimate differential genes
+tcc <- estimateDE(tcc,
+                  test.method = params$testMethod,
+                  FDR = params$fdr)    
+
+# Result table
+resultTable <- getResult(tcc, sort = FALSE)
+# Normailized data
+norData <- tcc$getNormalizedData()
+
+kable(head(resultTable))
+kable(head(norData))
 ```
 
 

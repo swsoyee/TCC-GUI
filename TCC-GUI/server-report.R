@@ -19,7 +19,16 @@ output$downloadReport <- downloadHandler(
     
     library(rmarkdown)
     
-    reportParameter <- list(CountData = variables$CountData)
+    reportParameter <- list(
+      CountData = variables$CountData,
+      groupList = variables$groupList,
+      filterLowCount = input$filterLowCount,
+      normMethod = input$normMethod,
+      testMethod = input$testMethod,
+      iteration = input$iteration,
+      fdr = input$fdr,
+      floorpdeg = input$floorpdeg
+    )
     
     out <- render('report.Rmd', params = reportParameter, switch(
       input$format,
