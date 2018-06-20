@@ -1,5 +1,5 @@
 ---
-title: "report"
+title: "TCC-GUI Report"
 output: html_document
 params:
   CountData: NA
@@ -10,6 +10,11 @@ params:
   iteration: NA
   fdr: NA
   floorpdeg: NA
+  runMAPlot: NA
+  resultTableInPlot_rows_selected: NA
+  GeneAttribute: NA
+  maFDR: NA
+  fdrColor: NA
 ---
 
 ```{r setup, include=FALSE}
@@ -22,24 +27,27 @@ Test.
 
 ### 0. Setting and read file.
 
-```{r setting, results='hold'}
+```{r setting, results='asis'}
 library(knitr)
 library(TCC)
+library(plotly)
 
-# Parameters: 
-print(params$groupList)
-print(params$filterLowCount)
-print(params$normMethod)
-print(params$testMethod)
-print(params$iteration)
-print(params$fdr)
-print(params$floorpdeg)
-
-# Input Count Data:
+cat("#### Input Count Data:")
 kable(head(params$CountData))
-```
 
-Parameters: 
+# TCC Parameters: 
+params.tcc <- data.frame(rbind(c("Group info", paste(params$groupList)),
+                    c("Filter low count", params$filterLowCount),
+                    c("Normalized Method", params$normMethod),
+                    c("Test Method", params$testMethod),
+                    c("Iteration", params$iteration),
+                    c("FDR",params$fdr),
+                    c("Floor DEGs p-value", params$floorpdeg)))
+colnames(params.tcc) <- c("Parameter", "Value")
+cat("#### Parameter")
+kable(params.tcc)
+
+```
 
 ### 1. Processing  
 
@@ -88,4 +96,77 @@ kable(head(resultTable))
 kable(head(norData))
 ```
 
+
+```{r add-ma-plot}
+cat("### MA-Plot  ")
+
+# Check MA plot has been generated or not.
+if(params$runMAPlot != "") {
+  if (is.null(params$resultTableInPlot_rows_selected)) {
+    annotation <- list()
+  } else {
+    markerSelect <- resultTable[params$resultTableInPlot_rows_selected,]
+  
+    annotation <- list(x = markerSelect$a.value,
+                       y = markerSelect$m.value,
+                       text = markerSelect[, params$GeneAttribute],
+                       xref = "x",
+                       yref = "y",
+                       showarrow = TRUE,
+                       arrowhead = 7,
+                       ax = 20,
+                       ay = 40
+                       )
+  }
+  
+  if (params$testMethod != "wad") {
+    x <- cut(resultTable$q.value, breaks = c(0, params$maFDR, 1))
+  levels(x) <-
+    list("DEG" = paste("(0,", params$maFDR, "]", sep = ""),
+         "non-DEG" = paste("(", params$maFDR, ",1]", sep = "")
+  )
+
+  plot_ly(data = resultTable,
+          x = ~ a.value,
+          y = ~ m.value,
+          type = "scatter",
+          mode = "markers",
+          color = ~ x,
+          colors = c(params$fdrColor, "#000000"),
+          marker = list(size = 3),
+          hoverinfo = "text",
+          text = ~ paste("</br>Gene:",
+                         resultTable()[, params$GeneAttribute],
+                         "</br>A value:",round(a.value, 4),
+                         "</br>M value:",round(m.value, 4),
+                         "</br>Rank:",rank)) %>%
+    layout(xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
+           yaxis = list(title = "M = log2(G2)-log2(G1)"),
+           title = paste("MA Plot with FDR <", params$maFDR),
+           annotations = annotation
+           )
+  } else {
+    plot_ly(data = resultTable,
+            x = ~ as.numeric(a.value),
+            y = ~ as.numeric(m.value),
+            type = "scatter",
+            mode = "markers",
+            colors = c("#000000"),
+            marker = list(size = 3),
+            hoverinfo = "text",
+            text = ~ paste("</br>Gene:",resultTable[, params$GeneAttribute],
+                           "</br>A value:",round(as.numeric(a.value), 4),
+                           "</br>M value:",round(as.numeric(m.value), 4),
+                           "</br>Rank:",rank)) %>%  layout(
+                             xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
+                             yaxis = list(title = "M = log2(G2)-log2(G1)"),
+                             title = "MA Plot",
+                             annotations = annotation
+                             )
+  }
+} else {
+  cat("MA Plot has not been generated.")
+}
+
+```
 

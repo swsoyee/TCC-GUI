@@ -27,7 +27,12 @@ output$downloadReport <- downloadHandler(
       testMethod = input$testMethod,
       iteration = input$iteration,
       fdr = input$fdr,
-      floorpdeg = input$floorpdeg
+      floorpdeg = input$floorpdeg,
+      runMAPlot = variables$runMAPlot,
+      resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
+      GeneAttribute = input$GeneAttribute,
+      maFDR = input$maFDR,
+      fdrColor = input$fdrColor
     )
     
     out <- render('report.Rmd', params = reportParameter, switch(
