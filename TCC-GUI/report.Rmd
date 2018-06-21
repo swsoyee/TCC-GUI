@@ -15,19 +15,29 @@ params:
   GeneAttribute: NA
   maFDR: NA
   fdrColor: NA
+  runVolcanoPlot: NA
+  CutFC: NA
+  Cutpvalue: NA
+  resultTableInVolcanalPlot_rows_selected: NA
+  downColor: NA
+  upColor: NA
+  xlabs: NA
+  ylabs: NA
+  graphicTitle: NA
+  
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## TCC Report
+## Report workflow
 
-Test.  
+Developing now...  
 
 ### 0. Setting and read file.
 
-```{r setting, results='asis'}
+```{r setting, results='asis', echo=FALSE}
 library(knitr)
 library(TCC)
 library(plotly)
@@ -36,7 +46,7 @@ cat("#### Input Count Data:")
 kable(head(params$CountData))
 
 # TCC Parameters: 
-params.tcc <- data.frame(rbind(c("Group info", paste(params$groupList)),
+params.tcc <- data.frame(rbind(c("Group info", paste(params$groupList, collapse=' VS ')),
                     c("Filter low count", params$filterLowCount),
                     c("Normalized Method", params$normMethod),
                     c("Test Method", params$testMethod),
@@ -44,8 +54,26 @@ params.tcc <- data.frame(rbind(c("Group info", paste(params$groupList)),
                     c("FDR",params$fdr),
                     c("Floor DEGs p-value", params$floorpdeg)))
 colnames(params.tcc) <- c("Parameter", "Value")
+
+# MA-Plot parameters:
+params.maplot <- data.frame(rbind(c("MA-Plot FDR", params$maFDR),
+                                  c("Color", params$fdrColor)))
+colnames(params.maplot) <- c("Parameter", "Value")
+
+# Volcano Plot parameters:
+params.volcano <- data.frame(rbind(c("Fold change cutoff", paste(params$CutFC)),
+                                   c("P-value cutoff", params$Cutpvalue),
+                                   c("Down-regulated genes' color", params$downColor),
+                                   c("Up-regulated genes' color", params$upColor),
+                                   c("X lable", params$xlabs),
+                                   c("Y lable", params$ylabs),
+                                   c("Title of volcano plot", params$graphicTitle)))
+colnames(params.volcano) <- c("Parameter", "Value")
+
 cat("#### Parameter")
 kable(params.tcc)
+kable(params.maplot)
+kable(params.volcano)
 
 ```
 
@@ -53,7 +81,7 @@ kable(params.tcc)
 
 Creat TCC Object.
 
-```{r tcc-calculation}
+```{r tcc-calculation, results='hold'}
 # Get count data table
 data <- params$CountData
 
@@ -97,9 +125,9 @@ kable(head(norData))
 ```
 
 
-```{r add-ma-plot}
-cat("### MA-Plot  ")
+### 1. MA-Plot
 
+```{r add-ma-plot, results='asis', echo=FALSE}
 # Check MA plot has been generated or not.
 if(params$runMAPlot != "") {
   if (is.null(params$resultTableInPlot_rows_selected)) {
@@ -135,11 +163,10 @@ if(params$runMAPlot != "") {
           colors = c(params$fdrColor, "#000000"),
           marker = list(size = 3),
           hoverinfo = "text",
-          text = ~ paste("</br>Gene:",
-                         resultTable()[, params$GeneAttribute],
-                         "</br>A value:",round(a.value, 4),
-                         "</br>M value:",round(m.value, 4),
-                         "</br>Rank:",rank)) %>%
+          text = ~paste("</br>Gene:", resultTable[, params$GeneAttribute],
+                        "</br>A value:", round(a.value, 4),
+                        "</br>M value:", round(m.value, 4),
+                        "</br>Rank:", rank)) %>%
     layout(xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
            yaxis = list(title = "M = log2(G2)-log2(G1)"),
            title = paste("MA Plot with FDR <", params$maFDR),
@@ -154,15 +181,15 @@ if(params$runMAPlot != "") {
             colors = c("#000000"),
             marker = list(size = 3),
             hoverinfo = "text",
-            text = ~ paste("</br>Gene:",resultTable[, params$GeneAttribute],
-                           "</br>A value:",round(as.numeric(a.value), 4),
-                           "</br>M value:",round(as.numeric(m.value), 4),
-                           "</br>Rank:",rank)) %>%  layout(
-                             xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
-                             yaxis = list(title = "M = log2(G2)-log2(G1)"),
-                             title = "MA Plot",
-                             annotations = annotation
-                             )
+            text = ~paste("</br>Gene:", resultTable[, params$GeneAttribute],
+                          "</br>A value:", round(a.value, 4),
+                          "</br>M value:", round(m.value, 4),
+                          "</br>Rank:", rank)) %>%  layout(
+                            xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
+                            yaxis = list(title = "M = log2(G2)-log2(G1)"),
+                            title = "MA Plot",
+                            annotations = annotation
+                            )
   }
 } else {
   cat("MA Plot has not been generated.")
@@ -170,3 +197,95 @@ if(params$runMAPlot != "") {
 
 ```
 
+### 2. Volcano Plot
+
+```{r add-volcano-plot, results='asis', echo=FALSE}
+if (params$runVolcanoPlot != "") {
+  dt <- resultTable
+  
+  downCut <- params$CutFC[1]
+  upCut <- params$CutFC[2]
+  pCut <- log2(as.numeric(params$Cutpvalue))
+  
+  dt$color <- ""
+  dt[dt$m.value <= downCut, ]$color <- "Down"
+  dt[dt$m.value >= upCut, ]$color <- "Up"
+  dt[dt$p.value > as.numeric(params$Cutpvalue), ]$color <- "None"
+  dt[dt$m.value <= upCut &
+       dt$m.value >= downCut, ]$color <- "None"
+  
+  x <- factor(dt$color)
+  levels(x) <- list("Down" = 0,
+                    "None" = 1,
+                    "Up" = 2)
+  
+  if (is.null(params$resultTableInVolcanalPlot_rows_selected)) {
+    annotation <- list()
+  } else {
+    markerSelect <- dt[params$resultTableInVolcanalPlot_rows_selected,]
+    
+    annotation <- list(
+      x = markerSelect$m.value,
+      y = -log10(markerSelect$p.value),
+      text = markerSelect[, params$GeneAttribute],
+      xref = "x",
+      yref = "y",
+      showarrow = TRUE,
+      arrowhead = 7,
+      ax = 20,
+      ay = 40
+    )
+  }
+  
+  plot_ly(
+    data = dt,
+    x = ~ m.value,
+    y = ~ -log10(p.value),
+    type = "scatter",
+    mode = "markers",
+    color = ~ x,
+    colors = c(params$downColor, "black", params$upColor),
+    marker = list(size = 3),
+    hoverinfo = "text",
+    text = ~ paste("</br>Gene:",resultTable[, params$GeneAttribute],
+                   "</br>A value:", round(a.value, 4),
+                   "</br>M value:", round(m.value, 4),
+                   "</br>p-value:", round(p.value, 4),
+                   "</br>q-value:", round(q.value, 4),
+                   "</br>Rank:",rank)) %>%
+    layout(
+      xaxis = list(title = params$xlabs),
+      yaxis = list(title = params$ylabs),
+      title = params$graphicTitle,
+      annotations = annotation,
+      shapes = list(
+        list(
+          type = 'line',
+          y0 =  ~ min(-log10(p.value)),
+          y1 =  ~ max(-log10(p.value)),
+          x0 = upCut,
+          x1 = upCut,
+          line = list(dash = 'dot', width = 2)
+        ),
+        list(
+          type = 'line',
+          y0 =  ~ min(-log10(p.value)),
+          y1 =  ~ max(-log10(p.value)),
+          x0 = downCut,
+          x1 = downCut,
+          line = list(dash = 'dot', width = 2)
+        ),
+        list(
+          type = 'line',
+          y0 = -log10(as.numeric(params$Cutpvalue)),
+          y1 = -log10(as.numeric(params$Cutpvalue)),
+          x0 =  ~ min(m.value),
+          x1 =  ~ max(m.value),
+          line = list(dash = 'dot', width = 2)
+        )
+      )
+    )
+} else {
+  cat("Volcano Plot has not been generated.")
+}
+```

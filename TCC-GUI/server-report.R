@@ -32,7 +32,16 @@ output$downloadReport <- downloadHandler(
       resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
       GeneAttribute = input$GeneAttribute,
       maFDR = input$maFDR,
-      fdrColor = input$fdrColor
+      fdrColor = input$fdrColor,
+      runVolcanoPlot = variables$runVolcanoPlot,
+      CutFC = input$CutFC,
+      Cutpvalue = input$Cutpvalue,
+      resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
+      downColor = input$downColor,
+      upColor = input$upColor,
+      xlabs = input$xlabs,
+      ylabs = input$ylabs,
+      graphicTitle = input$graphicTitle
     )
     
     out <- render('report.Rmd', params = reportParameter, switch(
