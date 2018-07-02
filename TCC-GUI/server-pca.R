@@ -60,7 +60,7 @@ observeEvent(input$pcRun, {
   # PCA processing
   # 
   if (input$pcTransform == TRUE) {
-    data <- t(log(data + 0.001))
+    data <- t(log(data + 1))
   } else {
     data <- t(data)
   }
