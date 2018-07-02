@@ -10,7 +10,32 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 GUI Version Developer: Wei Su
 
+
+
+---
+
+### 0. Installation
+
+Run the following command in your **RStudio**.
+
+```R
+libs <- c("shinythemes", "shinyalert", "plotly", "colourpicker", "dplyr", "TCC", "DT", "heatmaply", "data.table", "colourpicker", "markdown",
+"plotlyBars")
+
+for (i in libs){
+  if( !is.element(i, .packages(all.available = TRUE)) ) {
+    install.packages(i)
+  }
+  library(i,character.only = TRUE)
+}
+
+shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
+```
+
+(The installation command hasn't been test, please install those package by yourself if any error occurred. The online version isn't the latest one. Local version is highly recommended now.)
+
 ### <a name="Datainput"></a> 1. Data input
+
 ---
 - Click **"Computation"** tab on the top;
 
