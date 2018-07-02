@@ -7,8 +7,20 @@
 # 2018-5-23 Change read.table to fread.
 
 observeEvent(input$CountDataSample, {
-  variables$CountData <- data.frame(fread(input$SampleDatabase), row.names=1)
+  variables$CountData <-
+    data.frame(fread(input$SampleDatabase), row.names = 1)
   showNotification("Count data sample load", type = "message")
+  
+  updateTextAreaInput(session, "groupSelectViaText", value = paste(
+    "G1_rep1,1",
+    "G1_rep2,1",
+    "G1_rep3,1",
+    "G2_rep1,2",
+    "G2_rep2,2",
+    "G2_rep3,2",
+    sep = '\n'
+  ))
+  
 })
 
 # ====================================
@@ -42,6 +54,7 @@ output$table <- DT::renderDataTable({
   
   DT::datatable(df,
                 option = list(
+                  scrollX = TRUE,
                   pageLength = 10,
                   searchHighlight = TRUE,
                   orderClasses = TRUE

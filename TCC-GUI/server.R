@@ -3,7 +3,7 @@ source(file = "global.R", local = TRUE, encoding = "UTF-8")
 
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   variables = reactiveValues(CountData = data.frame("Load your data first." = character(0)),
                              groupList = "",

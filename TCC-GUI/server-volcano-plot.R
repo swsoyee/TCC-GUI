@@ -81,9 +81,8 @@ observeEvent(input$makeVolcanoPlot, {
                         "Up" = 2)
       
       # Add annotation
-      key <- row.names(dt)
-      
-      # print(head(dt, n=10))
+      # key <- row.names(dt)
+      key <- resultTable()$gene_id
       
       if (is.null(input$resultTableInVolcanalPlot_rows_selected)) {
         annotation <- list()
@@ -127,6 +126,7 @@ observeEvent(input$makeVolcanoPlot, {
           "</br>Rank:",
           rank
         ),
+        key =~ key,
         source = "volcano"
       ) %>%
         layout(
@@ -209,11 +209,11 @@ output$geneBarPlotInVolcano <- renderPlotly({
     "Hover over the point to show original expression plot"
   ))
   # Get point number
-  datapoint <- as.numeric(eventdata$pointNumber)[1]
+  gene_id <- eventdata$key
   # Get expression level (Original)
-  expression <- variables$CountData[datapoint, ]
+  expression <- variables$CountData[row.names(variables$CountData) == gene_id, ]
   # Get expression level (Normalized)
-  expressionNor <- t(t(variables$norData[datapoint, ]))
+  expressionNor <- t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
   
   data <- variables$CountData
   data.cl <- rep(0, ncol(data))

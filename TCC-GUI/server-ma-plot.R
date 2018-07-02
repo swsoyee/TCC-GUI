@@ -27,7 +27,8 @@ observeEvent(input$makeMAPlot, {
       
       req(input$makeMAPlot)
       isolate({
-        key <- row.names(resultTable())
+        # key <- row.names(resultTable())
+        key <- resultTable()$gene_id
         
         if(is.null(input$resultTableInPlot_rows_selected)) {
           annotation <- list()
@@ -65,6 +66,7 @@ observeEvent(input$makeMAPlot, {
                               "</br>A value:", round(a.value, 4),
                               "</br>M value:", round(m.value, 4),
                               "</br>Rank:", rank),
+                key =~ key,
                 source = "ma") %>%
           layout(xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
                  yaxis = list(title = "M = log2(G2)-log2(G1)"),
@@ -85,6 +87,7 @@ observeEvent(input$makeMAPlot, {
                               "</br>A value:", round(as.numeric(a.value), 4),
                               "</br>M value:", round(as.numeric(m.value), 4),
                               "</br>Rank:", rank),
+                key =~ key,
                 source = "ma") %>%
           layout(xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
                  yaxis = list(title = "M = log2(G2)-log2(G1)"),
@@ -135,11 +138,11 @@ output$geneBarPlot <- renderPlotly({
   validate(need(!is.null(eventdata), 
                 "Hover over the point to show expression plot"))
   # Get point number
-  datapoint <- as.numeric(eventdata$pointNumber)[1]
+  gene_id <- eventdata$key
   # Get expression level (Original)
-  expression <- variables$CountData[datapoint, ]
+  expression <- variables$CountData[row.names(variables$CountData) == gene_id, ]
   # Get expression level (Normalized)
-  expressionNor <- t(t(variables$norData[datapoint, ]))
+  expressionNor <- t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
   
   data <- variables$CountData
   data.cl <- rep(0, ncol(data))
