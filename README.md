@@ -50,13 +50,11 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 ---
 - Input your group info in **Group Selection** section and click **"Confirmed"**, then the **"TCC Parameters"** Panel will show up;
 
-  ![Group Selection](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection_.png)
-
   <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection_.png" width="359" height="325"> 
 
 - Change the parameters for computation (if you wish), and click the **"Run TCC"**.
 
-  ![TCC Parameters](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/TCC_.png)
+  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/TCC_.png" width="359" height="697">
 
 - After computation, **"Result Table"**, and series tab for other analysis will show up.
 
