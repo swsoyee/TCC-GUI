@@ -71,7 +71,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 - If you want to mark some gene on the plot, please click the specific rows of gene, and click **"Generate MA-Plot" **button again to refresh the plot.
 
-  ![MA Plot Marker](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot2-md_.png)
+  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot2-md_.png" width="755" height="689">
 
 - (This is prerelease version. more functions need to be add in)
 
