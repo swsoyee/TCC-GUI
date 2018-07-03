@@ -2,6 +2,8 @@
 
 **TCC: Differential expression analysis for tag count data with robust normalization strategies**
 
+ [Full Text](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3716788/)
+
 ![TCC LOGO](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png)
 
 This package provides a series of functions for performing differential expression analysis from RNA-seq count data using robust normalization strategy (called DEGES). The basic idea of DEGES is that potential differentially expressed genes or transcripts (DEGs) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true DEGs are top-ranked and non-DEGs are bottom ranked. This can be done by performing a multi-step normalization strategy (called DEGES for DEG elimination strategy). A major characteristic of TCC is to provide the robust normalization methods for several kinds of count data (two-group with or without replicates, multi-group/multi-factor, and so on) by virtue of the use of combinations of functions in depended packages.
@@ -41,24 +43,22 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 - Click **"Load Sample Data"** button for test or Click **"Upload..."** button if you want to used your own count dataset.
 
-  ![Raw Count Table](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/RawCountTable.png)
+  ![Raw Count Table](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/RawCountTable_.png)
 
 ### <a name="Computation"></a> 2. Computation
 
 ---
-- Select **"Group Count"** and click **"Confirmed"** button;
+- Input your group info in **Group Selection** section and click **"Confirmed"**, then the **"TCC Parameters"** Panel will show up;
 
-- Select columns name of your dataset for grouping and click **"Confirmed"**, then the **"TCC Parameters"** Panel will show up;
-
-  ![Group Selection](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection.png)
+  ![Group Selection](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection_.png)
 
 - Change the parameters for computation (if you wish), and click the **"Run TCC"**.
 
-  ![TCC Parameters](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/TCC.png)
+  ![TCC Parameters](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/TCC_.png)
 
 - After computation, **"Result Table"**, and series tab for other analysis will show up.
 
-  ![Result Table](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/ResultTable.png)
+  ![Result Table](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/ResultTable_.png)
 
 ### <a name="MAplot"></a> 3.1 MA plot
 
@@ -67,11 +67,11 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 - Hover cursor on the point, and the additional information will be provided (Gene expression plot).
 
-  ![MA Plot](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot1-md.png)
+  ![MA Plot](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot1-md_.png)
 
 - If you want to mark some gene on the plot, please click the specific rows of gene, and click **"Generate MA-Plot" **button again to refresh the plot.
 
-  ![MA Plot Marker](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot2-md.png)
+  ![MA Plot Marker](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot2-md_.png)
 
 - (This is prerelease version. more functions need to be add in)
 
@@ -79,7 +79,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 ---
 - Same as part of **MA Plot**.
- ![volcanoplot](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/volcanoplot.png)
+ ![volcanoplot](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/volcanoplot_.png)
 - (This is prerelease version. more functions need to be add in)
 
 ### <a name="PCAanalysis"></a> 3.3 PCA analysis
@@ -87,9 +87,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 ---
 - Change the parameters for PCA (if you wish), and click the **"Run"** button.
 
-  ![PCA Parameters](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/PCAParameters.png)
-
-  ![pca](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/pca.png)
+  ![pca](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/pca_.png)
 
 - (This is prerelease version. more functions need to be add in)
 
@@ -98,9 +96,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 ---
 - Change the parameters for heatmap (if you wish), and click the **"Run"** button.
 
-  ![Heatmap Parameters](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/HeatmapParameters.png)
-
-  ![heatmap](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/heatmap.png)
+  ![heatmap](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/heatmap_.png)
 
 - (This is prerelease version. more functions need to be add in)
 
@@ -108,11 +104,16 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 ---
 - Select gene(s) you want to plot in the left panel. **Barplot** and **Boxplot** are provided.
-   ![expression](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/expressionPlot.png)
+   ![expression](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/expressionPlot_.png)
 
 - (This is prerelease version. more functions need to be add in)
 
-   
+    
+
+### 3.6  Report output
+---
+- Generate report in `Markdown`, `HTML` or `Word` (This function have not been finished). 
+
 ### <a name="Morehelps"></a> 4. More helps
 
 ---
