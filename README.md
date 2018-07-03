@@ -43,7 +43,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 - Click **"Load Sample Data"** button for test or Click **"Upload..."** button if you want to used your own count dataset.
 
-  ![Raw Count Table](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/RawCountTable_.png)
+  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/RawCountTable_.png" width="750" height="545">
 
 ### <a name="Computation"></a> 2. Computation
 
