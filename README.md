@@ -58,7 +58,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
 - After computation, **"Result Table"**, and series tab for other analysis will show up.
 
-  ![Result Table](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/ResultTable_.png)
+  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/ResultTable_.png" width="753" height="560">
 
 ### <a name="MAplot"></a> 3.1 MA plot
 
