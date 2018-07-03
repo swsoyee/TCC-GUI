@@ -5,7 +5,7 @@ observeEvent(input$TCC, {
   showNotification("Generate MA Plot Parameters.", type = "message")
   output$MAPlotParameter <- renderUI({
     tagList(
-      selectInput("GeneAttribute", "Hover info:", choices = colnames(resultTable())),
+      # selectInput("GeneAttribute", "Hover info:", choices = colnames(resultTable())),
       sliderInput("pointSize", "Point Size:", min = 1, max = 5, value = 3, step = 0.2),
       sliderInput("maFDR", "FDR:", min = 0, max = 1, value = input$fdr),
       colourInput("fdrColor", "DEGs color：", "#B22222"),
@@ -38,7 +38,7 @@ observeEvent(input$makeMAPlot, {
           annotation <- list(
             x = markerSelect$a.value,
             y = markerSelect$m.value,
-            text = markerSelect[, input$GeneAttribute],
+            text = markerSelect$gene_id,
             xref = "x",
             yref = "y",
             showarrow = TRUE,
@@ -62,7 +62,7 @@ observeEvent(input$makeMAPlot, {
                 colors = c(input$fdrColor, "#000000"),
                 marker = list(size = 3),
                 hoverinfo = "text",
-                text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
+                text = ~paste("</br>Gene:", resultTable()$gene_id,
                               "</br>A value:", round(a.value, 4),
                               "</br>M value:", round(m.value, 4),
                               "</br>Rank:", rank),
@@ -83,7 +83,7 @@ observeEvent(input$makeMAPlot, {
                 colors = c("#000000"),
                 marker = list(size = 3),
                 hoverinfo = "text",
-                text = ~paste("</br>Gene:", resultTable()[, input$GeneAttribute],
+                text = ~paste("</br>Gene:", resultTable()$gene_id,
                               "</br>A value:", round(as.numeric(a.value), 4),
                               "</br>M value:", round(as.numeric(m.value), 4),
                               "</br>Rank:", rank),

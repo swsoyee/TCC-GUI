@@ -6,12 +6,12 @@ observeEvent(input$TCC, {
   if (input$testMethod != "wad") {
     output$valcanoParameter <- renderUI({
       tagList(
-        selectInput(
-          "GeneAttributeVol",
-          "Hover info：",
-          choices = colnames(resultTable())
-        ),
-        tags$hr(),
+        # selectInput(
+        #   "GeneAttributeVol",
+        #   "Hover info：",
+        #   choices = colnames(resultTable())
+        # ),
+        # tags$hr(),
         sliderInput(
           "CutFC",
           "Fold Change cut-off：",
@@ -92,7 +92,7 @@ observeEvent(input$makeVolcanoPlot, {
         annotation <- list(
           x = markerSelect$m.value,
           y = -log10(markerSelect$p.value),
-          text = markerSelect[, input$GeneAttribute],
+          text = markerSelect$gene_id,
           xref = "x",
           yref = "y",
           showarrow = TRUE,
@@ -114,7 +114,7 @@ observeEvent(input$makeVolcanoPlot, {
         hoverinfo = "text",
         text = ~ paste(
           "</br>Gene:",
-          resultTable()[, input$GeneAttribute],
+          resultTable()$gene_id,
           "</br>A value:",
           round(a.value, 4),
           "</br>M value:",
