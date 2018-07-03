@@ -52,6 +52,8 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 
   ![Group Selection](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection_.png)
 
+  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection_.png" width="359" height="325"> 
+
 - Change the parameters for computation (if you wish), and click the **"Run TCC"**.
 
   ![TCC Parameters](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/TCC_.png)
