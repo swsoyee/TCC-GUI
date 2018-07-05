@@ -20,7 +20,7 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 > The online version is **under developing**. Local version is **highly recommended** now.
 
-Make sure that you have already install those packages in your environment.
+Make sure that you have already installed those packages in your environment.
 
 `shiny`, `shinythemes`, `shinyalert`, `plotly`, `colourpicker`, `TCC`, `DT`, `heatmaply`, `plotlyBars`.
 
@@ -56,7 +56,7 @@ if( !is.element("TCC", .packages(all.available = TRUE)) ) {
 }
 ```
 
-Run the following command to launch `TCC-GUI`.
+Run the following command to launch `TCC-GUI` in your local environment.
 
 ```R
 shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
