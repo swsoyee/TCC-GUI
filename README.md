@@ -18,7 +18,7 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 ### 0. Installation
 
-> The online version is **under development**. Local version is **highly recommended** now.
+> The online version is **under developing**. Local version is **highly recommended** now.
 
 Make sure that you have already install those packages in your environment.
 
