@@ -51,7 +51,7 @@ if( !is.element("TCC", .packages(all.available = TRUE)) ) {
 }
 
 # Part2. Install via Github
-if( !is.element("TCC", .packages(all.available = TRUE)) ) {
+if( !is.element("plotlyBars", .packages(all.available = TRUE)) ) {
     devtools::install_github("andrewsali/plotlyBars")
 }
 ```
