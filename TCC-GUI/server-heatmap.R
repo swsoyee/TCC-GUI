@@ -161,17 +161,27 @@ observeEvent(input$heatmapRun, {
     }))
     
     output$resultTableInHeatmap <- DT::renderDataTable({
-      resultTable <- data
+      # Combine TCC Result and Raw Count Data
+      
+      gene_id<-row.names(data)
+      data<-cbind(data, gene_id = gene_id)
+      
+      resultTable <- merge(variables$result, data, by = "gene_id")
       
       DT::datatable(
         resultTable,
         option = list(
+          scrollX = TRUE,
           pageLength = 10,
           searchHighlight = TRUE,
           orderClasses = TRUE
         )
       ) %>% formatRound(
-        columns = colnames(data),
+        columns = c("a.value",
+                    "m.value",
+                    "p.value",
+                    "q.value",
+                    colnames(data)),
         digits = 3
       )
     })
