@@ -4,13 +4,13 @@
 
  [Full Text](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3716788/)
 
-![TCC LOGO](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png)
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">
 
 This package provides a series of functions for performing differential expression analysis from RNA-seq count data using robust normalization strategy (called DEGES). The basic idea of DEGES is that potential differentially expressed genes or transcripts (DEGs) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true DEGs are top-ranked and non-DEGs are bottom ranked. This can be done by performing a multi-step normalization strategy (called DEGES for DEG elimination strategy). A major characteristic of TCC is to provide the robust normalization methods for several kinds of count data (two-group with or without replicates, multi-group/multi-factor, and so on) by virtue of the use of combinations of functions in depended packages.
 
 Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
-GUI Version Developer: Wei Su
+**GUI Version Developer: Wei Su**
 
 
 
@@ -18,23 +18,49 @@ GUI Version Developer: Wei Su
 
 ### 0. Installation
 
-Run the following command in your **RStudio**.
+> The online version is **under development**. Local version is **highly recommended** now.
+
+Make sure that you have already install those packages in your environment.
+
+`shiny`, `shinythemes`, `shinyalert`, `plotly`, `colourpicker`, `TCC`, `DT`, `heatmaply`, `plotlyBars`.
+
+If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.
 
 ```R
-libs <- c("shinythemes", "shinyalert", "plotly", "colourpicker", "dplyr", "TCC", "DT", "heatmaply", "data.table", "colourpicker", "markdown",
-"plotlyBars")
+# Part1. Install via CRAN
+libs <- c("shiny",
+          "shinythemes", 
+          "shinyalert", 
+          "plotly", 
+          "colourpicker", 
+          "DT", 
+          "heatmaply"
+          "devtools")
 
 for (i in libs){
   if( !is.element(i, .packages(all.available = TRUE)) ) {
     install.packages(i)
   }
-  library(i,character.only = TRUE)
 }
 
-shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
+# Part2. Install via Bioconductor
+if( !is.element("TCC", .packages(all.available = TRUE)) ) {
+    ## try http:// if https:// URLs are not supported
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("TCC")
+}
+
+# Part2. Install via Github
+if( !is.element("TCC", .packages(all.available = TRUE)) ) {
+    devtools::install_github("andrewsali/plotlyBars")
+}
 ```
 
-(The installation command hasn't been test, please install those package by yourself if any error occurred. The online version isn't the latest one. Local version is highly recommended now.)
+Run the following command to launch `TCC-GUI`.
+
+```R
+shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
+```
 
 ### <a name="Datainput"></a> 1. Data input
 
