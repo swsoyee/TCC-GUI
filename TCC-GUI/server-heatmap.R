@@ -1,5 +1,11 @@
 # server-heatmap.R
 
+# ====================================
+# This function render a series UI for heatmap parameters.
+# After TCC calculation, generate these UI.
+# Position: In Heatmap tab, upper left.
+# ====================================
+
 observeEvent(input$TCC, {
   output$heatmapParameter <- renderUI({
     tagList(
@@ -98,6 +104,11 @@ output$heatmapSelectGene <- renderUI({
   )
 })
 
+# ====================================
+# This function render Heatmap Plot and result table.
+# Position: In Heatmap tab, upper middle.
+# ====================================
+
 observeEvent(input$heatmapRun, {
   req(input$heatmapRun)
   isolate({
@@ -137,6 +148,8 @@ observeEvent(input$heatmapRun, {
     
     showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
     showNotification("Generating, please be patient...", type = "message")
+    
+    # Create Plotly object
     withBars(output$heatmap <- renderPlotly({
       heatmaply(
         t(data),
@@ -160,9 +173,9 @@ observeEvent(input$heatmapRun, {
       )
     }))
     
+    # Generate Result table
     output$resultTableInHeatmap <- DT::renderDataTable({
       # Combine TCC Result and Raw Count Data
-      
       gene_id<-row.names(data)
       data<-cbind(data, gene_id = gene_id)
       
