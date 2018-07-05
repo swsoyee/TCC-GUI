@@ -62,6 +62,14 @@ output$table <- DT::renderDataTable({
     formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, clrs))
 })
 
+output$emptyTable <- renderUI({
+  if (nrow(datasetInput()) == 0) {
+    return("No data to show. Click `Load Sample Data` of `Upload` your own dataset first.")
+  } else {
+    DT::dataTableOutput('table')
+  }
+})
+
 # 2018-6-16 Unused
 # output$groupSlide <- renderUI({
 #   if(nrow(datasetInput())>0){

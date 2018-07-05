@@ -1,17 +1,18 @@
 # server-volcano-plot.R
 
+# ====================================
+# This function render a series UI of Volcano Plot parameters.
+#
+# Position: In Volcano Plot tab, upper left.
+# ====================================
+
 observeEvent(input$TCC, {
-  # output$resultTableInVolcanalPlot <- output$resultTableInPlot
-  
+  # If test method is `WAD`, it will not generate p.value,
+  # So we can't plot Volcano Plot. If is not `WAD`,
+  # generate volcano plot parameters.
   if (input$testMethod != "wad") {
     output$valcanoParameter <- renderUI({
       tagList(
-        # selectInput(
-        #   "GeneAttributeVol",
-        #   "Hover info：",
-        #   choices = colnames(resultTable())
-        # ),
-        # tags$hr(),
         sliderInput(
           "CutFC",
           "Fold Change cut-off：",
@@ -54,10 +55,14 @@ observeEvent(input$TCC, {
   }
 })
 
+# ====================================
+# This function check the `Generate` button, if the botton is clicked,
+# Generate volcano plot.
+# Position: In Volcano Plot tab, upper middle.
+# ====================================
 
 observeEvent(input$makeVolcanoPlot, {
-  withBars(
-  output$volcanoPloty <- renderPlotly({
+  withBars(output$volcanoPloty <- renderPlotly({
     validate(need(resultTable()$p.value != "", "No p-values for ploting."))
     
     req(input$makeVolcanoPlot)
@@ -81,7 +86,6 @@ observeEvent(input$makeVolcanoPlot, {
                         "Up" = 2)
       
       # Add annotation
-      # key <- row.names(dt)
       key <- resultTable()$gene_id
       
       if (is.null(input$resultTableInVolcanalPlot_rows_selected)) {
@@ -126,7 +130,7 @@ observeEvent(input$makeVolcanoPlot, {
           "</br>Rank:",
           rank
         ),
-        key =~ key,
+        key =  ~ key,
         source = "volcano"
       ) %>%
         layout(
@@ -162,8 +166,7 @@ observeEvent(input$makeVolcanoPlot, {
           )
         )
     })
-  })
-  )
+  }))
   
   # ====================================
   # This function render a button of R code of making vocalno plot.
@@ -200,8 +203,7 @@ observeEvent(input$showVolcanoCode, {
 # This function render a plotly of specific gene expression value in barplot.
 # Position: In Volcano Plot, upper right.
 # ====================================
-withBars(
-output$geneBarPlotInVolcano <- renderPlotly({
+withBars(output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "volcano")
   validate(need(
@@ -211,9 +213,11 @@ output$geneBarPlotInVolcano <- renderPlotly({
   # Get point number
   gene_id <- eventdata$key
   # Get expression level (Original)
-  expression <- variables$CountData[row.names(variables$CountData) == gene_id, ]
+  expression <-
+    variables$CountData[row.names(variables$CountData) == gene_id, ]
   # Get expression level (Normalized)
-  expressionNor <- t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
+  expressionNor <-
+    t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
   
   data <- variables$CountData
   data.cl <- rep(0, ncol(data))
@@ -253,49 +257,7 @@ output$geneBarPlotInVolcano <- renderPlotly({
       title = paste(colnames(expression), "Expression Plot"),
       legend = list(orientation = 'h')
     )
-})
-)
-
-# ====================================
-# This function render a plotly of specific gene expression value in boxplot.
-# Position: In Volcano Plot, upper right.
-# Warining: It's time comsuming, so we don't render it any more.
-# ====================================
-# output$geneBoxPlotInVolcano <- renderPlotly({
-#   # Read in hover data
-#   eventdata <- event_data("plotly_hover", source = "volcano")
-#   validate(need(!is.null(eventdata),
-#                 "Hover over the point to show original expression plot"))
-#   # Get point number
-#   datapoint <- as.numeric(eventdata$pointNumber)[1]
-#   # Get expression level (Original)
-#   expression <- variables$CountData[datapoint, ]
-#   # Get expression level (Normalized)
-#   expressionNor <- t(t(variables$norData[datapoint, ]))
-#
-#   data <- variables$CountData
-#   data.cl <- rep(0, ncol(data))
-#
-#   for (i in 1:length(variables$groupList)) {
-#     data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
-#   }
-#
-#   expression <- t(expression[data.cl != 0])
-#   data.cl <- data.cl[data.cl != 0]
-#
-#   plot_ly(x = as.factor(data.cl),
-#           y = t(expression[, 1]),
-#           color = as.factor(data.cl),
-#           type = "box",
-#           name = "Original") %>%
-#     add_trace(y = t(expressionNor[, 1]),
-#               name = "Normalized",
-#               type = "box") %>%
-#     layout(xaxis = list(title = "Group"),
-#            yaxis = list(title = "Raw Count"),
-#            title = paste(colnames(expression), "Expression boxplot"),
-#            legend = list(orientation = 'h'))
-# })
+}))
 
 # ====================================
 # This function render a table of different gene count under specific FDR cutoff
@@ -326,8 +288,7 @@ output$fdrCutoffTableInVolcano <- DT::renderDataTable({
 # condition.
 # Position: In Volcano Plot tab, under right.
 # ====================================
-withBars(
-output$fdrCutoffPlotInVolcano <- renderPlotly({
+withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
   
@@ -360,5 +321,4 @@ output$fdrCutoffPlotInVolcano <- renderPlotly({
       yaxis2 = list(overlaying = "y", side = "right"),
       showlegend = FALSE
     )
-})
-)
+}))

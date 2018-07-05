@@ -3,41 +3,61 @@
 observeEvent(input$TCC, {
   output$heatmapParameter <- renderUI({
     tagList(
-      radioButtons("heatmapGeneSelectType", "Ways of select gene",
-                   choices = c("Paste a list of genes",
-                               "Select genes by name",
-                               "Select genes according FDR")),
+      radioButtons(
+        "heatmapGeneSelectType",
+        "Ways of select gene",
+        choices = c(
+          "Paste a list of genes",
+          "Select genes by name",
+          "Select genes according FDR"
+        )
+      ),
       
       uiOutput("heatmapSelectGene"),
       
-      radioButtons("heatmapData", "Source:", 
-                   choices = c("Original" = "o",
-                               "Normalized" = "n")),
-      selectInput("heatmapDist", 
-                  "Distance Method",
-                  choices = list("Euclidean" = "euclidean",
-                                 "Maximum" = "maximum",
-                                 "Manhattan" = "manhattan",
-                                 "Canberra" = "canberra",
-                                 "Binary" = "binary",
-                                 "Minkowski" = "minkowski"),
-                  selected = "euclidean"),
-      selectInput("heatmapCluster", 
-                  "Hierarchical Clustering Method",
-                  choices = list("ward.D" = "ward.D",
-                                 "ward.D2" = "ward.D2",
-                                 "Single" = "single",
-                                 "Complete" = "complete",
-                                 "UPGMA" = "average",
-                                 "WPGMA" = "mcquitty",
-                                 "WOGMC" = "median",
-                                 "UPGMC" = "centroid"),
-                  selected = "complete"),
-      selectInput("heatmapScale",
-                  "Scale",
-                  choices = list("Row" = "column",
-                                 "Column" = "row",
-                                 "None" = "none")),
+      radioButtons(
+        "heatmapData",
+        "Source:",
+        choices = c("Original" = "o",
+                    "Normalized" = "n")
+      ),
+      selectInput(
+        "heatmapDist",
+        "Distance Method",
+        choices = list(
+          "Euclidean" = "euclidean",
+          "Maximum" = "maximum",
+          "Manhattan" = "manhattan",
+          "Canberra" = "canberra",
+          "Binary" = "binary",
+          "Minkowski" = "minkowski"
+        ),
+        selected = "euclidean"
+      ),
+      selectInput(
+        "heatmapCluster",
+        "Hierarchical Clustering Method",
+        choices = list(
+          "ward.D" = "ward.D",
+          "ward.D2" = "ward.D2",
+          "Single" = "single",
+          "Complete" = "complete",
+          "UPGMA" = "average",
+          "WPGMA" = "mcquitty",
+          "WOGMC" = "median",
+          "UPGMC" = "centroid"
+        ),
+        selected = "complete"
+      ),
+      selectInput(
+        "heatmapScale",
+        "Scale",
+        choices = list(
+          "Row" = "column",
+          "Column" = "row",
+          "None" = "none"
+        )
+      ),
       actionButton("heatmapRun", "Run")
     )
   })
@@ -51,10 +71,12 @@ observeEvent(input$TCC, {
 output$heatmapSelectGene <- renderUI({
   switch(
     input$heatmapGeneSelectType,
-    "Paste a list of genes" = textAreaInput("heatmapTextList",
-                                            "Paste a list of genes",
-                                            rows = 5,
-                                            placeholder = "Input gene's name (first column in the dataset), one gene per line."), 
+    "Paste a list of genes" = textAreaInput(
+      "heatmapTextList",
+      "Paste a list of genes",
+      rows = 5,
+      placeholder = "Input gene's name (first column in the dataset), one gene per line."
+    ),
     "Select genes by name" = selectInput(
       "heatmapSelectList",
       "Select genes by name",
@@ -96,37 +118,62 @@ observeEvent(input$heatmapRun, {
     
     # Select DEGs (Row)
     if (input$heatmapGeneSelectType == "Paste a list of genes") {
-      data <- data[row.names(data) %in% unlist(strsplit(x =input$heatmapTextList,split = '[\r\n]' )),]
+      data <-
+        data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
     }
     if (input$heatmapGeneSelectType == "Select genes by name") {
-      data <- data[row.names(data) %in% input$heatmapSelectList,]
+      data <- data[row.names(data) %in% input$heatmapSelectList, ]
     }
     if (input$heatmapGeneSelectType == "Select genes according FDR") {
       if (input$testMethod == 'wad') {
-        data <- data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop, ]$gene_id, ]
+        data <-
+          data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop,]$gene_id,]
       } else {
-        data <- data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop & resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
+        data <-
+          data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop &
+                                                    resultTable()$q.value <= input$heatmapFDR,]$gene_id,]
       }
     }
     
     showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
     showNotification("Generating, please be patient...", type = "message")
-    withBars(
-    output$heatmap <- renderPlotly({
-      heatmaply(t(data), 
-                k_row = length(variables$groupList),
-                colors = RdYlGn,
-                dist_method = input$heatmapDist,
-                hclust_method = input$heatmapCluster,
-                xlab = "Gene",
-                ylab = "Sample",
-                main = paste0("Heatmap of gene expression (FDR < ", input$heatmapFDR, ", ", dim(data)[1], "DEGs)"),
-                margins = c(150,100,40,20),
-                scale = input$heatmapScale,
-                labCol = colnames(t(data)),
-                labRow = row.names(t(data))
-                )
+    withBars(output$heatmap <- renderPlotly({
+      heatmaply(
+        t(data),
+        k_row = length(variables$groupList),
+        colors = RdYlGn,
+        dist_method = input$heatmapDist,
+        hclust_method = input$heatmapCluster,
+        xlab = "Gene",
+        ylab = "Sample",
+        main = paste0(
+          "Heatmap of gene expression (FDR < ",
+          input$heatmapFDR,
+          ", ",
+          dim(data)[1],
+          "DEGs)"
+        ),
+        margins = c(150, 100, 40, 20),
+        scale = input$heatmapScale,
+        labCol = colnames(t(data)),
+        labRow = row.names(t(data))
+      )
+    }))
+    
+    output$resultTableInHeatmap <- DT::renderDataTable({
+      resultTable <- data
+      
+      DT::datatable(
+        resultTable,
+        option = list(
+          pageLength = 10,
+          searchHighlight = TRUE,
+          orderClasses = TRUE
+        )
+      ) %>% formatRound(
+        columns = colnames(data),
+        digits = 3
+      )
     })
-    )
   })
 })

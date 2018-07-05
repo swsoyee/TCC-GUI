@@ -7,9 +7,11 @@ fluidPage(fluidRow(
     wellPanel(
       tags$h4("Count Data Input"),
       tags$hr(),
-      selectInput("SampleDatabase", "Select Sample Data",
-                  choices = c("hypodata" = "sample_data/data_hypodata_3vs3.txt")
-                  ),
+      selectInput(
+        "SampleDatabase",
+        "Select Sample Data",
+        choices = c("hypodata" = "sample_data/data_hypodata_3vs3.txt")
+      ),
       actionButton("CountDataSample", "Load Sample Data"),
       tags$hr(),
       fileInput(
@@ -48,7 +50,7 @@ fluidPage(fluidRow(
     6,
     tags$hr(),
     tags$h3("Raw Count Table"),
-    DT::dataTableOutput('table'),
+    uiOutput("emptyTable"),
     uiOutput("mainResultTable")
   ),
   #column

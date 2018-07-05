@@ -64,9 +64,8 @@ shinyUI(fluidPage(
             markdownToHTML(
               fragment.only = TRUE,
               text = c(
-                "Copyright (c)2018 Bioinformation Engineering Lab  
-                Department of Biotechnology, Graduate School of Agricultural and Life Science, The University of Tokyo All Rights Reserved.  
-                Code available on Github: [TCC-GUI](https://github.com/swsoyee/TCC-GUI)
+                "Code available on Github: [TCC-GUI](https://github.com/swsoyee/TCC-GUI)  
+                 Copyright (c)2018 Bioinformation Engineering Lab, Department of Biotechnology, Graduate School of Agricultural and Life Science, The University of Tokyo, All Rights Reserved.
                 "
               )
               )
