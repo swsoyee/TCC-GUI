@@ -14,7 +14,8 @@ shinyServer(function(input, output, session) {
     norData = "",
     runTCCCode = "",
     runMAPlot = "",
-    runVolcanoPlot = ""
+    runVolcanoPlot = "",
+    runHeatmap = ""
   )
   
   source(file = "server-data-import.R",

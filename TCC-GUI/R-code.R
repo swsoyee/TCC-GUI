@@ -135,6 +135,72 @@ observeEvent(input$makeVolcanoPlot, {
 
 
 #### Heatmap Plot Runing Code
-
+observeEvent(input$heatmapRun, {
+  runHeatmapCode <- paste0('<p style="text-align: left;">
+<br><font color="red"># Select Sample (Column)</font>
+<br><font color="red"># Grouping</font>
+<br>data.cl <- rep(0, ncol(data))
+<br><font color="red"># Function for grouping</font>
+<br>convert2cl <- function(x, df) {
+<br>&nbsp;&nbsp;grep(x, colnames(df))
+<br>}
+<br>
+<br>group <- list(',
+group,
+')
+<br>for (i in 1:length(group)) {
+<br>&nbsp;&nbsp;data.cl[unlist(lapply(group[[i]], convert2cl, df = data))] = i
+<br>}
+<br>
+<br><font color="red"># Using Original Dataset or Normalized Dataset.</font>
+<br>if (', input$heatmapData, ' == "o") {
+<br>  data <- data[data.cl != 0]
+<br>} else {
+<br>  data <- normalizedData
+<br>}
+<br>data.cl <- data.cl[data.cl != 0]
+<br>
+<br># Select DEGs (Row)
+<br>if (', input$heatmapGeneSelectType, ' == "Paste a list of genes") {
+<br>  data <-
+<br>    data[row.names(data) %in% unlist(strsplit(x = ', input$heatmapTextList, ', split = "[\r\n]")), ]
+<br>}
+<br>if (', input$heatmapGeneSelectType, ' == "Select genes by name") {
+<br>  data <- data[row.names(data) %in% ', input$heatmapSelectList, ', ]
+<br>}
+<br>if (', input$heatmapGeneSelectType, ' == "Select genes according FDR") {
+<br>  if (', input$testMethod, ' == "wad") {
+<br>    data <-
+<br>      data[row.names(data) %in% result[result$rank <= ', input$heatmapFDRTop, ',]$gene_id,]
+<br>  } else {
+<br>    data <-
+<br>      data[row.names(data) %in% result[result$rank <= ', input$heatmapFDRTop, ' &
+<br>                     result$q.value <= ', input$heatmapFDR, ',]$gene_id,]
+<br>  }
+<br>}
+<br>
+<br># Create Plotly object
+<br>  heatmaply(
+<br>    t(data),
+<br>    k_row = length(group),
+<br>    colors = RdYlGn,
+<br>    dist_method = ', input$heatmapDist, ',
+<br>    hclust_method = ', input$heatmapCluster, ',
+<br>    xlab = "Gene",
+<br>    ylab = "Sample",
+<br>    main = paste0(
+<br>      "Heatmap of gene expression (FDR < ",
+<br>      ', input$heatmapFDR, ',
+<br>      ", ",
+<br>      dim(data)[1],
+<br>      "DEGs)"
+<br>    ),
+<br>    margins = c(150, 100, 40, 20),
+<br>    scale = ', input$heatmapScale, ',
+<br>    labCol = colnames(t(data)),
+<br>    labRow = row.names(t(data))
+<br>  )')
+  variables$runHeatmap <- runHeatmapCode
+})
 
 #### Expression Plot Runing Code

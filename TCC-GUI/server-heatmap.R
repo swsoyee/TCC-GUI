@@ -64,7 +64,11 @@ observeEvent(input$TCC, {
           "None" = "none"
         )
       ),
-      actionButton("heatmapRun", "Run")
+      fluidRow(column(6,
+        actionButton("heatmapRun", "Run")
+      ),
+      column(6, uiOutput("runHeatmapCode"))
+      )
     )
   })
 })
@@ -199,4 +203,36 @@ observeEvent(input$heatmapRun, {
       )
     })
   })
+  
+  # ====================================
+  # This function render a button of showing the Heatmap code.
+  #
+  # Position: In Heatmap tab, under right, in Heatmap Parameters panel.
+  # ====================================
+  output$runHeatmapCode <- renderUI({
+    actionButton("showHeatmapCode", "Show R code")
+  })
 })
+
+# ====================================
+# This function check the `Show R code` button, if the botton is clicked,
+# show the TCC running code.
+# Position: In Computation tab, upper right, in TCC Parameters panel.
+# ====================================
+
+observeEvent(input$showHeatmapCode, {
+  shinyalert(
+    title = "TCC Run code",
+    text = variables$runHeatmap,
+    closeOnEsc = TRUE,
+    closeOnClickOutside = TRUE,
+    html = TRUE,
+    type = "info",
+    showConfirmButton = TRUE,
+    confirmButtonText = "OK",
+    confirmButtonCol = "#AEDEF4",
+    cancelButtonText = "Close",
+    animation = TRUE
+  )
+})
+
