@@ -50,7 +50,7 @@ if( !is.element("TCC", .packages(all.available = TRUE)) ) {
     biocLite("TCC")
 }
 
-# Part2. Install via Github
+# Part3. Install via Github
 if( !is.element("plotlyBars", .packages(all.available = TRUE)) ) {
     devtools::install_github("andrewsali/plotlyBars")
 }
