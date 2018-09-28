@@ -22,6 +22,9 @@ observeEvent(input$TCC, {
       data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
     }
     
+    # Storage convert group list to local
+    variables$groupListConvert <- data.cl
+    
     incProgress(0.2, detail = "Creating TCC Object...")
     # Create TCC Object
     tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
@@ -194,7 +197,18 @@ observeEvent(input$TCC, {
   # ====================================
   output$mainResultTable <- renderUI({
     tagList(tags$hr(),
+            # Generate Count Data Sample distribution
+            tags$h3("Sample Distribution"),
+            fluidRow(column(
+              6,
+              plotlyOutput("sampleDistribution")
+            ),
+            column(6,
+                   plotlyOutput("NormalizedSampleDistribution"))
+            ),
             # Generate Result file download button
+            tags$hr(),
+            tags$h3("Result Table"),
             fluidRow(column(
               3,
               downloadButton("downLoadResultTable", "Download TCC Result")
@@ -204,6 +218,38 @@ observeEvent(input$TCC, {
               downloadButton("downLoadNormalized", "Download Normalized Data")
             )),
             DT::dataTableOutput('resultTable'))
+  })
+  
+  # ====================================
+  # This function render a boxplot of sample distribution
+  #
+  # Position: In Computation tab, middle middle.
+  # ====================================
+  
+  output$sampleDistribution <- renderPlotly({
+    data <- variables$CountData[variables$groupListConvert != 0]
+    data <- stack(log2(data/1000000))
+    print(variables$groupList)
+    showNotification("Ploting Sample Distribution", type = "message")
+    plot_ly(data, x =~ind, y =~ values, type = "box") %>%
+      layout(title = "Raw Count Sample Distribution",
+             xaxis = list(title = ""),
+             yaxis = list(title = "log2 CPM"))
+  })
+  
+  # ====================================
+  # This function render a boxplot of normalized sample distribution
+  #
+  # Position: In Computation tab, middle middle.
+  # ====================================
+  
+  output$NormalizedSampleDistribution <- renderPlotly({
+    data <- data.frame(stack(log2(variables$norData/1000000)))
+    showNotification("Ploting Normalized Sample Distribution", type = "message")
+    plot_ly(x = data[, 2], y = data[, 4], type = "box") %>%
+      layout(title = "Normalized Sample Distribution",
+             xaxis = list(title = ""),
+             yaxis = list(title = "log2 CPM"))
   })
   
   # ====================================

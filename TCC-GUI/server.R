@@ -9,6 +9,7 @@ shinyServer(function(input, output, session) {
   variables = reactiveValues(
     CountData = data.frame("Load your data first." = character(0)),
     groupList = "",
+    groupListConvert = "",
     runTimes = 0,
     result = data.frame("Results will show here." = character(0)),
     norData = "",
