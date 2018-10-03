@@ -167,6 +167,14 @@ observeEvent(input$confirmedGroupList, {
                  xaxis = list(title = ""),
                  yaxis = list(title = "log2 CPM"))
       }))
+      # The same plot used in Calculation tab.
+      withBars(output$sampleDistributionTCC <- renderPlotly({
+        data <- stack(cpm)
+        plot_ly(data, x =~ind, y =~ values, type = "box") %>%
+          layout(title = "Raw Count Sample Distribution",
+                 xaxis = list(title = ""),
+                 yaxis = list(title = "log2 CPM"))
+      }))
       # ====================================
       # This function render a density plot of sample distribution
       #
@@ -188,18 +196,49 @@ observeEvent(input$confirmedGroupList, {
       }))
       
       # ====================================
-      # This function render a table of summary of data
+      # This function render a series infoBox of summary of data
       #
       # Position: In Data import tab, left down
       # ====================================
-      output$sampleSummary <- renderTable({
-        data.frame("Entry" = c("Row of Count data", 
-                               "Column of Count data",
-                               "Group Count",
-                               "Sample(s) in Group"),
-                   "Count" = c(dim(variables$CountData), 
-                               length(variables$groupList), 
-                               paste0(sapply(variables$groupList, length), collapse = ',')))
+      output$rowOfCountData <- renderUI({
+        infoBox(
+          "Row of Count data", 
+          dim(variables$CountData)[1],
+          width = NULL,
+          icon = icon("list"),
+          fill = TRUE,
+          color = "yellow"
+        )
+      })
+      output$ColumnOfCountData <- renderUI({
+        infoBox(
+          "Column of Count data", 
+          dim(variables$CountData)[2],
+          width = NULL,
+          icon = icon("columns"),
+          fill = TRUE,
+          color = "purple"
+        )
+      })
+      output$groupCount <- renderUI({
+        infoBox(
+          "Group Count", 
+          length(variables$groupList),
+          width = NULL,
+          icon = icon("users"),
+          fill = TRUE,
+          color = "aqua"
+        )
+      })
+      output$sampleInGroup <- renderUI({
+        infoBox(
+          "Sample in Group", 
+          paste0(sapply(variables$groupList, length), collapse = ','),
+          width = NULL,
+          icon = icon("sitemap"),
+          fill = TRUE,
+          color = "olive"
+        )
       })
       
       # showNotification("Generate TCC Parameters.", type = "message")

@@ -17,7 +17,7 @@ fluidPage(fluidRow(column(
           "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
-      actionButton("CountDataSample", "Load Sample Data")
+      actionButton("CountDataSample", "Load Sample Data", icon = icon("plus-square"))
     ),
     tabPanel(
       "User's Data",
@@ -52,7 +52,7 @@ fluidPage(fluidRow(column(
         sep = '\n'
       )
     ),
-    actionButton("confirmedGroupList", "Confirmed")
+    actionButton("confirmedGroupList", "Confirmed", icon = icon("check-square"))
   )
 ),
 column(
@@ -72,7 +72,10 @@ fluidRow(column(
     solidHeader = TRUE,
     status = "primary",
     width = NULL,
-    tableOutput("sampleSummary")
+    uiOutput("rowOfCountData"),
+    uiOutput("ColumnOfCountData"),
+    uiOutput("groupCount"),
+    uiOutput("sampleInGroup")
   )
 ),
 column(

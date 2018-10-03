@@ -180,6 +180,16 @@ observeEvent(input$TCC, {
   )
   
   # ====================================
+  # This function render a Sample Distribution.
+  #
+  # Position: In Computation tab, under middle.
+  # ====================================
+  output$sampleDistributionInTCC <- renderUI({
+    plotlyOutput("NormalizedSampleDistribution")
+  })
+  
+  
+  # ====================================
   # This function render a series UI of Result table.
   #
   # Position: In Computation tab, under middle.
@@ -189,12 +199,19 @@ observeEvent(input$TCC, {
             # tags$h3("Sample Distribution"),
             # fluidRow(column(
             #   6,
-            #   plotlyOutput("sampleDistribution")
+            #   box(title = "Sample Distribution",
+            #       solidHeader = TRUE,
+            #       status = "primary",
+            #       plotlyOutput("sampleDistribution")
+            #   )
             # ),
             # column(6,
+            #        box(title = "Normalized Row Count Distribution",
+            #              solidHeader = TRUE,
+            #              status = "primary",
             #        plotlyOutput("NormalizedSampleDistribution"))
-            # ),
-            # # Generate Result file download button
+            # )),
+            # Generate Result file download button
             fluidRow(column(
               3,
               downloadButton("downLoadResultTable", "Download TCC Result")

@@ -69,5 +69,16 @@ column(
     solidHeader = TRUE,
     status = "primary",
     uiOutput("mainResultTable")
+  ),
+  box(
+    title = "Sample Distribution",
+    width = NULL,
+    solidHeader = TRUE,
+    status = "primary",
+    column(6,
+           withBarsUI(plotlyOutput(
+             "sampleDistributionTCC"
+           ))),
+    column(6, uiOutput("sampleDistributionInTCC"))
   )
 )))
