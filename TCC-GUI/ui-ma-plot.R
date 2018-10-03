@@ -1,35 +1,54 @@
 # ui-ma-plot.R
-fluidPage(fluidRow(
-  column(
-    3,
-    tags$hr(),
-    wellPanel(
-      tags$h4("MA-Plot Parameter"),
-      tags$hr(),
-      uiOutput("MAPlotParameter")
+fluidPage(fluidRow(column(
+  3,
+  box(
+    title = "MA-Plot Parameters",
+    solidHeader = TRUE,
+    status = "primary",
+    width = NULL,
+    uiOutput("MAPlotParameter")
+  ),
+  tabBox(
+    title = "FDR vs DEGs",
+    width = NULL,
+    tabPanel(
+      "Table",
+      tags$p("DEGs count under different FDR cut-off."),
+      DT::dataTableOutput("fdrCutoffTableInMAPage")
     ),
-    wellPanel(
-      tags$h4("FDR vs DEGs"),
-      tags$hr(),
-      tags$p("DEGs count under different FDR cutoff."),
-      tabsetPanel(
-        id = "maplot",
-        tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInMAPage")),
-        tabPanel("Plot", withBarsUI(plotlyOutput("fdrCutoffPlotInMAPage")))
-      )
+    tabPanel(
+      "Plot",
+      tags$p("DEGs count under different FDR cut-off."),
+      withBarsUI(plotlyOutput("fdrCutoffPlotInMAPage"))
     )
+  )
+),
+#column
+column(
+  6,
+  box(
+    title = "MA Plot",
+    solidHeader = TRUE,
+    status = "primary",
+    width = NULL,
+    withBarsUI(plotlyOutput("maploty"))
   ),
-  #column
-  column(
-    6,
-    tags$hr(),
-    tags$h3("MA Plot"),
-    withBarsUI(plotlyOutput("maploty")),
-    tags$h3("Result Table"),
-    DT::dataTableOutput('resultTableInPlot')
-  ),
-  #column
-  column(3,
-         tags$hr(),
-         wellPanel(withBarsUI(plotlyOutput("geneBarPlot"))))
-))
+  box(
+    title = "Result Table",
+    solidHeader = TRUE,
+    status = "primary",
+    width = NULL,
+    tagList(DT::dataTableOutput('resultTableInPlot'))
+  )
+),
+#column
+column(
+  3,
+  box(
+    title = "Expression Level",
+    solidHeader = TRUE,
+    status = "primary",
+    width = NULL,
+    withBarsUI(plotlyOutput("geneBarPlot"))
+  )
+)))

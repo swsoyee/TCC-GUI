@@ -36,6 +36,7 @@ fluidPage(fluidRow(column(
   box(
     title = "Group Selection",
     solidHeader = TRUE,
+    status = "primary",
     width = NULL,
     textAreaInput(
       "groupSelectViaText",
@@ -58,6 +59,8 @@ column(
   8,
   box(
     title = "Read Count Table",
+    solidHeader = TRUE,
+    status = "primary",
     width = NULL,
     uiOutput("emptyTable")
   )
@@ -66,6 +69,8 @@ fluidRow(column(
   4,
   box(
     title = "Summary of Data",
+    solidHeader = TRUE,
+    status = "primary",
     width = NULL,
     tableOutput("sampleSummary")
   )
@@ -73,10 +78,14 @@ fluidRow(column(
 column(
   8,
   box(title = "Sample Distribution",
+      solidHeader = TRUE,
+      status = "primary",
       withBarsUI(plotlyOutput(
         "sampleDistribution"
       ))),
   box(title = "Row Count Distribution",
+      solidHeader = TRUE,
+      status = "primary",
       withBarsUI(
         plotlyOutput("sampleDistributionDensity")
       ))

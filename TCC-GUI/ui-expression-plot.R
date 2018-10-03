@@ -1,37 +1,31 @@
 # ui-expression-plot.R
 
-fluidPage(
-  column(3,
-         tags$hr(),
-         wellPanel(
-           tags$h4("Expression Parameters"),
-           tags$hr(),
-           selectInput(
-             "expressionGene",
-             "Select Gene(s):",
-             choices = row.names(variables$CountData),
-             multiple = TRUE
-           )
-         )),
-  column(
-    9,
-    tags$hr(),
-    tabsetPanel(
-      id = "expressionPlotTab",
-      tabPanel("Barplot",
-               plotlyOutput("geneBarPlotExpression")),
-      tabPanel("Boxplot",
-               plotlyOutput("geneBoxPlotExpression"))
-    ),
-    tags$hr(),
-    tabsetPanel(id = "expressionTable",
-                tabPanel(
-                  "Expression Table",
-                  DT::dataTableOutput("geneTable")
-                ),
-                tabPanel(
-                  "Result Table",
-                  DT::dataTableOutput("geneTableCal")
-                ))
+fluidPage(column(
+  3,
+  box(
+    title = "Expression Parameters",
+    solidHeader = TRUE,
+    width = NULL,
+    status = "primary",
+    uiOutput("expressionParameters")
   )
-)
+),
+column(
+  9,
+  tabBox(
+    title = "Expression Level",
+    width = NULL,
+    tabPanel(title = "Barplot",
+             plotlyOutput("geneBarPlotExpression")),
+    tabPanel(title = "Boxplot",
+             plotlyOutput("geneBoxPlotExpression"))
+  ),
+  tabBox(
+    title = "Table of Expression Level",
+    width = NULL,
+    tabPanel(title = "Expression Table",
+             DT::dataTableOutput("geneTable")),
+    tabPanel(title = "Result Table",
+             DT::dataTableOutput("geneTableCal"))
+  )
+))

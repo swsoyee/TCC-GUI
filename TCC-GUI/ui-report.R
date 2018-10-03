@@ -2,10 +2,11 @@
 
 fluidPage(column(
   3,
-  tags$hr(),
-  wellPanel(
-    tags$h4("Report Parameters"),
-    tags$hr(),
+  box(
+    title = "Report Parameters",
+    width = NULL,
+    solidHeader = TRUE,
+    status = "primary",
     radioButtons(
       'format',
       'Document format',

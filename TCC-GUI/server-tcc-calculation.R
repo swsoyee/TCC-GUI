@@ -12,6 +12,7 @@ observeEvent(input$TCC, {
     start_time <- Sys.time()
     
     data <- variables$CountData
+    data.cl<- variables$groupListConvert
     
     incProgress(0.2, detail = "Creating TCC Object...")
     # Create TCC Object
@@ -194,8 +195,6 @@ observeEvent(input$TCC, {
             #        plotlyOutput("NormalizedSampleDistribution"))
             # ),
             # # Generate Result file download button
-            # tags$hr(),
-            # tags$h3("Result Table"),
             fluidRow(column(
               3,
               downloadButton("downLoadResultTable", "Download TCC Result")

@@ -5,6 +5,8 @@ fluidPage(fluidRow(column(
   box(
     title = "TCC Parameters",
     width = NULL,
+    solidHeader = TRUE,
+    status = "primary",
     tagList(
       selectInput(
         "normMethod",
@@ -64,11 +66,8 @@ column(
   box(
     title = "Result Table",
     width = NULL,
+    solidHeader = TRUE,
+    status = "primary",
     uiOutput("mainResultTable")
-    # fluidRow(
-    #   downloadButton("downLoadResultTable", "Download TCC Result"),
-    #   downloadButton("downLoadNormalized", "Download Normalized Data")
-    # ),
-    # fluidRow(DT::dataTableOutput('resultTable'))
   )
 )))

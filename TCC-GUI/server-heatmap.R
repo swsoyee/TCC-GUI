@@ -118,11 +118,8 @@ observeEvent(input$heatmapRun, {
   isolate({
     # Select Sample (Column)
     # Grouping.
-    data.cl <- rep(0, ncol(variables$CountData))
+    data.cl<- variables$groupListConvert
     
-    for (i in 1:length(variables$groupList)) {
-      data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = i
-    }
     # Using Original Dataset or Normalized Dataset.
     if (input$heatmapData == "o") {
       data <- variables$CountData[data.cl != 0]
@@ -132,6 +129,7 @@ observeEvent(input$heatmapRun, {
     data.cl <- data.cl[data.cl != 0]
     
     # Select DEGs (Row)
+    tryCatch({
     if (input$heatmapGeneSelectType == "Paste a list of genes") {
       data <-
         data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
@@ -150,9 +148,13 @@ observeEvent(input$heatmapRun, {
       }
     }
     
-    showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
-    showNotification("Generating, please be patient...", type = "message")
-    
+      if(nrow(data) == 0) {
+        showNotification("Genes list is empty!", type = "error")
+        return()
+      } else {
+        showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
+        showNotification("Generating, please be patient...", type = "message")
+      }
     # Create Plotly object
     withBars(output$heatmap <- renderPlotly({
       heatmaply(
@@ -202,6 +204,14 @@ observeEvent(input$heatmapRun, {
         digits = 3
       )
     })
+  },
+  error = function(e) {
+    showNotification("Genes list incorrect!", type = "error")
+    return()
+  },
+  warning = function(w) {
+    showNotification("Genes list incorrect!", type = "error")
+    return()
   })
   
   # ====================================
@@ -212,6 +222,7 @@ observeEvent(input$heatmapRun, {
   output$runHeatmapCode <- renderUI({
     actionButton("showHeatmapCode", "Show R code")
   })
+})
 })
 
 # ====================================

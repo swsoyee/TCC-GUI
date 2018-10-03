@@ -251,7 +251,8 @@ output$resultTableInVolcanalPlot <-
         option = list(
           pageLength = 10,
           searchHighlight = TRUE,
-          orderClasses = TRUE
+          orderClasses = TRUE,
+          scrollX = TRUE
         )
       ) %>% formatRound(
         columns = c("a.value",

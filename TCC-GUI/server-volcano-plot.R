@@ -37,7 +37,7 @@ observeEvent(input$TCC, {
         colourInput("upColor", "Up-regulate：", "red"),
         fluidRow(column(
           6,
-          actionButton("makeVolcanoPlot", "Generate Volcano Plot")
+          actionButton("makeVolcanoPlot", "Generate Plot")
         ),
         column(6, uiOutput(
           "runVolcanoPlot"
@@ -220,11 +220,7 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
     t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
   
   data <- variables$CountData
-  data.cl <- rep(0, ncol(data))
-  
-  for (i in 1:length(variables$groupList)) {
-    data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
-  }
+  data.cl<- variables$groupListConvert
   
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
