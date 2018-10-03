@@ -1,82 +1,28 @@
 # server-tabPanel.R
 #
+observeEvent(input$confirmedGroupList, {
+  output$calculationTab <- renderMenu({
+    menuItem("Calculation", tabName = "calculationTab", icon = icon("calculator"))
+  })
+})
+
 observeEvent(input$TCC, {
-  if (variables$runTimes <= 1) {
-    appendTab(inputId = "tabs",
-              tabPanel("MA Plot",
-                       source(
-                         file = "ui-ma-plot.R",
-                         local = TRUE,
-                         encoding = "UTF-8"
-                       )$value))
-    appendTab(inputId = "tabs",
-              tabPanel("Volcano Plot",
-                       source(
-                         file = "ui-volcano-plot.R",
-                         local = TRUE,
-                         encoding = "UTF-8"
-                       )$value))
-    appendTab(inputId = "tabs",
-              tabPanel("PCA",
-                       source(
-                         file = "ui-pca.R",
-                         local = TRUE,
-                         encoding = "UTF-8"
-                       )$value))
-    appendTab(inputId = "tabs",
-              tabPanel("Heatmap",
-                       source(
-                         file = "ui-heatmap.R",
-                         local = TRUE,
-                         encoding = "UTF-8"
-                       )$value))
-    appendTab(inputId = "tabs",
-              tabPanel("Expression",
-                       source(
-                         file = "ui-expression-plot.R",
-                         local = TRUE,
-                         encoding = "UTF-8"
-                       )$value))
-    appendTab(inputId = "tabs",
-              tabPanel("Report",
-                       source(
-                         file = "ui-report.R",
-                         local = TRUE,
-                         encoding = "UTF-8"
-                       )$value))
-    # appendTab(
-    #   inputId = "tabs",
-    #   tabsetPanel("tabs",
-    #   tabPanel("MA Plot",
-    #            source(
-    #              file = "ui-ma-plot.R",
-    #              local = TRUE,
-    #              encoding = "UTF-8"
-    #            )$value),
-    #   tabPanel("Volcano Plot",
-    #            source(
-    #              file = "ui-volcano-plot.R",
-    #              local = TRUE,
-    #              encoding = "UTF-8"
-    #            )$value),
-    #   tabPanel("PCA",
-    #            source(
-    #              file = "ui-pca.R",
-    #              local = TRUE,
-    #              encoding = "UTF-8"
-    #            )$value),
-    #   tabPanel("Heatmap",
-    #            source(
-    #              file = "ui-heatmap.R",
-    #              local = TRUE,
-    #              encoding = "UTF-8"
-    #            )$value),
-    #   tabPanel("Expression",
-    #            source(
-    #              file = "ui-expression-plot.R",
-    #              local = TRUE,
-    #              encoding = "UTF-8"
-    #            )$value)
-    # ))
-  }
+    output$maplotTab <- renderMenu({
+      menuItem("MA Plot", tabName = "maplotTab", icon = icon("chart-line"))
+    })
+    output$volcanoplotTab <- renderMenu({
+      menuItem("Volcano Plot", tabName = "volcanoplotTab", icon = icon("chart-line"))
+    })
+    output$pcaTab <- renderMenu({
+      menuItem("PCA", tabName = "pcaTab", icon = icon("fingerprint"))
+    })
+    output$heatmapTab <- renderMenu({
+      menuItem("Heatmap", tabName = "heatmapTab", icon = icon("th"))
+    })
+    output$expressionTab <- renderMenu({
+      menuItem("Expression", tabName = "expressionTab", icon = icon("chart-bar"))
+    })
+    output$reportTab <- renderMenu({
+      menuItem("Report", tabName = "reportTab", icon = icon("file-pdf"))
+    })
 })

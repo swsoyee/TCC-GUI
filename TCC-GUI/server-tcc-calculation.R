@@ -13,18 +13,6 @@ observeEvent(input$TCC, {
     
     data <- variables$CountData
     
-    data.cl <- rep(0, ncol(data))
-    convert2cl <- function(x, df) {
-      grep(x, colnames(df))
-    }
-    
-    for (i in 1:length(variables$groupList)) {
-      data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
-    }
-    
-    # Storage convert group list to local
-    variables$groupListConvert <- data.cl
-    
     incProgress(0.2, detail = "Creating TCC Object...")
     # Create TCC Object
     tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
@@ -196,19 +184,18 @@ observeEvent(input$TCC, {
   # Position: In Computation tab, under middle.
   # ====================================
   output$mainResultTable <- renderUI({
-    tagList(tags$hr(),
-            # Generate Count Data Sample distribution
-            tags$h3("Sample Distribution"),
-            fluidRow(column(
-              6,
-              plotlyOutput("sampleDistribution")
-            ),
-            column(6,
-                   plotlyOutput("NormalizedSampleDistribution"))
-            ),
-            # Generate Result file download button
-            tags$hr(),
-            tags$h3("Result Table"),
+    tagList(# Generate Count Data Sample distribution
+            # tags$h3("Sample Distribution"),
+            # fluidRow(column(
+            #   6,
+            #   plotlyOutput("sampleDistribution")
+            # ),
+            # column(6,
+            #        plotlyOutput("NormalizedSampleDistribution"))
+            # ),
+            # # Generate Result file download button
+            # tags$hr(),
+            # tags$h3("Result Table"),
             fluidRow(column(
               3,
               downloadButton("downLoadResultTable", "Download TCC Result")
@@ -218,23 +205,6 @@ observeEvent(input$TCC, {
               downloadButton("downLoadNormalized", "Download Normalized Data")
             )),
             DT::dataTableOutput('resultTable'))
-  })
-  
-  # ====================================
-  # This function render a boxplot of sample distribution
-  #
-  # Position: In Computation tab, middle middle.
-  # ====================================
-  
-  output$sampleDistribution <- renderPlotly({
-    data <- variables$CountData[variables$groupListConvert != 0]
-    data <- stack(log2(data/1000000))
-    print(variables$groupList)
-    showNotification("Ploting Sample Distribution", type = "message")
-    plot_ly(data, x =~ind, y =~ values, type = "box") %>%
-      layout(title = "Raw Count Sample Distribution",
-             xaxis = list(title = ""),
-             yaxis = list(title = "log2 CPM"))
   })
   
   # ====================================
