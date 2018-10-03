@@ -195,32 +195,15 @@ observeEvent(input$TCC, {
   # Position: In Computation tab, under middle.
   # ====================================
   output$mainResultTable <- renderUI({
-    tagList(# Generate Count Data Sample distribution
-            # tags$h3("Sample Distribution"),
-            # fluidRow(column(
-            #   6,
-            #   box(title = "Sample Distribution",
-            #       solidHeader = TRUE,
-            #       status = "primary",
-            #       plotlyOutput("sampleDistribution")
-            #   )
-            # ),
-            # column(6,
-            #        box(title = "Normalized Row Count Distribution",
-            #              solidHeader = TRUE,
-            #              status = "primary",
-            #        plotlyOutput("NormalizedSampleDistribution"))
-            # )),
-            # Generate Result file download button
-            fluidRow(column(
-              3,
-              downloadButton("downLoadResultTable", "Download TCC Result")
-            ),
-            column(
-              3,
-              downloadButton("downLoadNormalized", "Download Normalized Data")
-            )),
-            DT::dataTableOutput('resultTable'))
+    tagList(fluidRow(column(
+      3,
+      downloadButton("downLoadResultTable", "Download TCC Result")
+    ),
+    column(
+      3,
+      downloadButton("downLoadNormalized", "Download Normalized Data")
+    )),
+    DT::dataTableOutput('resultTable'))
   })
   
   # ====================================
@@ -230,12 +213,28 @@ observeEvent(input$TCC, {
   # ====================================
   
   output$NormalizedSampleDistribution <- renderPlotly({
-    data <- data.frame(stack(log2(variables$norData/1000000)))
+    cpm_stack <- data.frame(stack(log2(variables$norData / 1000000)))
+    # Add a group column in case of bugs.
+    cpm_stack$group <- 0
+    # Add Group info
+    for (i in 1:length(variables$groupList)) {
+      cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]), ]$group <-
+        i
+    }
+    cpm_stack$group <- as.factor(cpm_stack$group)
     showNotification("Ploting Normalized Sample Distribution", type = "message")
-    plot_ly(x = data[, 2], y = data[, 4], type = "box") %>%
-      layout(title = "Normalized Sample Distribution",
-             xaxis = list(title = ""),
-             yaxis = list(title = "log2 CPM"))
+    print(head(cpm_stack))
+    plot_ly(
+      x = cpm_stack[, 2],
+      y = cpm_stack[, 4],
+      type = "box",
+      split = cpm_stack$group
+    ) %>%
+      layout(
+        title = "Normalized Sample Distribution",
+        xaxis = list(title = ""),
+        yaxis = list(title = "log2 CPM")
+      )
   })
   
   # ====================================

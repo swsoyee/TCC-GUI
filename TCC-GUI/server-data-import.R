@@ -160,20 +160,48 @@ observeEvent(input$confirmedGroupList, {
       showNotification("Plot Sample Distribution.", type = "message")
       data <- variables$CountData[variables$groupListConvert != 0]
       cpm <- log2(data/1000000)
+      cpm_stack <- stack(cpm)
+      # Add a group column in case of bugs.
+      cpm_stack$group <- 0
+      # Add Group info
+      for (i in 1:length(variables$groupList)) {
+        cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]),]$group <-
+          i
+      }
+      # cpm_stack$group <- as.factor(cpm_stack$group)
+      cpm_stack_order <- unique(cpm_stack[order(cpm_stack$group), ]$ind)
+      xform <- list(categoryorder = "array",
+                    categoryarray = cpm_stack_order,
+                    title = "")
+      
       withBars(output$sampleDistribution <- renderPlotly({
-        data <- stack(cpm)
-        plot_ly(data, x =~ind, y =~ values, type = "box") %>%
-          layout(title = "Raw Count Sample Distribution",
-                 xaxis = list(title = ""),
-                 yaxis = list(title = "log2 CPM"))
+        plot_ly(
+          data = cpm_stack,
+          x =  ~ ind,
+          y =  ~ values,
+          type = "box",
+          split =  ~ group
+        ) %>%
+          layout(
+            title = "Raw Count Sample Distribution",
+            xaxis = xform,
+            yaxis = list(title = "log2 CPM")
+          )
       }))
       # The same plot used in Calculation tab.
       withBars(output$sampleDistributionTCC <- renderPlotly({
-        data <- stack(cpm)
-        plot_ly(data, x =~ind, y =~ values, type = "box") %>%
-          layout(title = "Raw Count Sample Distribution",
-                 xaxis = list(title = ""),
-                 yaxis = list(title = "log2 CPM"))
+        plot_ly(
+          data = cpm_stack,
+          x =  ~ ind,
+          y =  ~ values,
+          type = "box",
+          split =  ~ group
+        ) %>%
+          layout(
+            title = "Raw Count Sample Distribution",
+            xaxis = xform,
+            yaxis = list(title = "log2 CPM")
+          )
       }))
       # ====================================
       # This function render a density plot of sample distribution
@@ -182,7 +210,7 @@ observeEvent(input$confirmedGroupList, {
       # ====================================
       withBars(output$sampleDistributionDensity <- renderPlotly({
         densityTable <-lapply(cpm, density)
-        p <- plot_ly(type = "scatter", mode = "markers")
+        p <- plot_ly(type = "scatter", mode = "lines")
         for(i in 1:length(densityTable)){
           p <- add_trace(p, x = densityTable[[i]][[1]],
                          y = densityTable[[i]][[2]],
@@ -192,7 +220,8 @@ observeEvent(input$confirmedGroupList, {
         p %>%
           layout(title = "Raw Count Distribution",
                  xaxis = list(title = "log2(CPM)"),
-                 yaxis = list(title = "Density"))
+                 yaxis = list(title = "Density"),
+                 legend = list(orientation = 'h'))
       }))
       
       # ====================================
