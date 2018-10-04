@@ -22,7 +22,13 @@ column(
     tabPanel("Cluster",
              plotOutput("pcacluster")),
     tabPanel("Variances",
-             plotlyOutput("pcaVariances")),
+             plotlyOutput("pcaVariances"))
+  ),
+  box(
+    title = "Summary of PCA",
+    width = NULL,
+    solidHeader = TRUE,
+    status = "primary",
     DT::dataTableOutput("summaryPCA")
   )
 ))

@@ -213,6 +213,7 @@ observeEvent(input$TCC, {
   # ====================================
   
   output$NormalizedSampleDistribution <- renderPlotly({
+    validate(need(colnames(variables$norData) %in% colnames(variables$CountData), "Please rerun the TCC."))
     cpm_stack <- data.frame(stack(log2(variables$norData / 1000000)))
     # Add a group column in case of bugs.
     cpm_stack$group <- 0
@@ -221,7 +222,11 @@ observeEvent(input$TCC, {
       cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]), ]$group <-
         i
     }
-    cpm_stack$group <- as.factor(cpm_stack$group)
+    cpm_stack_order <- unique(cpm_stack[order(cpm_stack$group), ]$col)
+    xform <- list(categoryorder = "array",
+                  categoryarray = cpm_stack_order,
+                  title = "")
+    
     showNotification("Ploting Normalized Sample Distribution", type = "message")
     print(head(cpm_stack))
     plot_ly(
@@ -232,7 +237,7 @@ observeEvent(input$TCC, {
     ) %>%
       layout(
         title = "Normalized Sample Distribution",
-        xaxis = list(title = ""),
+        xaxis = xform,
         yaxis = list(title = "log2 CPM")
       )
   })
@@ -243,7 +248,7 @@ observeEvent(input$TCC, {
   # Position: In Computation tab, under right, in TCC Parameters panel.
   # ====================================
   output$runTCCCode <- renderUI({
-    actionButton("showTCCCode", "Show R code")
+    actionButton("showTCCCode", "Show R code", icon = icon("code"))
   })
 })
 

@@ -1,36 +1,44 @@
 # server-pca.R
 
-observeEvent(input$TCC, {
-  output$pcaParameter <- renderUI({
-    tagList(
-      if(input$testMethod != 'wad') {
-        sliderInput("pcFDR", "FDR", min = 0.01, max = 1, value = 0.05)
-      },
-      # numericInput("pcNumber", 
-      #              "Number of Principal Components:", 
-      #              10, 
-      #              min = 1, 
-      #              max = nrow(variables$CountData)
-      #              ),
-      checkboxInput("pcCenter", "Center", value = TRUE),
-      checkboxInput("pcScale", "Scale", value = TRUE),
-      checkboxInput("pcTransform", "Log transform", value = TRUE),
-      radioButtons("pcData", "Source:", 
-                   choices = c("Original" = "o",
-                               "Normalized" = "n")),
-      selectInput("dendMethod", 
-                  "Hierarchical Clustering Method",
-                  choices = list("ward.D" = "ward.D",
-                                 "ward.D2" = "ward.D2",
-                                 "Single" = "single",
-                                 "Complete" = "complete",
-                                 "UPGMA" = "average",
-                                 "WPGMA" = "mcquitty",
-                                 "WOGMC" = "median",
-                                 "UPGMC" = "centroid")),
-      actionButton("pcRun", "Run")
-    )
-  })
+
+observeEvent(input$sider, {
+  if (input$sider == "pcaTab") {
+    output$pcaParameter <- renderUI({
+      tagList(
+        if (input$testMethod != 'wad') {
+          sliderInput("pcFDR",
+                      "FDR",
+                      min = 0.01,
+                      max = 1,
+                      value = 0.05)
+        },
+        checkboxInput("pcCenter", "Center", value = TRUE),
+        checkboxInput("pcScale", "Scale", value = TRUE),
+        checkboxInput("pcTransform", "Log transform", value = TRUE),
+        radioButtons(
+          "pcData",
+          "Source:",
+          choices = c("Original" = "o",
+                      "Normalized" = "n")
+        ),
+        selectInput(
+          "dendMethod",
+          "Hierarchical Clustering Method",
+          choices = list(
+            "ward.D" = "ward.D",
+            "ward.D2" = "ward.D2",
+            "Single" = "single",
+            "Complete" = "complete",
+            "UPGMA" = "average",
+            "WPGMA" = "mcquitty",
+            "WOGMC" = "median",
+            "UPGMC" = "centroid"
+          )
+        ),
+        actionButton("pcRun", "Run", icon = icon("play"))
+      )
+    })
+  }
 })
 
 observeEvent(input$pcRun, {

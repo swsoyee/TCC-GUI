@@ -6,7 +6,8 @@
 # Position: In MA Plot tab, upper left.
 # ====================================
 
-observeEvent(input$TCC, {
+observeEvent(input$sider, {
+  if(input$sider == "maplotTab") {
   showNotification("Generate MA Plot Parameters.", type = "message")
   output$MAPlotParameter <- renderUI({
     tagList(
@@ -27,12 +28,12 @@ observeEvent(input$TCC, {
       ),
       colourInput("fdrColor", "DEGs color：", "#B22222"),
       fluidRow(column(
-        6, actionButton("makeMAPlot", "Generate MA-Plot")
+        6, actionButton("makeMAPlot", "Generate MA-Plot", icon = icon("play"))
       ),
       column(6, uiOutput("runMAPlot")))
       
     )
-  })
+  })}
 })
 
 # ====================================
@@ -153,7 +154,7 @@ observeEvent(input$makeMAPlot, {
   # ====================================
   
   output$runMAPlot <- renderUI({
-    actionButton("showMACode", "Show R code")
+    actionButton("showMACode", "Show R code", icon = icon("code"))
   })
 })
 

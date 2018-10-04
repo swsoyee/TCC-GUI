@@ -2,27 +2,27 @@
 #
 observeEvent(input$confirmedGroupList, {
   output$calculationTab <- renderMenu({
-    menuItem("Calculation", tabName = "calculationTab", icon = icon("calculator"))
+    menuItem("Calculation", tabName = "calculationTab", icon = icon("calculator"), badgeLabel = "Step 2", badgeColor = "orange")
   })
 })
 
 observeEvent(input$TCC, {
     output$maplotTab <- renderMenu({
-      menuItem("MA Plot", tabName = "maplotTab", icon = icon("line-chart"))
+      menuItem("MA Plot", tabName = "maplotTab", icon = icon("line-chart"), badgeLabel = "Step 3", badgeColor = "red")
     })
     output$volcanoplotTab <- renderMenu({
-      menuItem("Volcano Plot", tabName = "volcanoplotTab", icon = icon("area-chart"))
+      menuItem("Volcano Plot", tabName = "volcanoplotTab", icon = icon("area-chart"), badgeLabel = "Step 3", badgeColor = "red")
     })
     output$pcaTab <- renderMenu({
-      menuItem("PCA", tabName = "pcaTab", icon = icon("tachometer"))
+      menuItem("PCA", tabName = "pcaTab", icon = icon("tachometer"), badgeLabel = "Step 3", badgeColor = "red")
     })
     output$heatmapTab <- renderMenu({
-      menuItem("Heatmap", tabName = "heatmapTab", icon = icon("th"))
+      menuItem("Heatmap", tabName = "heatmapTab", icon = icon("th"), badgeLabel = "Step 3", badgeColor = "red")
     })
     output$expressionTab <- renderMenu({
-      menuItem("Expression", tabName = "expressionTab", icon = icon("bar-chart"))
+      menuItem("Expression", tabName = "expressionTab", icon = icon("bar-chart"), badgeLabel = "Step 3", badgeColor = "red")
     })
     output$reportTab <- renderMenu({
-      menuItem("Report", tabName = "reportTab", icon = icon("file-pdf-o"))
+      menuItem("Report", tabName = "reportTab", icon = icon("file-pdf-o"), badgeLabel = "Step 4", badgeColor = "maroon")
     })
 })

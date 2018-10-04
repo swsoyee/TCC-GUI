@@ -6,71 +6,75 @@
 # Position: In Heatmap tab, upper left.
 # ====================================
 
-observeEvent(input$TCC, {
-  output$heatmapParameter <- renderUI({
-    tagList(
-      radioButtons(
-        "heatmapGeneSelectType",
-        "Ways of select gene",
-        choices = c(
-          "Paste a list of genes",
-          "Select genes by name",
-          "Select genes according FDR"
-        )
-      ),
-      
-      uiOutput("heatmapSelectGene"),
-      
-      radioButtons(
-        "heatmapData",
-        "Source:",
-        choices = c("Original" = "o",
-                    "Normalized" = "n")
-      ),
-      selectInput(
-        "heatmapDist",
-        "Distance Method",
-        choices = list(
-          "Euclidean" = "euclidean",
-          "Maximum" = "maximum",
-          "Manhattan" = "manhattan",
-          "Canberra" = "canberra",
-          "Binary" = "binary",
-          "Minkowski" = "minkowski"
+observeEvent(input$sider, {
+  if (input$sider == "heatmapTab") {
+    output$heatmapParameter <- renderUI({
+      tagList(
+        radioButtons(
+          "heatmapGeneSelectType",
+          "Ways of select gene",
+          choices = c(
+            "Paste a list of genes",
+            "Select genes by name",
+            "Select genes according FDR"
+          )
         ),
-        selected = "euclidean"
-      ),
-      selectInput(
-        "heatmapCluster",
-        "Hierarchical Clustering Method",
-        choices = list(
-          "ward.D" = "ward.D",
-          "ward.D2" = "ward.D2",
-          "Single" = "single",
-          "Complete" = "complete",
-          "UPGMA" = "average",
-          "WPGMA" = "mcquitty",
-          "WOGMC" = "median",
-          "UPGMC" = "centroid"
+        
+        uiOutput("heatmapSelectGene"),
+        
+        radioButtons(
+          "heatmapData",
+          "Source:",
+          choices = c("Original" = "o",
+                      "Normalized" = "n")
         ),
-        selected = "complete"
-      ),
-      selectInput(
-        "heatmapScale",
-        "Scale",
-        choices = list(
-          "Row" = "column",
-          "Column" = "row",
-          "None" = "none"
-        )
-      ),
-      fluidRow(column(6,
-        actionButton("heatmapRun", "Run")
-      ),
-      column(6, uiOutput("runHeatmapCode"))
+        selectInput(
+          "heatmapDist",
+          "Distance Method",
+          choices = list(
+            "Euclidean" = "euclidean",
+            "Maximum" = "maximum",
+            "Manhattan" = "manhattan",
+            "Canberra" = "canberra",
+            "Binary" = "binary",
+            "Minkowski" = "minkowski"
+          ),
+          selected = "euclidean"
+        ),
+        selectInput(
+          "heatmapCluster",
+          "Hierarchical Clustering Method",
+          choices = list(
+            "ward.D" = "ward.D",
+            "ward.D2" = "ward.D2",
+            "Single" = "single",
+            "Complete" = "complete",
+            "UPGMA" = "average",
+            "WPGMA" = "mcquitty",
+            "WOGMC" = "median",
+            "UPGMC" = "centroid"
+          ),
+          selected = "complete"
+        ),
+        selectInput(
+          "heatmapScale",
+          "Scale",
+          choices = list(
+            "Row" = "column",
+            "Column" = "row",
+            "None" = "none"
+          )
+        ),
+        fluidRow(column(
+          6,
+          actionButton("heatmapRun", "Run", icon = icon("play"))
+        ),
+        column(6, uiOutput(
+          "runHeatmapCode"
+        )))
       )
-    )
-  })
+    })
+  }
 })
 
 # ====================================
@@ -220,7 +224,7 @@ observeEvent(input$heatmapRun, {
   # Position: In Heatmap tab, under right, in Heatmap Parameters panel.
   # ====================================
   output$runHeatmapCode <- renderUI({
-    actionButton("showHeatmapCode", "Show R code")
+    actionButton("showHeatmapCode", "Show R code", icon = icon("code"))
   })
 })
 })

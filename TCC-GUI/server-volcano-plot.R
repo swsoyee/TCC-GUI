@@ -6,7 +6,8 @@
 # Position: In Volcano Plot tab, upper left.
 # ====================================
 
-observeEvent(input$TCC, {
+observeEvent(input$sider, {
+  if(input$sider == "volcanoplotTab"){
   # If test method is `WAD`, it will not generate p.value,
   # So we can't plot Volcano Plot. If is not `WAD`,
   # generate volcano plot parameters.
@@ -37,7 +38,7 @@ observeEvent(input$TCC, {
         colourInput("upColor", "Up-regulate：", "red"),
         fluidRow(column(
           6,
-          actionButton("makeVolcanoPlot", "Generate Plot")
+          actionButton("makeVolcanoPlot", "Generate Plot", icon = icon("play"))
         ),
         column(6, uiOutput(
           "runVolcanoPlot"
@@ -52,7 +53,7 @@ observeEvent(input$TCC, {
         )
       )
     })
-  }
+  }}
 })
 
 # ====================================
@@ -174,7 +175,7 @@ observeEvent(input$makeVolcanoPlot, {
   # ====================================
   
   output$runVolcanoPlot <- renderUI({
-    actionButton("showVolcanoCode", "Show R code")
+    actionButton("showVolcanoCode", "Show R code", icon = icon("code"))
   })
 })
 

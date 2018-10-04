@@ -1,7 +1,7 @@
 # ui-calculation.R
 
 fluidPage(fluidRow(column(
-  4,
+  3,
   box(
     title = "TCC Parameters",
     width = NULL,
@@ -56,13 +56,13 @@ fluidPage(fluidRow(column(
         value = 0.05,
         step = 0.05
       ),
-      fluidRow(column(6, actionButton("TCC", "Run TCC")),
+      fluidRow(column(6, actionButton("TCC", "Run TCC", icon = icon("play"))),
                column(6, uiOutput("runTCCCode")))
     )
   )
 ),
 column(
-  8,
+  9,
   box(
     title = "Result Table",
     width = NULL,

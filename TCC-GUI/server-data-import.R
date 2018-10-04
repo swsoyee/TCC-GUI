@@ -269,63 +269,6 @@ observeEvent(input$confirmedGroupList, {
           color = "olive"
         )
       })
-      
-      # showNotification("Generate TCC Parameters.", type = "message")
-      
-      # output$TCC <- renderUI({
-      #   tagList(
-      #     selectInput(
-      #       "normMethod",
-      #       "Normalization method:",
-      #       c("TMM" = "tmm",
-      #         "DESeq" = "deseq")
-      #     ),
-      #     selectInput(
-      #       "testMethod",
-      #       "DEGs identify method:",
-      #       c(
-      #         "edgeR" = "edger",
-      #         "DESeq" = "deseq",
-      #         "DESeq2" = "deseq2",
-      #         "baySeq" = "bayseq",
-      #         "SAMSeq" = "samseq",
-      #         "Voom" = "voom",
-      #         "WAD" = "wad"
-      #       )
-      #     ),
-      #     numericInput(
-      #       "filterLowCount",
-      #       "Filter low count genes threshold:",
-      #       value = 0,
-      #       min = 0
-      #     ),
-      #     sliderInput(
-      #       "iteration",
-      #       "Interation:",
-      #       min = 1,
-      #       max = 50,
-      #       value = 3
-      #     ),
-      #     sliderInput(
-      #       "fdr",
-      #       "FDR:",
-      #       min = 0,
-      #       max = 1,
-      #       value = 0.1,
-      #       step = 0.05
-      #     ),
-      #     sliderInput(
-      #       "floorpdeg",
-      #       "Elimination of Potential DEGs:",
-      #       min = 0,
-      #       max = 1,
-      #       value = 0.05,
-      #       step = 0.05
-      #     ),
-      #     fluidRow(column(6, actionButton("TCC", "Run TCC")),
-      #              column(6, uiOutput("runTCCCode")))
-      #   )
-      # })
     },
     error = function(e) {
       showNotification("Check your group information format!", type = "error")
