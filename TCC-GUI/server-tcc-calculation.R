@@ -7,49 +7,100 @@
 # ====================================
 
 observeEvent(input$TCC, {
-  withProgress(message = 'TCC Calculation: ', value = 0, {
-    # Set time start
-    start_time <- Sys.time()
-    
-    data <- variables$CountData
-    data.cl<- variables$groupListConvert
-    
-    incProgress(0.2, detail = "Creating TCC Object...")
-    # Create TCC Object
-    tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
-    # Filter low count genes before calculation
-    tcc <-
-      filterLowCountGenes(tcc, low.count = input$filterLowCount)
-    incProgress(0.5, detail = "Calculating normalization factors using DEGES...")
-    # Run TCC and calculate normalized factor
-    tcc <- calcNormFactors(
-      tcc,
-      norm.method = input$normMethod,
-      test.method = input$testMethod,
-      iteration = input$iteration,
-      FDR = input$fdr,
-      floorPDEG = input$floorpdeg
-    )
-    incProgress(0.8, detail = "Identifying DE genes...")
-    # Estimate DEGs
-    tcc <- estimateDE(tcc,
-                      test.method = input$testMethod,
-                      FDR = input$fdr)
-    incProgress(1, detail = "Done.")
-    # Get final result of TCC
-    variables$result <- getResult(tcc, sort = FALSE)
-    variables$norData <- tcc$getNormalizedData()
-    # Here is a switch, if this is the firs time of running TCC,
-    # Render other Tabs
-    variables$runTimes <- variables$runTimes + 1
-    
-    # Show computation time notification
-    # Set time end
-    end_time <- Sys.time()
-    runtime <- round(as.numeric(end_time - start_time), 2)
-    showNotification(paste("Running time:", runtime, "seconds"), type = "message")
-  })
+  progressSweetAlert(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Work in progress",
+    display_pct = TRUE,
+    value = 0
+  )
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "TCC Calculation:",
+    value = 10
+  )
+  # Set time start
+  start_time <- Sys.time()
   
+  data <- variables$CountData
+  data.cl <- variables$groupListConvert
+  
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Creating TCC Object",
+    value = 20
+  )
+  # Create TCC Object
+  tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
+  # Filter low count genes before calculation
+  tcc <-
+    filterLowCountGenes(tcc, low.count = input$filterLowCount)
+  
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Calculating normalization factors using DEGES",
+    value = 50
+  )
+  # Run TCC and calculate normalized factor
+  tcc <- calcNormFactors(
+    tcc,
+    norm.method = input$normMethod,
+    test.method = input$testMethod,
+    iteration = input$iteration,
+    FDR = input$fdr,
+    floorPDEG = input$floorpdeg
+  )
+  
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Identifying DE genes",
+    value = 70
+  )
+  # Estimate DEGs
+  tcc <- estimateDE(tcc,
+                    test.method = input$testMethod,
+                    FDR = input$fdr)
+  # incProgress(1, detail = "Done.")
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Done",
+    value = 80
+  )
+  # Get final result of TCC
+  variables$result <- getResult(tcc, sort = FALSE)
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Save TCC calculation result",
+    value = 83
+  )
+  variables$norData <- tcc$getNormalizedData()
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Save normalized data",
+    value = 87
+  )
+  # Here is a switch, if this is the firs time of running TCC,
+  # Render other Tabs
+  variables$runTimes <- variables$runTimes + 1
+  
+  # Show computation time notification
+  # Set time end
+  end_time <- Sys.time()
+  runtime <- round(difftime(end_time, start_time, units = "secs"), 2)
+  
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Rendering tables",
+    value = 93
+  )
   output$resultTable <- DT::renderDataTable({
     if (nrow(variables$result) == 0) {
       DT::datatable(variables$result)
@@ -96,6 +147,12 @@ observeEvent(input$TCC, {
     )
   })
   
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "Rendering plots",
+    value = 97
+  )
   # ====================================
   # This function render a plotly of different gene count under specific FDR cutoff
   # condition.
@@ -213,19 +270,26 @@ observeEvent(input$TCC, {
   # ====================================
   
   output$NormalizedSampleDistribution <- renderPlotly({
-    validate(need(colnames(variables$norData) %in% colnames(variables$CountData), "Please rerun the TCC."))
-    cpm_stack <- data.frame(stack(log2(variables$norData / 1000000)))
+    validate(need(
+      colnames(variables$norData) %in% colnames(variables$CountData),
+      "Please rerun the TCC."
+    ))
+    cpm_stack <-
+      data.frame(stack(log2(variables$norData / 1000000)))
     # Add a group column in case of bugs.
     cpm_stack$group <- 0
     # Add Group info
     for (i in 1:length(variables$groupList)) {
-      cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]), ]$group <-
+      cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]),]$group <-
         i
     }
-    cpm_stack_order <- unique(cpm_stack[order(cpm_stack$group), ]$col)
-    xform <- list(categoryorder = "array",
-                  categoryarray = cpm_stack_order,
-                  title = "")
+    cpm_stack_order <-
+      unique(cpm_stack[order(cpm_stack$group),]$col)
+    xform <- list(
+      categoryorder = "array",
+      categoryarray = cpm_stack_order,
+      title = ""
+    )
     
     showNotification("Ploting Normalized Sample Distribution", type = "message")
     print(head(cpm_stack))
@@ -250,6 +314,18 @@ observeEvent(input$TCC, {
   output$runTCCCode <- renderUI({
     actionButton("showTCCCode", "Show R code", icon = icon("code"))
   })
+  
+  updateProgressBar(
+    session = session,
+    id = "tccCalculationProgress",
+    title = "All done.",
+    value = 100
+  )
+  
+  closeSweetAlert(session = session)
+  sendSweetAlert(session = session,
+                 title = "Calculation completed!",
+                 type = "success")
 })
 
 resultTable <- reactive({

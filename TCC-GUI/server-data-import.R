@@ -218,9 +218,9 @@ observeEvent(input$confirmedGroupList, {
                          name = names(densityTable[i]))
         }
         p %>%
-          layout(title = "Raw Count Distribution",
-                 xaxis = list(title = "log2(CPM)"),
-                 yaxis = list(title = "Density"),
+          layout(title = input$sampleDistributionDensityTitle,
+                 xaxis = list(title = input$sampleDistributionDensityXlab),
+                 yaxis = list(title = input$sampleDistributionDensityYlab),
                  legend = list(orientation = 'h'))
       }))
       

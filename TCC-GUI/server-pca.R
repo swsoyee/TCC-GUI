@@ -12,14 +12,16 @@ observeEvent(input$sider, {
                       max = 1,
                       value = 0.05)
         },
-        checkboxInput("pcCenter", "Center", value = TRUE),
-        checkboxInput("pcScale", "Scale", value = TRUE),
-        checkboxInput("pcTransform", "Log transform", value = TRUE),
-        radioButtons(
+        materialSwitch(inputId = "pcCenter", label = "Center", value = TRUE, right = TRUE, status = "primary"),
+        materialSwitch(inputId = "pcScale", label = "Scale", value = TRUE, right = TRUE, status = "primary"),
+        materialSwitch(inputId = "pcTransform", label = "Log transform", value = TRUE, right = TRUE, status = "primary"),
+        radioGroupButtons(
           "pcData",
           "Source:",
           choices = c("Original" = "o",
-                      "Normalized" = "n")
+                      "Normalized" = "n"), 
+          justified = TRUE,
+          status = "primary"
         ),
         selectInput(
           "dendMethod",

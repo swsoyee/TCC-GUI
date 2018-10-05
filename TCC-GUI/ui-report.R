@@ -7,11 +7,12 @@ fluidPage(column(
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
-    radioButtons(
-      'format',
-      'Document format',
-      c('Markdown', 'HTML', 'Word'),
-      inline = TRUE
+    radioGroupButtons(
+      inputId = 'format',
+      label = 'Document format',
+      choices = c('Markdown', 'HTML', 'Word'), 
+      justified = TRUE,
+      status = "primary"
     ),
     downloadButton('downloadReport')
   )

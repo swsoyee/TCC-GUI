@@ -10,23 +10,27 @@ observeEvent(input$sider, {
   if (input$sider == "heatmapTab") {
     output$heatmapParameter <- renderUI({
       tagList(
-        radioButtons(
-          "heatmapGeneSelectType",
-          "Ways of select gene",
+        radioGroupButtons(
+          inputId = "heatmapGeneSelectType",
+          label = "Select gene",
           choices = c(
-            "Paste a list of genes",
-            "Select genes by name",
-            "Select genes according FDR"
-          )
+            "By list",
+            "By name",
+            "By FDR"
+          ),
+          justified = TRUE,
+          status = "primary"
         ),
         
         uiOutput("heatmapSelectGene"),
         
-        radioButtons(
-          "heatmapData",
-          "Source:",
+        radioGroupButtons(
+          inputId = "heatmapData",
+          label = "Source:",
           choices = c("Original" = "o",
-                      "Normalized" = "n")
+                      "Normalized" = "n"),
+          justified = TRUE,
+          status = "primary"
         ),
         selectInput(
           "heatmapDist",
@@ -53,21 +57,26 @@ observeEvent(input$sider, {
             "WPGMA" = "mcquitty",
             "WOGMC" = "median",
             "UPGMC" = "centroid"
-          ),
-          selected = "complete"
+          )# ,
+          # selected = "complete"
         ),
-        selectInput(
-          "heatmapScale",
-          "Scale",
+        radioGroupButtons(
+          inputId = "heatmapScale",
+          label = "Scale",
           choices = list(
             "Row" = "column",
             "Column" = "row",
             "None" = "none"
-          )
+          ), 
+          justified = TRUE,
+          status = "primary"
         ),
         fluidRow(column(
           6,
-          actionButton("heatmapRun", "Run", icon = icon("play"))
+          actionBttn(inputId = "heatmapRun", label = "Run", icon = icon("play"),
+                     size = "sm",
+                     color = "primary",
+                     style = "fill")
         ),
         column(6, uiOutput(
           "runHeatmapCode"
@@ -85,19 +94,19 @@ observeEvent(input$sider, {
 output$heatmapSelectGene <- renderUI({
   switch(
     input$heatmapGeneSelectType,
-    "Paste a list of genes" = textAreaInput(
+    "By list" = textAreaInput(
       "heatmapTextList",
       "Paste a list of genes",
       rows = 5,
       placeholder = "Input gene's name (first column in the dataset), one gene per line."
     ),
-    "Select genes by name" = selectInput(
+    "By name" = selectInput(
       "heatmapSelectList",
       "Select genes by name",
       choices = row.names(variables$CountData),
       multiple = TRUE
     ),
-    "Select genes according FDR" = tagList(
+    "By FDR" = tagList(
       if (input$testMethod != 'wad') {
         sliderInput(
           "heatmapFDR",
@@ -134,14 +143,14 @@ observeEvent(input$heatmapRun, {
     
     # Select DEGs (Row)
     tryCatch({
-    if (input$heatmapGeneSelectType == "Paste a list of genes") {
+    if (input$heatmapGeneSelectType == "By list") {
       data <-
         data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
     }
-    if (input$heatmapGeneSelectType == "Select genes by name") {
+    if (input$heatmapGeneSelectType == "By name") {
       data <- data[row.names(data) %in% input$heatmapSelectList, ]
     }
-    if (input$heatmapGeneSelectType == "Select genes according FDR") {
+    if (input$heatmapGeneSelectType == "By FDR") {
       if (input$testMethod == 'wad') {
         data <-
           data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop,]$gene_id,]

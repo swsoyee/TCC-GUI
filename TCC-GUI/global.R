@@ -12,6 +12,7 @@ library(colourpicker)
 library(markdown)
 library(plotlyBars)
 library(utils)
+library(shinyWidgets)
 
 sample_data_url <- "sample_data/data_hypodata_3vs3.txt"
 

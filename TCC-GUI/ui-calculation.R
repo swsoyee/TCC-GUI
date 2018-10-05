@@ -1,6 +1,7 @@
 # ui-calculation.R
 
-fluidPage(fluidRow(column(
+fluidPage(
+  useSweetAlert(),fluidRow(column(
   3,
   box(
     title = "TCC Parameters",
@@ -56,7 +57,10 @@ fluidPage(fluidRow(column(
         value = 0.05,
         step = 0.05
       ),
-      fluidRow(column(6, actionButton("TCC", "Run TCC", icon = icon("play"))),
+      fluidRow(column(6, actionBttn("TCC", "Run TCC", icon = icon("play"),
+                                      size = "sm",
+                                      color = "primary",
+                                      style = "fill")),
                column(6, uiOutput("runTCCCode")))
     )
   )

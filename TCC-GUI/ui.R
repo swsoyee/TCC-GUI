@@ -29,7 +29,16 @@ dashboardPage(skin = "purple",
   dashboardSidebar(
     sidebarMenu(
       id = "sider",
-      menuItem("Guidence", tabName = "guidence", icon = icon("home")),
+      menuItem("Guidence", tabName = "guidence", icon = icon("home"),
+               menuSubItem(text = "1. Data input", tabName = "dataInputHelp"),
+               menuSubItem(text = "2. TCC Computation", tabName = "tccComputationHelp"),
+               menuSubItem(text = "3.1. MA Plot", tabName = "maPlotHelp"),
+               menuSubItem(text = "3.2. Volcano plot", tabName = "volcanoPlotHelp"),
+               menuSubItem(text = "3.3. PCA analysis", tabName = "pcaHelp"),
+               menuSubItem(text = "3.4. Heatmap", tabName = "heatmapHelp"),
+               menuSubItem(text = "3.5. Expression level", tabName = "expressionHelp"),
+               menuSubItem(text = "4. Report", tabName = "reportHelp"),
+               startExpanded = TRUE),
       menuItem(
         "Data Import",
         tabName = "dateImport",
@@ -47,7 +56,7 @@ dashboardPage(skin = "purple",
     )
   ),
   dashboardBody(
-    useShinyalert(),
+    # useShinyalert(),
     tabItems(
       tabItem(tabName = "guidence", source(
         file = "ui-homepage.R",
