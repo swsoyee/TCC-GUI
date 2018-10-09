@@ -1,5 +1,5 @@
 library(shiny)
-options(shiny.maxRequestSize=30*1024^2) 
+options(shiny.maxRequestSize = 30 * 1024 ^ 2)
 source(file = "global.R",
        local = TRUE,
        encoding = "UTF-8")
@@ -17,7 +17,9 @@ shinyServer(function(input, output, session) {
     runTCCCode = "",
     runMAPlot = "",
     runVolcanoPlot = "",
-    runHeatmap = ""
+    runHeatmap = "",
+    runPCACode = "",
+    logList = vector()
   )
   
   source(file = "server-data-import.R",

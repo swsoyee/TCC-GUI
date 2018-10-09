@@ -1,6 +1,6 @@
 library(shiny)
 
-dashboardPage(skin = "purple",
+dashboardPage(
   dashboardHeader(title = "TCC GUI Version: Graphical User Interface for Tag Count Comparison (TCC) package", titleWidth = 800,
                   dropdownMenu(type = "messages",
                                messageItem(
@@ -53,11 +53,22 @@ dashboardPage(skin = "purple",
       menuItemOutput("heatmapTab"),
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
-    )
+    ),
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved.", 
+             style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(
     # useShinyalert(),
     tabItems(
+      tabItem(tabName = "dataInputHelp", includeMarkdown("document/English_Data_input.md")),
+      tabItem(tabName = "tccComputationHelp", includeMarkdown("document/English_Computation.md")),
+      tabItem(tabName = "maPlotHelp", includeMarkdown("document/English_MA_plot.md")),
+      tabItem(tabName = "volcanoPlotHelp", includeMarkdown("document/English_Volcano_plot.md")),
+      tabItem(tabName = "pcaHelp", includeMarkdown("document/English_PCA_analysis.md")),
+      tabItem(tabName = "heatmapHelp", includeMarkdown("document/English_Heatmap.md")),
+      tabItem(tabName = "expressionHelp", includeMarkdown("document/English_Expression.md")),
+      tabItem(tabName = "reportHelp", includeMarkdown("document/English_More_help.md")),
+      
       tabItem(tabName = "guidence", source(
         file = "ui-homepage.R",
         local = TRUE,

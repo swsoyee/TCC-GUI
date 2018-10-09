@@ -142,4 +142,8 @@ observeEvent(input$pcRun, {
         columns = colnames(summaryTable),
       digits = 3)
   })
+  
+  output$runPCACode <- renderText({
+    variables$runPCACode
+  })
 })

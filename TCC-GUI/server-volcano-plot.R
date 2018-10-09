@@ -36,13 +36,7 @@ observeEvent(input$sider, {
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
         colourInput("downColor", "Down-regulate：", "green"),
         colourInput("upColor", "Up-regulate：", "red"),
-        fluidRow(column(
-          6,
-          actionButton("makeVolcanoPlot", "Generate Plot", icon = icon("play"))
-        ),
-        column(6, uiOutput(
-          "runVolcanoPlot"
-        )))
+        actionButton("makeVolcanoPlot", "Generate Plot", icon = icon("play"))
       )
     })
   } else {
@@ -171,33 +165,13 @@ observeEvent(input$makeVolcanoPlot, {
   
   # ====================================
   # This function render a button of R code of making vocalno plot.
-  # Position: In Volcano Plot, upper left, parameter panel.
+  # Position: In Volcano Plot, down right
   # ====================================
   
-  output$runVolcanoPlot <- renderUI({
-    actionButton("showVolcanoCode", "Show R code", icon = icon("code"))
+  output$runVolcanoPlot <- renderText({
+    variables$runVolcanoPlot
   })
-})
-
-# ====================================
-# This function popup a window of R code of making vocalno plot.
-# Position: In Volcano Plot, middle.
-# ====================================
-
-observeEvent(input$showVolcanoCode, {
-  shinyalert(
-    title = "Volcano Plot code",
-    text = variables$runVolcanoPlot,
-    closeOnEsc = TRUE,
-    closeOnClickOutside = TRUE,
-    html = TRUE,
-    type = "info",
-    showConfirmButton = TRUE,
-    confirmButtonText = "OK",
-    confirmButtonCol = "#AEDEF4",
-    cancelButtonText = "Close",
-    animation = TRUE
-  )
+  
 })
 
 # ====================================

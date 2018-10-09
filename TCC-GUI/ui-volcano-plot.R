@@ -50,5 +50,13 @@ column(
     status = "primary",
     width = NULL,
     withBarsUI(plotlyOutput("geneBarPlotInVolcano"))
+  ),
+  box(title = "Volcano Plot Code",
+      solidHeader = TRUE,
+      status = "danger",
+      collapsible = TRUE,
+      collapsed = TRUE,
+      width = NULL,
+      verbatimTextOutput("runVolcanoPlot")
   )
 )))

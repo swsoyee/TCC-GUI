@@ -8,6 +8,14 @@ fluidPage(column(
     solidHeader = TRUE,
     status = "primary",
     uiOutput("pcaParameter")
+  ),
+  box(title = "PCA Analysis Code",
+      solidHeader = TRUE,
+      status = "danger",
+      collapsible = TRUE,
+      collapsed = TRUE,
+      width = NULL,
+      verbatimTextOutput("runPCACode")
   )
 ),
 column(

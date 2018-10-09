@@ -74,7 +74,7 @@ column(
   box(
     title = "Read Count Table",
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     width = NULL,
     uiOutput("emptyTable")
   )
@@ -84,7 +84,7 @@ fluidRow(column(
   box(
     title = "Summary of Data",
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     width = NULL,
     uiOutput("rowOfCountData"),
     uiOutput("ColumnOfCountData"),
@@ -97,46 +97,91 @@ column(
   box(
     title = "Sample Distribution",
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
+    fluidRow(column(
+      1,
+      dropdownButton(
+        tags$h3("Plot options"),
+        textInput(
+          inputId = "sampleDistributionTitle",
+          label = "Title",
+          value = "Row Count Sample Distribution",
+          placeholder = "Row Count Sample Distribution"
+        ),
+        textInput(
+          inputId = "sampleDistributionXlab",
+          label = "X label",
+          value = "log2(CPM)",
+          placeholder = "log2(CPM)"
+        ),
+        textInput(
+          inputId = "sampleDistributionYlab",
+          label = "Y label",
+          value = "Density",
+          placeholder = "Density"
+        ),
+        status = "primary",
+        icon = icon("gear"),
+        size = "sm",
+        tooltip = tooltipOptions(title = "Plot options")
+      )
+    ),
+    column(
+      1,
+      dropdownButton(
+        tags$h3("R code"),
+        tags$p("Coming soon"),
+        status = "danger",
+        icon = icon("code"),
+        size = "sm",
+        tooltip = tooltipOptions(title = "Show R code")
+      )
+    )),
     withBarsUI(plotlyOutput("sampleDistribution"))
   ),
   box(
     title = "Row Count Distribution",
     solidHeader = TRUE,
-    status = "primary",
-    dropdownButton(
-      tags$h3("Plot options"),
-      textInput(
-        inputId = "sampleDistributionDensityTitle",
-        label = "Title",
-        value = "Row Count Distribution",
-        placeholder = "Row Count Distribution"
-      ),
-      textInput(
-        inputId = "sampleDistributionDensityXlab",
-        label = "X label",
-        value = "log2(CPM)",
-        placeholder = "log2(CPM)"
-      ),
-      textInput(
-        inputId = "sampleDistributionDensityYlab",
-        label = "Y label",
-        value = "Density",
-        placeholder = "Density"
-      ),
-      status = "primary",
-      icon = icon("gear"),
-      size = "sm",
-      tooltip = tooltipOptions(title = "Plot options")
+    status = "info",
+    fluidRow(column(
+      1,
+      dropdownButton(
+        tags$h3("Plot options"),
+        textInput(
+          inputId = "sampleDistributionDensityTitle",
+          label = "Title",
+          value = "Row Count Distribution",
+          placeholder = "Row Count Distribution"
+        ),
+        textInput(
+          inputId = "sampleDistributionDensityXlab",
+          label = "X label",
+          value = "log2(CPM)",
+          placeholder = "log2(CPM)"
+        ),
+        textInput(
+          inputId = "sampleDistributionDensityYlab",
+          label = "Y label",
+          value = "Density",
+          placeholder = "Density"
+        ),
+        status = "primary",
+        icon = icon("gear"),
+        size = "sm",
+        tooltip = tooltipOptions(title = "Plot options")
+      )
     ),
-    dropdownButton(
-      tags$h3("R code"),
-      tags$p("Coming soon"),
-      status = "info",
-      icon = icon("code"),
-      size = "sm",
-      tooltip = tooltipOptions(title = "Show R code")
-    ),
+    column(
+      1,
+      dropdownButton(
+        tags$h3("R code"),
+        tags$p("Coming soon"),
+        status = "danger",
+        icon = icon("code"),
+        size = "sm",
+        tooltip = tooltipOptions(title = "Show R code")
+      )
+    )),
     withBarsUI(plotlyOutput("sampleDistributionDensity"))
   )
 )))

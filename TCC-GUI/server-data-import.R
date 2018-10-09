@@ -117,24 +117,42 @@ output$table <- DT::renderDataTable({
 
 output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
-    return("No data to show. Click `Load Sample Data` of `Upload` your own dataset first.")
+    return("No data to show. Click [Load Sample Data] or [Upload] your own dataset.")
   } else {
     DT::dataTableOutput('table')
   }
 })
 
 observeEvent(input$confirmedGroupList, {
+  
   if (nrow(variables$CountData) == 0) {
-    showNotification("Please input count data table!", type = "error")
+    sendSweetAlert(
+      session = session,
+      title = "Data error!",
+      text = "Please input count data table!",
+      type = "error"
+    )
     return()
   }
   if (input$groupSelectViaText == "") {
-    showNotification("Please input group information!", type = "error")
+    sendSweetAlert(
+      session = session,
+      title = "Group error!",
+      text = "Please input group information!",
+      type = "error"
+    )
     return()
   }
 
   tryCatch(
     {
+      progressSweetAlert(
+        session = session,
+        id = "dataImportProgress",
+        title = "Processing group info",
+        display_pct = TRUE,
+        value = 0
+      )
       group <- fread(input$groupSelectViaText)
       variables$groupList <-
         lapply(unique(group$V2), function(x) {
@@ -150,14 +168,21 @@ observeEvent(input$confirmedGroupList, {
       # Storage convert group list to local
       variables$groupListConvert <- data.cl
       
-      showNotification("Group information has been update.", type = "message")
+      updateProgressBar(
+        session = session,
+        id = "dataImportProgress",
+        title = "Ploting Sample Distribution",
+        value = 20
+      )
+      
+      # showNotification("Group information has been update.", type = "message")
       
       # ====================================
       # This function render a boxplot of sample distribution
       #
       # Position: In Data import tab, down middle.
       # ====================================
-      showNotification("Plot Sample Distribution.", type = "message")
+      # showNotification("Plot Sample Distribution.", type = "message")
       data <- variables$CountData[variables$groupListConvert != 0]
       cpm <- log2(data/1000000)
       cpm_stack <- stack(cpm)
@@ -172,8 +197,14 @@ observeEvent(input$confirmedGroupList, {
       cpm_stack_order <- unique(cpm_stack[order(cpm_stack$group), ]$ind)
       xform <- list(categoryorder = "array",
                     categoryarray = cpm_stack_order,
-                    title = "")
+                    title = input$sampleDistributionTitle)
       
+      updateProgressBar(
+        session = session,
+        id = "dataImportProgress",
+        title = "Ploting Sample Distribution",
+        value = 40
+      )
       withBars(output$sampleDistribution <- renderPlotly({
         plot_ly(
           data = cpm_stack,
@@ -183,11 +214,17 @@ observeEvent(input$confirmedGroupList, {
           split =  ~ group
         ) %>%
           layout(
-            title = "Raw Count Sample Distribution",
+            title = input$sampleDistributionTitle,
             xaxis = xform,
-            yaxis = list(title = "log2 CPM")
+            yaxis = list(title = input$sampleDistributionYlab)
           )
       }))
+      updateProgressBar(
+        session = session,
+        id = "dataImportProgress",
+        title = "Ploting Sample Distribution",
+        value = 60
+      )
       # The same plot used in Calculation tab.
       withBars(output$sampleDistributionTCC <- renderPlotly({
         plot_ly(
@@ -198,9 +235,9 @@ observeEvent(input$confirmedGroupList, {
           split =  ~ group
         ) %>%
           layout(
-            title = "Raw Count Sample Distribution",
+            title = input$sampleDistributionTitle,
             xaxis = xform,
-            yaxis = list(title = "log2 CPM")
+            yaxis = list(title = input$sampleDistributionYlab)
           )
       }))
       # ====================================
@@ -208,6 +245,12 @@ observeEvent(input$confirmedGroupList, {
       #
       # Position: In Data import tab, down right
       # ====================================
+      updateProgressBar(
+        session = session,
+        id = "dataImportProgress",
+        title = "Ploting Sample Distribution Density",
+        value = 80
+      )
       withBars(output$sampleDistributionDensity <- renderPlotly({
         densityTable <-lapply(cpm, density)
         p <- plot_ly(type = "scatter", mode = "lines")
@@ -229,6 +272,12 @@ observeEvent(input$confirmedGroupList, {
       #
       # Position: In Data import tab, left down
       # ====================================
+      updateProgressBar(
+        session = session,
+        id = "dataImportProgress",
+        title = "Summarizing data",
+        value = 90
+      )
       output$rowOfCountData <- renderUI({
         infoBox(
           "Row of Count data", 
@@ -269,13 +318,30 @@ observeEvent(input$confirmedGroupList, {
           color = "olive"
         )
       })
+      
+      closeSweetAlert(session = session)
+      sendSweetAlert(session = session,
+                     title = "Import completed!",
+                     type = "success")
     },
     error = function(e) {
-      showNotification("Check your group information format!", type = "error")
+      sendSweetAlert(
+        session = session,
+        title = "Group error!",
+        text = "Check your group information format!",
+        type = "error"
+      )
+      # showNotification("Check your group information format!", type = "error")
       return()
     },
     warning = function(w) {
-      showNotification("Check your group information format!", type = "error")
+      sendSweetAlert(
+        session = session,
+        title = "Group error!",
+        text = "Check your group information format!",
+        type = "error"
+      )
+      # showNotification("Check your group information format!", type = "error")
       return()
     }
   )

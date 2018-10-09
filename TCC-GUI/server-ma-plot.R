@@ -27,10 +27,11 @@ observeEvent(input$sider, {
         value = input$fdr
       ),
       colourInput("fdrColor", "DEGs color：", "#B22222"),
-      fluidRow(column(
-        6, actionButton("makeMAPlot", "Generate MA-Plot", icon = icon("play"))
-      ),
-      column(6, uiOutput("runMAPlot")))
+      # fluidRow(column(
+        # 6, 
+      actionButton("makeMAPlot", "Generate MA-Plot", icon = icon("play"))
+      # ),
+      # column(6, uiOutput("runMAPlot")))
       
     )
   })}
@@ -153,30 +154,9 @@ observeEvent(input$makeMAPlot, {
   # Position: In Volcano Plot, upper left, parameter panel.
   # ====================================
   
-  output$runMAPlot <- renderUI({
-    actionButton("showMACode", "Show R code", icon = icon("code"))
+  output$runMAPlot <- renderText({
+    variables$runMAPlot
   })
-})
-
-# ====================================
-# This function popup a window of R code of making MA plot.
-# Position: In MA Plot, middle.
-# ====================================
-
-observeEvent(input$showMACode, {
-  shinyalert(
-    title = "MA Plot code",
-    text = variables$runMAPlot,
-    closeOnEsc = TRUE,
-    closeOnClickOutside = TRUE,
-    html = TRUE,
-    type = "info",
-    showConfirmButton = TRUE,
-    confirmButtonText = "OK",
-    confirmButtonCol = "#AEDEF4",
-    cancelButtonText = "Close",
-    animation = TRUE
-  )
 })
 
 # When hover on the point, show a expresion plot of specific gene.

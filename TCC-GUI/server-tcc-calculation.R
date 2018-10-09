@@ -306,15 +306,6 @@ observeEvent(input$TCC, {
       )
   })
   
-  # ====================================
-  # This function render a button of showing the TCC running code.
-  #
-  # Position: In Computation tab, under right, in TCC Parameters panel.
-  # ====================================
-  output$runTCCCode <- renderUI({
-    actionButton("showTCCCode", "Show R code", icon = icon("code"))
-  })
-  
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
@@ -338,18 +329,9 @@ resultTable <- reactive({
 # Position: In Computation tab, upper right, in TCC Parameters panel.
 # ====================================
 
-observeEvent(input$showTCCCode, {
-  shinyalert(
-    title = "TCC Run code",
-    text = variables$runTCCCode,
-    closeOnEsc = TRUE,
-    closeOnClickOutside = TRUE,
-    html = TRUE,
-    type = "info",
-    showConfirmButton = TRUE,
-    confirmButtonText = "OK",
-    confirmButtonCol = "#AEDEF4",
-    cancelButtonText = "Close",
-    animation = TRUE
-  )
+observeEvent(input$TCC, {
+  output$showTCCCode <- renderText({
+    # HTML(markdown::markdownToHTML(text = variables$runTCCCode))
+    variables$runTCCCode
+  })
 })

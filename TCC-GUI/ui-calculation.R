@@ -1,7 +1,6 @@
 # ui-calculation.R
 
-fluidPage(
-  useSweetAlert(),fluidRow(column(
+fluidPage(useSweetAlert(), fluidRow(column(
   3,
   box(
     title = "TCC Parameters",
@@ -57,12 +56,24 @@ fluidPage(
         value = 0.05,
         step = 0.05
       ),
-      fluidRow(column(6, actionBttn("TCC", "Run TCC", icon = icon("play"),
-                                      size = "sm",
-                                      color = "primary",
-                                      style = "fill")),
-               column(6, uiOutput("runTCCCode")))
+      actionBttn(
+        "TCC",
+        "Run TCC",
+        icon = icon("play"),
+        size = "sm",
+        color = "primary",
+        style = "fill"
+      )
     )
+  ),
+  box(
+    title = "TCC Calculation Code",
+    status = "danger",
+    solidHeader = TRUE,
+    width = NULL,
+    collapsible = TRUE,
+    collapsed = TRUE,
+    verbatimTextOutput("showTCCCode")
   )
 ),
 column(
@@ -71,14 +82,14 @@ column(
     title = "Result Table",
     width = NULL,
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     uiOutput("mainResultTable")
   ),
   box(
     title = "Sample Distribution",
     width = NULL,
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     column(6,
            withBarsUI(plotlyOutput(
              "sampleDistributionTCC"
