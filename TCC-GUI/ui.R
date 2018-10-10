@@ -58,7 +58,6 @@ dashboardPage(
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(
-    # useShinyalert(),
     tabItems(
       tabItem(tabName = "dataInputHelp", includeMarkdown("document/English_Data_input.md")),
       tabItem(tabName = "tccComputationHelp", includeMarkdown("document/English_Computation.md")),

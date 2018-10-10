@@ -85,15 +85,43 @@ column(
     status = "info",
     uiOutput("mainResultTable")
   ),
-  box(
+  tabBox(
     title = "Sample Distribution",
+    id = "sampleDistributionInTCC",
     width = NULL,
-    solidHeader = TRUE,
-    status = "info",
-    column(6,
-           withBarsUI(plotlyOutput(
-             "sampleDistributionTCC"
-           ))),
-    column(6, uiOutput("sampleDistributionInTCC"))
+    tabPanel(title = "Box plot",
+             fluidRow(
+               column(6,
+                      withBarsUI(plotlyOutput(
+                        "sampleDistributionTCC"
+                      )))
+               ,
+               column(6,
+                      withBarsUI(
+                        plotlyOutput("NormalizedSampleDistribution")
+                      ))
+             )),
+    tabPanel(title = "Density plot",
+             fluidRow(
+               column(6,
+                      withBarsUI(
+                        plotlyOutput("sampleDistributionDensityTCC")
+                      )),
+               column(6,
+                      withBarsUI(
+                        plotlyOutput("NormalizedSampleDistributionDensity")
+                      ))
+             ))
   )
+  # box(
+  #   title = "Sample Distribution",
+  #   width = NULL,
+  #   solidHeader = TRUE,
+  #   status = "info",
+  #   column(6,
+  #          withBarsUI(plotlyOutput(
+  #            "sampleDistributionTCC"
+  #          ))),
+  #   column(6, uiOutput("sampleDistributionInTCC"))
+  # )
 )))

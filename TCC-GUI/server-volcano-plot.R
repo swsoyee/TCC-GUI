@@ -34,9 +34,36 @@ observeEvent(input$sider, {
         textInput("xlabs", "X-axis (Fold Change) label:", value = "log2(Fold Change)"),
         textInput("ylabs", "Y-axis (P-value) label:", value = "-log10(P-value)"),
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
-        colourInput("downColor", "Down-regulate：", "green"),
-        colourInput("upColor", "Up-regulate：", "red"),
-        actionButton("makeVolcanoPlot", "Generate Plot", icon = icon("play"))
+        
+        column(6,
+        spectrumInput(
+          inputId = "downColor",
+          label = "Down-regulate:",
+          choices = list(
+            list("green", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
+            as.list(brewer.pal(n = 9, name = "Blues")),
+            as.list(brewer.pal(n = 9, name = "Greens")),
+            as.list(brewer.pal(n = 11, name = "Spectral")),
+            as.list(brewer.pal(n = 8, name = "Dark2"))
+          ),
+          options = list(`toggle-palette-more-text` = "Show more")
+        )),
+        column(6,
+        spectrumInput(
+          inputId = "upColor",
+          label = "Up-regulate:",
+          choices = list(
+            list("red", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
+            as.list(brewer.pal(n = 9, name = "Blues")),
+            as.list(brewer.pal(n = 9, name = "Greens")),
+            as.list(brewer.pal(n = 11, name = "Spectral")),
+            as.list(brewer.pal(n = 8, name = "Dark2"))
+          ),
+          options = list(`toggle-palette-more-text` = "Show more")
+        )),
+        actionBttn("makeVolcanoPlot", "Generate Plot", icon = icon("play"), size = "sm",
+                   color = "primary",
+                   style = "fill")
       )
     })
   } else {

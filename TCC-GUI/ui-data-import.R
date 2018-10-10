@@ -111,13 +111,13 @@ column(
         textInput(
           inputId = "sampleDistributionXlab",
           label = "X label",
-          value = "log2(CPM)",
+          value = "Sample",
           placeholder = "log2(CPM)"
         ),
         textInput(
           inputId = "sampleDistributionYlab",
           label = "Y label",
-          value = "Density",
+          value = "log2(CPM)",
           placeholder = "Density"
         ),
         status = "primary",

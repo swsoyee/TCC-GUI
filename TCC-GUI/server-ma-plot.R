@@ -26,13 +26,21 @@ observeEvent(input$sider, {
         max = 1,
         value = input$fdr
       ),
-      colourInput("fdrColor", "DEGs color：", "#B22222"),
-      # fluidRow(column(
-        # 6, 
-      actionButton("makeMAPlot", "Generate MA-Plot", icon = icon("play"))
-      # ),
-      # column(6, uiOutput("runMAPlot")))
-      
+      spectrumInput(
+        inputId = "fdrColor",
+        label = "DEGs color:",
+        choices = list(
+          list("#B22222", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
+          as.list(brewer.pal(n = 9, name = "Blues")),
+          as.list(brewer.pal(n = 9, name = "Greens")),
+          as.list(brewer.pal(n = 11, name = "Spectral")),
+          as.list(brewer.pal(n = 8, name = "Dark2"))
+        ),
+        options = list(`toggle-palette-more-text` = "Show more")
+      ),
+      actionBttn("makeMAPlot", "Generate MA-Plot", icon = icon("play"), size = "sm",
+                 color = "primary",
+                 style = "fill")
     )
   })}
 })

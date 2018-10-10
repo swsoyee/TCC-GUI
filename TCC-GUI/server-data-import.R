@@ -174,15 +174,13 @@ observeEvent(input$confirmedGroupList, {
         title = "Ploting Sample Distribution",
         value = 20
       )
-      
-      # showNotification("Group information has been update.", type = "message")
+
       
       # ====================================
       # This function render a boxplot of sample distribution
       #
       # Position: In Data import tab, down middle.
       # ====================================
-      # showNotification("Plot Sample Distribution.", type = "message")
       data <- variables$CountData[variables$groupListConvert != 0]
       cpm <- log2(data/1000000)
       cpm_stack <- stack(cpm)
@@ -205,14 +203,16 @@ observeEvent(input$confirmedGroupList, {
         title = "Ploting Sample Distribution",
         value = 40
       )
+      
+      psd <- plot_ly(
+        data = cpm_stack,
+        x =  ~ ind,
+        y =  ~ values,
+        type = "box",
+        split =  ~ group
+      )
       withBars(output$sampleDistribution <- renderPlotly({
-        plot_ly(
-          data = cpm_stack,
-          x =  ~ ind,
-          y =  ~ values,
-          type = "box",
-          split =  ~ group
-        ) %>%
+        psd %>%
           layout(
             title = input$sampleDistributionTitle,
             xaxis = xform,
@@ -227,13 +227,7 @@ observeEvent(input$confirmedGroupList, {
       )
       # The same plot used in Calculation tab.
       withBars(output$sampleDistributionTCC <- renderPlotly({
-        plot_ly(
-          data = cpm_stack,
-          x =  ~ ind,
-          y =  ~ values,
-          type = "box",
-          split =  ~ group
-        ) %>%
+        psd %>%
           layout(
             title = input$sampleDistributionTitle,
             xaxis = xform,
@@ -251,15 +245,39 @@ observeEvent(input$confirmedGroupList, {
         title = "Ploting Sample Distribution Density",
         value = 80
       )
+      
+      densityTable <-lapply(cpm, density)
+      p <- plot_ly(type = "scatter", mode = "lines")
+      for(i in 1:length(densityTable)){
+        p <- add_trace(p, x = densityTable[[i]][[1]],
+                       y = densityTable[[i]][[2]],
+                       fill = "tozeroy",
+                       name = names(densityTable[i]))
+      }
+      # p %>%
+      #   layout(title = input$sampleDistributionDensityTitle,
+      #          xaxis = list(title = input$sampleDistributionDensityXlab),
+      #          yaxis = list(title = input$sampleDistributionDensityYlab),
+      #          legend = list(orientation = 'h'))
+      
       withBars(output$sampleDistributionDensity <- renderPlotly({
-        densityTable <-lapply(cpm, density)
-        p <- plot_ly(type = "scatter", mode = "lines")
-        for(i in 1:length(densityTable)){
-          p <- add_trace(p, x = densityTable[[i]][[1]],
-                         y = densityTable[[i]][[2]],
-                         fill = "tozeroy",
-                         name = names(densityTable[i]))
-        }
+        # densityTable <-lapply(cpm, density)
+        # p <- plot_ly(type = "scatter", mode = "lines")
+        # for(i in 1:length(densityTable)){
+        #   p <- add_trace(p, x = densityTable[[i]][[1]],
+        #                  y = densityTable[[i]][[2]],
+        #                  fill = "tozeroy",
+        #                  name = names(densityTable[i]))
+        # }
+        p %>%
+          layout(title = input$sampleDistributionDensityTitle,
+                 xaxis = list(title = input$sampleDistributionDensityXlab),
+                 yaxis = list(title = input$sampleDistributionDensityYlab),
+                 legend = list(orientation = 'h'))
+      }))
+      
+      # The same plot used in Calculation tab.
+      withBars(output$sampleDistributionDensityTCC <- renderPlotly({
         p %>%
           layout(title = input$sampleDistributionDensityTitle,
                  xaxis = list(title = input$sampleDistributionDensityXlab),

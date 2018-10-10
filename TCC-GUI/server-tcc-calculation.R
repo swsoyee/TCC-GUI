@@ -236,15 +236,6 @@ observeEvent(input$TCC, {
     }
   )
   
-  # ====================================
-  # This function render a Sample Distribution.
-  #
-  # Position: In Computation tab, under middle.
-  # ====================================
-  output$sampleDistributionInTCC <- renderUI({
-    plotlyOutput("NormalizedSampleDistribution")
-  })
-  
   
   # ====================================
   # This function render a series UI of Result table.
@@ -269,7 +260,7 @@ observeEvent(input$TCC, {
   # Position: In Computation tab, middle middle.
   # ====================================
   
-  output$NormalizedSampleDistribution <- renderPlotly({
+  withBars(output$NormalizedSampleDistribution <- renderPlotly({
     validate(need(
       colnames(variables$norData) %in% colnames(variables$CountData),
       "Please rerun the TCC."
@@ -292,7 +283,7 @@ observeEvent(input$TCC, {
     )
     
     showNotification("Ploting Normalized Sample Distribution", type = "message")
-    print(head(cpm_stack))
+
     plot_ly(
       x = cpm_stack[, 2],
       y = cpm_stack[, 4],
@@ -304,8 +295,29 @@ observeEvent(input$TCC, {
         xaxis = xform,
         yaxis = list(title = "log2 CPM")
       )
-  })
+  }))
   
+  withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
+    data <- variables$norData[, variables$groupListConvert != 0]
+    cpm <- log2(data/1000000)
+    # print(head(cpm))
+    densityTable <-lapply(data.frame(cpm), density)
+    print(str(densityTable))
+    p <- plot_ly(type = "scatter", mode = "lines")
+    print("ok1")
+    for(i in 1:length(densityTable)){
+      p <- add_trace(p, x = densityTable[[i]][[1]],
+                     y = densityTable[[i]][[2]],
+                     fill = "tozeroy",
+                     name = names(densityTable[i]))
+    }
+    print("ok2")
+    p %>%
+      layout(title = "Normalized Sample Distribution",
+             xaxis = list("log2(CPM)"),
+             yaxis = list("Density"),
+             legend = list(orientation = 'h'))
+  }))
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
