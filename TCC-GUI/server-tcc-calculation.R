@@ -298,11 +298,11 @@ observeEvent(input$TCC, {
   }))
   
   withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
-    data <- variables$norData[, variables$groupListConvert != 0]
-    cpm <- log2(data/1000000)
-    # print(head(cpm))
+    # print(head(variables$norData))
+    # print(variables$groupListConvert)
+    # data <- variables$norData[, variables$groupListConvert != 0]
+    cpm <- log2(variables$norData/1000000)
     densityTable <-lapply(data.frame(cpm), density)
-    print(str(densityTable))
     p <- plot_ly(type = "scatter", mode = "lines")
     print("ok1")
     for(i in 1:length(densityTable)){

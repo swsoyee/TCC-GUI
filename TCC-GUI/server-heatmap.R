@@ -15,7 +15,7 @@ observeEvent(input$sider, {
           label = "Select gene",
           choices = c(
             "By list",
-            "By name",
+            # "By name",
             "By FDR"
           ),
           justified = TRUE,
@@ -100,12 +100,12 @@ output$heatmapSelectGene <- renderUI({
       rows = 5,
       placeholder = "Input gene's name (first column in the dataset), one gene per line."
     ),
-    "By name" = selectInput(
-      "heatmapSelectList",
-      "Select genes by name",
-      choices = row.names(variables$CountData),
-      multiple = TRUE
-    ),
+    # "By name" = selectInput(
+    #   "heatmapSelectList",
+    #   "Select genes by name",
+    #   choices = row.names(variables$CountData),
+    #   multiple = TRUE
+    # ),
     "By FDR" = tagList(
       if (input$testMethod != 'wad') {
         sliderInput(
@@ -147,9 +147,9 @@ observeEvent(input$heatmapRun, {
       data <-
         data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
     }
-    if (input$heatmapGeneSelectType == "By name") {
-      data <- data[row.names(data) %in% input$heatmapSelectList, ]
-    }
+    # if (input$heatmapGeneSelectType == "By name") {
+    #   data <- data[row.names(data) %in% input$heatmapSelectList, ]
+    # }
     if (input$heatmapGeneSelectType == "By FDR") {
       if (input$testMethod == 'wad') {
         data <-
@@ -162,7 +162,13 @@ observeEvent(input$heatmapRun, {
     }
     
       if(nrow(data) == 0) {
-        showNotification("Genes list is empty!", type = "error")
+        # showNotification("Genes list is empty!", type = "error")
+        sendSweetAlert(
+          session = session,
+          title = "List contents error!",
+          text = "Genes list is empty!",
+          type = "error"
+        )
         return()
       } else {
         showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
@@ -219,11 +225,22 @@ observeEvent(input$heatmapRun, {
     })
   },
   error = function(e) {
-    showNotification("Genes list incorrect!", type = "error")
+    sendSweetAlert(
+      session = session,
+      title = "List contents error!",
+      text = "Genes list incorrect!",
+      type = "error"
+    )
     return()
   },
   warning = function(w) {
-    showNotification("Genes list incorrect!", type = "error")
+    sendSweetAlert(
+      session = session,
+      title = "List contents error!",
+      text = "Genes list incorrect!",
+      type = "error"
+    )
+    # showNotification("Genes list incorrect!", type = "error")
     return()
   })
   
@@ -232,31 +249,9 @@ observeEvent(input$heatmapRun, {
   #
   # Position: In Heatmap tab, under right, in Heatmap Parameters panel.
   # ====================================
-  output$runHeatmapCode <- renderUI({
-    actionButton("showHeatmapCode", "Show R code", icon = icon("code"))
-  })
+
 })
 })
 
-# ====================================
-# This function check the `Show R code` button, if the botton is clicked,
-# show the TCC running code.
-# Position: In Computation tab, upper right, in TCC Parameters panel.
-# ====================================
 
-observeEvent(input$showHeatmapCode, {
-  shinyalert(
-    title = "TCC Run code",
-    text = variables$runHeatmap,
-    closeOnEsc = TRUE,
-    closeOnClickOutside = TRUE,
-    html = TRUE,
-    type = "info",
-    showConfirmButton = TRUE,
-    confirmButtonText = "OK",
-    confirmButtonCol = "#AEDEF4",
-    cancelButtonText = "Close",
-    animation = TRUE
-  )
-})
 
