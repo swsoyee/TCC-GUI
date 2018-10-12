@@ -5,19 +5,27 @@
 # Position: In Expression Plot, upper left.
 # ====================================
 output$expressionParameters <- renderUI({
-  selectInput(
-    "expressionGene",
-    "Select Gene(s):",
-    choices = row.names(variables$CountData),
-    multiple = TRUE
+  # selectInput(
+  #   "expressionGene",
+  #   "Select Gene(s):",
+  #   choices = row.names(variables$CountData),
+  #   multiple = TRUE
+  # )
+  textAreaInput(
+    "expressionGeneList",
+    "Paste a list of genes",
+    rows = 5,
+    placeholder = "Input gene's name (first column in the dataset), one gene per line."
   )
 })
 
-observeEvent(input$expressionGene, {
+observeEvent(input$expressionGeneList, {
   data <- variables$CountData
   data.cl <- variables$groupListConvert
+  # data <-
+  #   variables$CountData[row.names(variables$CountData) %in% input$expressionGene,]
   data <-
-    variables$CountData[row.names(variables$CountData) %in% input$expressionGene,]
+    data[row.names(data) %in% unlist(strsplit(x = input$expressionGeneList, split = '[\r\n]')), ]
   data <- data[, data.cl != 0]
   data.cl <- data.cl[data.cl != 0]
   
@@ -27,10 +35,14 @@ observeEvent(input$expressionGene, {
   # ====================================
   output$geneBarPlotExpression <- renderPlotly({
     validate(
-      need(input$expressionGene != "", "Please select gene(s).")
+      need(input$expressionGeneList != "", "Please select gene(s).")
     )
     p <- list(0)
     
+    if(nrow(data) == 0) {
+      showNotification("No data in your dataset! Please check your input!", type = "error")
+      return()
+    }
     for (i in 1:nrow(data)) {
       p[[i]] <- plot_ly(
         x = colnames(data),
@@ -59,10 +71,14 @@ observeEvent(input$expressionGene, {
   
   output$geneBoxPlotExpression <- renderPlotly({
     validate(
-      need(input$expressionGene != "", "Please select gene(s).")
+      need(input$expressionGeneList != "", "Please select gene(s).")
     )
     p <- list(0)
     
+    if(nrow(data) == 0) {
+      showNotification("No data in your dataset! Please check your input!", type = "error")
+      return()
+    }
     for (i in 1:nrow(data)) {
       p[[i]] <- plot_ly(
         x = as.factor(data.cl),
