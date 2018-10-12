@@ -57,8 +57,8 @@ observeEvent(input$sider, {
             "WPGMA" = "mcquitty",
             "WOGMC" = "median",
             "UPGMC" = "centroid"
-          )# ,
-          # selected = "complete"
+          ),
+          selected = "complete"
         ),
         radioGroupButtons(
           inputId = "heatmapScale",
@@ -71,16 +71,14 @@ observeEvent(input$sider, {
           justified = TRUE,
           status = "primary"
         ),
-        fluidRow(column(
-          6,
-          actionBttn(inputId = "heatmapRun", label = "Run", icon = icon("play"),
-                     size = "sm",
-                     color = "primary",
-                     style = "fill")
-        ),
-        column(6, uiOutput(
-          "runHeatmapCode"
-        )))
+        actionBttn(
+          inputId = "heatmapRun",
+          label = "Run",
+          icon = icon("play"),
+          size = "sm",
+          color = "primary",
+          style = "fill"
+        )
       )
     })
   }
@@ -162,7 +160,6 @@ observeEvent(input$heatmapRun, {
     }
     
       if(nrow(data) == 0) {
-        # showNotification("Genes list is empty!", type = "error")
         sendSweetAlert(
           session = session,
           title = "List contents error!",

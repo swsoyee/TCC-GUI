@@ -9,7 +9,7 @@
 observeEvent(input$CountDataSample, {
   variables$CountData <-
     data.frame(fread(input$SampleDatabase), row.names = 1)
-  showNotification("Count data sample load", type = "message")
+  showNotification("Count data sample loaded.", type = "message")
   
   sampleGroup <- switch(input$SampleDatabase,
                         "sample_data/data_hypodata_3vs3.txt" = paste(
@@ -83,8 +83,9 @@ observeEvent(input$CountDataSample, {
 # 2018-5-23 Change read.table to fread.
 
 observeEvent(input$uploadCountData, {
-  showNotification("Received uploaded file", type = "message")
+  showNotification("Start uploading file...", type = "message")
   variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
+  showNotification("Received uploaded file.", type = "message")
 })
 
 datasetInput <- reactive({

@@ -293,29 +293,24 @@ observeEvent(input$TCC, {
       layout(
         title = "Normalized Sample Distribution",
         xaxis = xform,
-        yaxis = list(title = "log2 CPM")
+        yaxis = list(title = "log2(CPM)")
       )
   }))
   
   withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
-    # print(head(variables$norData))
-    # print(variables$groupListConvert)
-    # data <- variables$norData[, variables$groupListConvert != 0]
     cpm <- log2(variables$norData/1000000)
     densityTable <-lapply(data.frame(cpm), density)
     p <- plot_ly(type = "scatter", mode = "lines")
-    print("ok1")
     for(i in 1:length(densityTable)){
       p <- add_trace(p, x = densityTable[[i]][[1]],
                      y = densityTable[[i]][[2]],
                      fill = "tozeroy",
                      name = names(densityTable[i]))
     }
-    print("ok2")
     p %>%
       layout(title = "Normalized Sample Distribution",
-             xaxis = list("log2(CPM)"),
-             yaxis = list("Density"),
+             xaxis = list(title = "log2(CPM)"),
+             yaxis = list(title = "Density"),
              legend = list(orientation = 'h'))
   }))
   updateProgressBar(

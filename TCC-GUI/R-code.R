@@ -184,6 +184,7 @@ data.pca <- prcomp(data[ , apply(data, 2, var) != 0],
 
 #### Heatmap Plot Runing Code
 observeEvent(input$heatmapRun, {
+  group <- paste(variables$groupList, collapse = ", ")
   runHeatmapCode <- paste0('
 # Select Sample (Column)
 # Grouping

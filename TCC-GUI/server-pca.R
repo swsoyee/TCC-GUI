@@ -37,7 +37,10 @@ observeEvent(input$sider, {
             "UPGMC" = "centroid"
           )
         ),
-        actionButton("pcRun", "Run", icon = icon("play"))
+        actionBttn(inputId = "pcRun", label = "Run", icon = icon("play"),
+                   size = "sm",
+                   color = "primary",
+                   style = "fill")
       )
     })
   }
