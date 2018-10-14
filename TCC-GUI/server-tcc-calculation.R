@@ -271,8 +271,7 @@ observeEvent(input$TCC, {
     cpm_stack$group <- 0
     # Add Group info
     for (i in 1:length(variables$groupList)) {
-      cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]),]$group <-
-        i
+      cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]),]$group <- names(variables$groupList[i])
     }
     cpm_stack_order <-
       unique(cpm_stack[order(cpm_stack$group),]$col)
@@ -338,7 +337,6 @@ resultTable <- reactive({
 
 observeEvent(input$TCC, {
   output$showTCCCode <- renderText({
-    # HTML(markdown::markdownToHTML(text = variables$runTCCCode))
     variables$runTCCCode
   })
 })

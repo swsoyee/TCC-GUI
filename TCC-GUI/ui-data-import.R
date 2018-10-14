@@ -50,12 +50,12 @@ fluidPage(fluidRow(column(
       "Input your group info:",
       rows = 6,
       placeholder = paste(
-        "G1_rep1,1",
-        "G1_rep2,1",
-        "G1_rep3,1",
-        "G2_rep1,2",
-        "G2_rep2,2",
-        "G2_rep3,2",
+        "G1_rep1,control",
+        "G1_rep2,control",
+        "G1_rep3,control",
+        "G2_rep1,sample",
+        "G2_rep2,sample",
+        "G2_rep3,sample",
         sep = '\n'
       )
     ),
@@ -89,7 +89,7 @@ fluidRow(column(
     uiOutput("rowOfCountData"),
     uiOutput("ColumnOfCountData"),
     uiOutput("groupCount"),
-    uiOutput("sampleInGroup")
+    uiOutput("zeroValue")
   )
 ),
 column(

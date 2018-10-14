@@ -70,7 +70,7 @@ observeEvent(input$sider, {
     output$valcanoParameter <- renderUI({
       tagList(
         tags$p(
-          "Because you have chosen \"WAD\" test method, there is no p-value and q-value result for plotting."
+          "No p-value and q-value for plotting when \"WAD\" test method was selected."
         )
       )
     })
@@ -86,7 +86,14 @@ observeEvent(input$sider, {
 observeEvent(input$makeVolcanoPlot, {
   withBars(output$volcanoPloty <- renderPlotly({
     validate(need(resultTable()$p.value != "", "No p-values for ploting."))
-    
+    if(length(variables$groupList) > 2) {
+      sendSweetAlert(
+        session = session,
+        title = "Plot error!",
+        text = "Volcano Plot is unavailable for multiple comparison now.",
+        type = "info"
+      )
+    }
     req(input$makeVolcanoPlot)
     isolate({
       dt <- resultTable()

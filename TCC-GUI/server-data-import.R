@@ -13,12 +13,12 @@ observeEvent(input$CountDataSample, {
   
   sampleGroup <- switch(input$SampleDatabase,
                         "sample_data/data_hypodata_3vs3.txt" = paste(
-                          "G1_rep1,1",
-                          "G1_rep2,1",
-                          "G1_rep3,1",
-                          "G2_rep1,2",
-                          "G2_rep2,2",
-                          "G2_rep3,2",
+                          "G1_rep1,control",
+                          "G1_rep2,control",
+                          "G1_rep3,control",
+                          "G2_rep1,sample",
+                          "G2_rep2,sample",
+                          "G2_rep3,sample",
                           sep = '\n'
                         ),
                         "sample_data/katzmouse_count_table.txt" = paste(
@@ -154,16 +154,17 @@ observeEvent(input$confirmedGroupList, {
         display_pct = TRUE,
         value = 0
       )
-      group <- fread(input$groupSelectViaText)
+      group <- fread(input$groupSelectViaText, header = FALSE)
       variables$groupList <-
         lapply(unique(group$V2), function(x) {
           group[group$V2 == x,]$V1
         })
+      names(variables$groupList) <- unique(group$V2)
       
       data.cl <- rep(0, ncol(variables$CountData))
       
       for (i in 1:length(variables$groupList)) {
-        data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = i
+        data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = names(variables$groupList[i])
       }
       
       # Storage convert group list to local
@@ -189,10 +190,8 @@ observeEvent(input$confirmedGroupList, {
       cpm_stack$group <- 0
       # Add Group info
       for (i in 1:length(variables$groupList)) {
-        cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]),]$group <-
-          i
+        cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]),]$group <- names(variables$groupList[i])
       }
-      # cpm_stack$group <- as.factor(cpm_stack$group)
       cpm_stack_order <- unique(cpm_stack[order(cpm_stack$group), ]$ind)
       xform <- list(categoryorder = "array",
                     categoryarray = cpm_stack_order,
@@ -255,21 +254,8 @@ observeEvent(input$confirmedGroupList, {
                        fill = "tozeroy",
                        name = names(densityTable[i]))
       }
-      # p %>%
-      #   layout(title = input$sampleDistributionDensityTitle,
-      #          xaxis = list(title = input$sampleDistributionDensityXlab),
-      #          yaxis = list(title = input$sampleDistributionDensityYlab),
-      #          legend = list(orientation = 'h'))
       
       withBars(output$sampleDistributionDensity <- renderPlotly({
-        # densityTable <-lapply(cpm, density)
-        # p <- plot_ly(type = "scatter", mode = "lines")
-        # for(i in 1:length(densityTable)){
-        #   p <- add_trace(p, x = densityTable[[i]][[1]],
-        #                  y = densityTable[[i]][[2]],
-        #                  fill = "tozeroy",
-        #                  name = names(densityTable[i]))
-        # }
         p %>%
           layout(title = input$sampleDistributionDensityTitle,
                  xaxis = list(title = input$sampleDistributionDensityXlab),
@@ -318,21 +304,23 @@ observeEvent(input$confirmedGroupList, {
         )
       })
       output$groupCount <- renderUI({
+        groupText <- sapply(variables$groupList, length)
         infoBox(
           "Group Count", 
-          length(variables$groupList),
+          paste0(names(groupText), ": ",groupText, collapse = "-VS-"),
           width = NULL,
           icon = icon("users"),
           fill = TRUE,
           color = "aqua"
         )
       })
-      output$sampleInGroup <- renderUI({
+      output$zeroValue <- renderUI({
+        zeroValue <- sum((apply(variables$CountData, 1, function(x){sum(x) == 0})))
         infoBox(
-          "Sample in Group", 
-          paste0(sapply(variables$groupList, length), collapse = ','),
+          "0 value count in dataset", 
+          paste0(zeroValue, " (", round(zeroValue/nrow(variables$CountData) * 100, 2), "%)"),
           width = NULL,
-          icon = icon("sitemap"),
+          icon = icon("exclamation-circle"),
           fill = TRUE,
           color = "olive"
         )
@@ -350,7 +338,6 @@ observeEvent(input$confirmedGroupList, {
         text = "Check your group information format!",
         type = "error"
       )
-      # showNotification("Check your group information format!", type = "error")
       return()
     },
     warning = function(w) {
@@ -360,7 +347,6 @@ observeEvent(input$confirmedGroupList, {
         text = "Check your group information format!",
         type = "error"
       )
-      # showNotification("Check your group information format!", type = "error")
       return()
     }
   )

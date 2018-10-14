@@ -163,6 +163,9 @@ observeEvent(input$makeMAPlot, {
   # ====================================
   
   output$runMAPlot <- renderText({
+    if(resultTable()$a.value == "") {
+      "No MA values for plotting."
+    }
     variables$runMAPlot
   })
 })
@@ -185,11 +188,7 @@ withBars(output$geneBarPlot <- renderPlotly({
     t(t(variables$norData[row.names(variables$norData) == gene_id,]))
   
   data <- variables$CountData
-  data.cl <- rep(0, ncol(data))
-  
-  for (i in 1:length(variables$groupList)) {
-    data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = data))] = i
-  }
+  data.cl <- variables$groupListConvert
   
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
