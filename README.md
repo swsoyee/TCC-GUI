@@ -16,26 +16,38 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 ---
 
-### 0. Installation
+**Note: Development is now undergoing, some function may be changed in the final version.**
 
-> The online version is **under developing**. Local version is **highly recommended** now.
+---
+
+
+
+### Online version
+
+Go to [TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
+
+### Local version
 
 Make sure that you have already installed those packages in your environment.
 
-`shiny`, `shinythemes`, `shinyalert`, `plotly`, `colourpicker`, `TCC`, `DT`, `heatmaply`, `plotlyBars`.
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`, `plotlyBars`, `markdown`, `data.table`, `RColorBrewer`, `utils`.
 
 If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.
 
 ```R
 # Part1. Install via CRAN
 libs <- c("shiny",
-          "shinythemes", 
-          "shinyalert", 
+          "shinydashboard", 
+          "shinyWidgets", 
           "plotly", 
-          "colourpicker", 
+          "dplyr", 
           "DT", 
           "heatmaply"
-          "devtools")
+          "devtools",
+          "utils",
+          "markdown",
+          "data.table",
+          "RColorBrewer")
 
 for (i in libs){
   if( !is.element(i, .packages(all.available = TRUE)) ) {
@@ -62,86 +74,13 @@ Run the following command to launch `TCC-GUI` in your local environment.
 shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 ```
 
-### <a name="Datainput"></a> 1. Data input
 
----
-- Click **"Computation"** tab on the top;
-
-- Click **"Load Sample Data"** button for test or Click **"Upload..."** button if you want to used your own count dataset.
-
-  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/RawCountTable_.png" width="750" height="545">
-
-### <a name="Computation"></a> 2. Computation
-
----
-- Input your group info in **Group Selection** section and click **"Confirmed"**, then the **"TCC Parameters"** Panel will show up;
-
-  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/GroupSelection_.png" width="359" height="325"> 
-
-- Change the parameters for computation (if you wish), and click the **"Run TCC"**.
-
-  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/TCC_.png" width="359" height="697">
-
-- After computation, **"Result Table"**, and series tab for other analysis will show up.
-
-  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/ResultTable_.png" width="753" height="560">
-
-### <a name="MAplot"></a> 3.1 MA plot
-
----
-- After computation, switch to **"MA Plot"** tab, and click **"Generate MA-Plot"** button;
-
-- Hover cursor on the point, and the additional information will be provided (Gene expression plot).
-
-  ![MA Plot](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot1-md_.png)
-
-- If you want to mark some gene on the plot, please click the specific rows of gene, and click **"Generate MA-Plot" **button again to refresh the plot.
-
-  <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/maplot2-md_.png" width="755" height="689">
-
-- (This is prerelease version. more functions need to be add in)
-
-### <a name="Volcanoplot"></a> 3.2 Volcano plot
-
----
-- Same as part of **MA Plot**.
- ![volcanoplot](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/volcanoplot_.png)
-- (This is prerelease version. more functions need to be add in)
-
-### <a name="PCAanalysis"></a> 3.3 PCA analysis
-
----
-- Change the parameters for PCA (if you wish), and click the **"Run"** button.
-
-  ![pca](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/pca_.png)
-
-- (This is prerelease version. more functions need to be add in)
-
-### <a name="Heatmap"></a> 3.4 Heatmap
-
----
-- Change the parameters for heatmap (if you wish), and click the **"Run"** button.
-
-  ![heatmap](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/heatmap_.png)
-
-- (This is prerelease version. more functions need to be add in)
-
-### <a name="Expression"></a> 3.5 Expression
-
----
-- Select gene(s) you want to plot in the left panel. **Barplot** and **Boxplot** are provided.
-   ![expression](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/expressionPlot_.png)
-
-- (This is prerelease version. more functions need to be add in)
-
-    
-
-### 3.6  Report output
----
-- Generate report in `Markdown`, `HTML` or `Word` (This function have not been finished). 
-
-### <a name="Morehelps"></a> 4. More helps
-
----
-
-- [Install Original TCC package from Bioconductor](http://www.bioconductor.org/packages/release/bioc/html/TCC.html)
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/dataImport.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/calculation.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/VolcanoPlot.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/PCA.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Heatmap.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Expression.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/report.png">

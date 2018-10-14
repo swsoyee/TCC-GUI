@@ -1,10 +1,4 @@
-###  3.4 Heatmap
-
----
-- Change the parameters for heatmap (if you wish), and click the **"Run"** button.
-
-  ![Heatmap Parameters](../www/HeatmapParameters.png)
-
-  ![heatmap](../www/heatmap.png)
-
-- (This is prerelease version. more functions need to be add in)
+1. You can select genes by two method, **By list** and **By FDR**.  
+  ![Heatmap Parameters](../www/HeatmapParameters.png)  
+2. Change the parameters for heatmap (if you wish), and click the **[Run]** button.  
+  ![heatmap](../www/heatmap.png)  

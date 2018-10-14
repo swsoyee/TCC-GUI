@@ -1,5 +1,8 @@
-###  4. More helps
+### Logs function  
+Coming soon.  
 
----
+### Report function  
+Coming soon.  
 
-- [Install Original TCC package from Bioconductor](http://www.bioconductor.org/packages/release/bioc/html/TCC.html)
+###  More helps  
+[Install Original TCC package from Bioconductor](http://www.bioconductor.org/packages/release/bioc/html/TCC.html)  
