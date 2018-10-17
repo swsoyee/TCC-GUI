@@ -7,7 +7,7 @@ observeEvent(input$sider, {
       tagList(
         if (input$testMethod != 'wad') {
           sliderInput("pcFDR",
-                      "FDR",
+                      "FDR:",
                       min = 0.01,
                       max = 1,
                       value = 0.05)
@@ -60,11 +60,6 @@ observeEvent(input$sider, {
 observeEvent(input$pcRun, {
   # Select Sample (Column)
   # Grouping.
-  # data.cl <- rep(0, ncol(variables$CountData))
-  # 
-  # for (i in 1:length(variables$groupList)) {
-  #   data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = i
-  # }
   data.cl <- variables$groupListConvert
   # Using Original Dataset or Normalized Dataset.
   if (input$pcData == "o") {

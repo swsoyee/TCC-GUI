@@ -187,7 +187,7 @@ observeEvent(input$makeMAPlot , {
 observeEvent(input$makeVolcanoPlot , {
   VolcanoParaLog <- paste(
     "Fold Change cut-off:",
-    input$CutFC,
+    paste(input$CutFC, collapse = "~"),
     "p-value cut-off:",
     input$Cutpvalue,
     "Point Size:",
@@ -205,6 +205,41 @@ observeEvent(input$makeVolcanoPlot , {
       "Type" = "Button",
       "Action" = "Generate Volcano Plot",
       "Parameters" = VolcanoParaLog
+    ),
+    stringsAsFactors = FALSE
+  )
+})
+
+##################
+# Click PCA botton log
+##################
+observeEvent(input$pcRun, {
+  if(input$pcFDR != ""){
+    pcaFDR <- paste0("FDR:", pcFDR, sep = " ")
+  } else {
+    pcaFDR <- ""
+  }
+  pcaParaLog <- paste(
+    pcaFDR,
+    "Center:",
+    input$pcCenter,
+    "Scale:",
+    input$pcScale,
+    "Log transform:",
+    input$pcTransform,
+    "Source:",
+    input$pcData,
+    "Hierarchical Clustering Method:",
+    input$dendMethod,
+    sep = " "
+  )
+  variables$logList <- rbind(
+    variables$logList,
+    list(
+      "Time" = as.character(Sys.time()),
+      "Type" = "Button",
+      "Action" = "Run PCA Analysis",
+      "Parameters" = pcaParaLog
     ),
     stringsAsFactors = FALSE
   )
