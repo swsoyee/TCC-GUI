@@ -56,14 +56,14 @@ fluidPage(useSweetAlert(), fluidRow(column(
         value = 0.05,
         step = 0.05
       ),
-      actionBttn(
-        "TCC",
-        "Run TCC",
-        icon = icon("play"),
-        size = "sm",
-        color = "primary",
-        style = "fill"
-      )
+      do.call(actionBttn, c(
+        list(
+          inputId = "TCC",
+          label = "Run TCC Calculation",
+          icon = icon("play")
+        ),
+        actionBttnParams
+      ))
     )
   ),
   box(

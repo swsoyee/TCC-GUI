@@ -15,16 +15,18 @@ fluidPage(column(
       status = "primary"
     ),
     downloadButton('downloadReport')
-  ),
-  box(
-    title = "Parameters log",
-    width = NULL,
-    solidHeader = TRUE,
-    status = "info",
-    htmlOutput("inputLog")
   )
 ),
 column(9,
+       box(
+         title = "Parameters log",
+         width = NULL,
+         solidHeader = TRUE,
+         status = "info",
+         dataTableOutput("inputLogTable"),
+         collapsible = TRUE, 
+         collapsed = TRUE
+       ),
        box(title = "Report preview",
            width = NULL,
            solidHeader = TRUE,

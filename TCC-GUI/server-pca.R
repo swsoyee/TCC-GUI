@@ -37,23 +37,35 @@ observeEvent(input$sider, {
             "UPGMC" = "centroid"
           )
         ),
-        actionBttn(inputId = "pcRun", label = "Run", icon = icon("play"),
-                   size = "sm",
-                   color = "primary",
-                   style = "fill")
+        do.call(actionBttn, c(
+          list(
+            inputId = "pcRun",
+            label = "Run PCA Analysis",
+            icon = icon("play")
+          ),
+          actionBttnParams
+        ))
       )
     })
   }
 })
 
+# ====================================
+# If [Run PCA] button has been clicked, then run the whole PCA Analysis.
+# Position: In [PCA Analysis tab], upper left. 
+# ====================================
+# Input: pcRun (Button)
+# Output: All PCA output
+# ====================================
 observeEvent(input$pcRun, {
   # Select Sample (Column)
   # Grouping.
-  data.cl <- rep(0, ncol(variables$CountData))
-
-  for (i in 1:length(variables$groupList)) {
-    data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = i
-  }
+  # data.cl <- rep(0, ncol(variables$CountData))
+  # 
+  # for (i in 1:length(variables$groupList)) {
+  #   data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = i
+  # }
+  data.cl <- variables$groupListConvert
   # Using Original Dataset or Normalized Dataset.
   if (input$pcData == "o") {
     data <- variables$CountData[data.cl != 0]
@@ -71,7 +83,6 @@ observeEvent(input$pcRun, {
   showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
   
   # PCA processing
-  # 
   if (input$pcTransform == TRUE) {
     data <- t(log(data + 1))
   } else {

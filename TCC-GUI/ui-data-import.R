@@ -17,14 +17,14 @@ fluidPage(fluidRow(column(
           "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
-      actionBttn(
-        "CountDataSample",
-        "Load Sample Data",
-        icon = icon("plus-square"),
-        size = "sm",
-        color = "primary",
-        style = "fill"
-      )
+      do.call(actionBttn, c(
+        list(
+          inputId = "CountDataSample",
+          label = "Load Sample Data",
+          icon = icon("plus-square")
+        ),
+        actionBttnParams
+      ))
     ),
     tabPanel(
       "Upload",
@@ -59,13 +59,13 @@ fluidPage(fluidRow(column(
         sep = '\n'
       )
     ),
-    actionBttn(
-      inputId = "confirmedGroupList",
-      label = "Confirmed",
-      icon = icon("check-square"),
-      size = "sm",
-      color = "primary",
-      style = "fill"
+    do.call(actionBttn, c(
+      list(
+        inputId = "confirmedGroupList",
+        label = "Confirmed",
+        icon = icon("check-square")),
+        actionBttnParams
+      )
     )
   )
 ),

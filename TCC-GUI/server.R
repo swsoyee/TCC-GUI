@@ -19,7 +19,10 @@ shinyServer(function(input, output, session) {
     runVolcanoPlot = "",
     runHeatmap = "",
     runPCACode = "",
-    logList = vector()
+    logList = data.frame("Time" = vector(), 
+                         "Type" = vector(),
+                         "Action" = vector(), 
+                         "Parameters" = vector())
   )
   
   source(file = "server-data-import.R",

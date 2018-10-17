@@ -78,9 +78,11 @@ observeEvent(input$CountDataSample, {
 
 # ====================================
 # If Upload Data button has been clicked, load the data via upload. 
-# Position: In Computation tab, upper left. Button action.
+# Position: In [Data Import tab], upper left. 
 # ====================================
-# 2018-5-23 Change read.table to fread.
+# Input: uploadCountData (Button)
+# Output: None (Save uploaded data into variables)
+# ====================================
 
 observeEvent(input$uploadCountData, {
   showNotification("Start uploading file...", type = "message")
@@ -96,26 +98,42 @@ datasetInput <- reactive({
 # Render a table of raw count data, adding color.
 # Position: In Computation tab, upper middle. 
 # ====================================
+# Input: None
+# Output: DataTable (Table)
+# ====================================
 
 output$table <- DT::renderDataTable({
-  df <- datasetInput() 
+  df <- datasetInput()
   # Create 19 breaks and 20 rgb color values ranging from white to red
-  brks <- quantile(df %>% select_if(is.numeric), probs = seq(.05, .95, .05), na.rm = TRUE)
+  brks <-
+    quantile(df %>% select_if(is.numeric),
+             probs = seq(.05, .95, .05),
+             na.rm = TRUE)
   clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
   {
     paste0("rgb(255,", ., ",", ., ")")
   }
   
-  DT::datatable(df,
-                option = list(
-                  scrollX = TRUE,
-                  pageLength = 10,
-                  searchHighlight = TRUE,
-                  orderClasses = TRUE
-                )) %>%
+  DT::datatable(
+    df,
+    option = list(
+      scrollX = TRUE,
+      pageLength = 10,
+      searchHighlight = TRUE,
+      orderClasses = TRUE
+    )
+  ) %>%
     formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, clrs))
 })
 
+# ====================================
+# If you haven't load any dataset into the server, show a message.
+# Otherwise render DataTable of row data count.
+# Position: In [Data Import tab], upper middle. 
+# ====================================
+# Input: None
+# Output: DataTable (Table)
+# ====================================
 output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
     return("No data to show. Click [Load Sample Data] or [Upload] your own dataset.")
@@ -351,23 +369,3 @@ observeEvent(input$confirmedGroupList, {
     }
   )
 })
-
-# ====================================
-# This function render a wellPanel (Table + Plotly) of different 
-# gene count under specific FDR cutoff condition.
-# Position: In Computation tab, under right.
-# ====================================
-# observeEvent(input$TCC,{
-#   output$summaryTCC <- renderUI({
-#     tagList(
-#       wellPanel(
-#         tags$h4("FDR vs DEGs"),
-#         tags$hr(),
-#         tags$p("DEGs count under different FDR cutoff."),
-#         tabsetPanel(id = "maplot", 
-#                     tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInTCC")),
-#                     tabPanel("Plot", plotlyOutput("fdrCutoffPlotInTCC")))
-#       )
-#     )
-#   })
-# })

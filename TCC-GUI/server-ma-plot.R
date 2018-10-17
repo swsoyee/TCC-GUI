@@ -39,9 +39,14 @@ observeEvent(input$sider, {
         ),
         options = list(`toggle-palette-more-text` = "Show more")
       ),
-      actionBttn("makeMAPlot", "Generate MA-Plot", icon = icon("play"), size = "sm",
-                 color = "primary",
-                 style = "fill")
+      do.call(actionBttn, c(
+        list(
+          inputId = "makeMAPlot",
+          label = "Generate MA-Plot",
+          icon = icon("play")
+        ),
+        actionBttnParams
+      ))
     )
   })}
 })
@@ -204,6 +209,12 @@ withBars(output$geneBarPlot <- renderPlotly({
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
   
+  xOrder <- data.frame("name" = row.names(expression), "group" = data.cl)
+  xOrderVector <- unique(xOrder[order(xOrder$group), ]$name)
+  xform <- list(categoryorder = "array",
+                categoryarray = xOrderVector,
+                title = "")
+  
   plot_ly(
     x = ~ row.names(expression),
     y = ~ expression[, 1],
@@ -227,7 +238,7 @@ withBars(output$geneBarPlot <- renderPlotly({
       )
     ) %>%
     layout(
-      xaxis = list(title = ""),
+      xaxis = xform,
       yaxis = list(title = "Raw Count"),
       title = paste(colnames(expression), "Expression Plot"),
       legend = list(orientation = 'h')

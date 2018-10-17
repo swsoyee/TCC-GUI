@@ -18,13 +18,13 @@ observeEvent(input$sider, {
       tagList(
         sliderInput(
           "CutFC",
-          "Fold Change cut-off：",
+          "Fold Change cut-off:",
           min = -10,
           max = 10,
           value = c(-1, 1),
           step = 0.5
         ),
-        textInput("Cutpvalue", "p-value cut-off：", value = 0.05),
+        textInput("Cutpvalue", "p-value cut-off:", value = 0.05),
         sliderInput(
           "pointSize",
           "Point Size:",
@@ -63,9 +63,14 @@ observeEvent(input$sider, {
           ),
           options = list(`toggle-palette-more-text` = "Show more")
         )),
-        actionBttn("makeVolcanoPlot", "Generate Plot", icon = icon("play"), size = "sm",
-                   color = "primary",
-                   style = "fill")
+        do.call(actionBttn, c(
+          list(
+            inputId = "makeVolcanoPlot",
+            label = "Generate Plot",
+            icon = icon("play")
+          ),
+          actionBttnParams
+        ))
       )
     })
   } else {
@@ -246,6 +251,12 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
   
+  xOrder <- data.frame("name" = row.names(expression), "group" = data.cl)
+  xOrderVector <- unique(xOrder[order(xOrder$group), ]$name)
+  xform <- list(categoryorder = "array",
+                categoryarray = xOrderVector,
+                title = "")
+  
   plot_ly(
     x = ~ row.names(expression),
     y = ~ expression[, 1],
@@ -269,7 +280,7 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
       )
     ) %>%
     layout(
-      xaxis = list(title = ""),
+      xaxis = xform,
       yaxis = list(title = "Raw Count"),
       title = paste(colnames(expression), "Expression Plot"),
       legend = list(orientation = 'h')

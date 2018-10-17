@@ -4,13 +4,10 @@
 # This function render a selectInput in expression paramters box
 # Position: In Expression Plot, upper left.
 # ====================================
+# Input: None
+# Output: Textinput (widget)
+# ====================================
 output$expressionParameters <- renderUI({
-  # selectInput(
-  #   "expressionGene",
-  #   "Select Gene(s):",
-  #   choices = row.names(variables$CountData),
-  #   multiple = TRUE
-  # )
   textAreaInput(
     "expressionGeneList",
     "Paste a list of genes",
@@ -19,11 +16,17 @@ output$expressionParameters <- renderUI({
   )
 })
 
+# ====================================
+# This function render a series output of expression level
+# Position: In [Expression Plot tab], right.
+# ====================================
+# Input: expressionGeneList (Observe input gene list)
+# Output: Plotly Object & DataTable Object
+# ====================================
 observeEvent(input$expressionGeneList, {
   data <- variables$CountData
   data.cl <- variables$groupListConvert
-  # data <-
-  #   variables$CountData[row.names(variables$CountData) %in% input$expressionGene,]
+
   data <-
     data[row.names(data) %in% unlist(strsplit(x = input$expressionGeneList, split = '[\r\n]')), ]
   data <- data[, data.cl != 0]
@@ -31,7 +34,10 @@ observeEvent(input$expressionGeneList, {
   
   # ====================================
   # This function render a plotly of specific gene expression value in barplot.
-  # Position: In Expression Plot, upper right.
+  # Position: In [Expression Plot tab], upper right.
+  # ====================================
+  # Input: None
+  # Output: Plotly object (Plot)
   # ====================================
   output$geneBarPlotExpression <- renderPlotly({
     validate(
@@ -43,6 +49,13 @@ observeEvent(input$expressionGeneList, {
       showNotification("No data in your dataset! Please check your input!", type = "error")
       return()
     }
+    
+    xOrder <- data.frame("name" = row.names(data), "group" = data.cl)
+    xOrderVector <- unique(xOrder[order(xOrder$group), ]$name)
+    xform <- list(categoryorder = "array",
+                  categoryarray = xOrderVector,
+                  title = "")
+    
     for (i in 1:nrow(data)) {
       p[[i]] <- plot_ly(
         x = colnames(data),
@@ -59,14 +72,18 @@ observeEvent(input$expressionGeneList, {
             xref = 'paper',
             yref = 'paper'
           ),
-          showlegend = FALSE
+          showlegend = FALSE,
+          xaxis = xform
         )
     }
     subplot(p)
   })
   # ====================================
   # This function render a plotly of specific gene expression value in boxplot.
-  # Position: In Expression Plot, bottom right.
+  # Position: In [Expression Plot tab], upper right.
+  # ====================================
+  # Input: None
+  # Output: Plotly object (Plot)
   # ====================================
   
   output$geneBoxPlotExpression <- renderPlotly({
@@ -84,7 +101,10 @@ observeEvent(input$expressionGeneList, {
         x = as.factor(data.cl),
         y = t(data[i, ]),
         color = as.factor(data.cl),
-        type = "box"
+        type = "box",
+        boxpoints = "all", 
+        jitter = 0.3,
+        pointpos = -1.8
       ) %>%
         layout(
           annotations = list(
@@ -101,10 +121,12 @@ observeEvent(input$expressionGeneList, {
     subplot(p)
   })
   
-  
   # ====================================
   # This function render a Data.Table of specific gene expression level.
-  # Position: In Expression Plot, bottom.
+  # Position: In [Expression Plot tab], down right.
+  # ====================================
+  # Input: None
+  # Output: DataTable object (Table)
   # ====================================
   
   output$geneTable <- DT::renderDataTable({
@@ -123,7 +145,10 @@ observeEvent(input$expressionGeneList, {
   
   # ====================================
   # This function render a Data.Table of specific gene calculated result.
-  # Position: In Expression Plot, bottom.
+  # Position: In [Expression Plot tab], down right.
+  # ====================================
+  # Input: None
+  # Output: DataTable object (Table)
   # ====================================
   
   output$geneTableCal <- DT::renderDataTable({

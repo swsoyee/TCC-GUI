@@ -66,3 +66,11 @@ make_summary_for_tcc_result <- function(df){
   
   return(df)
 }
+
+
+actionBttnParams <- list(
+  size = "sm",
+  color = "primary",
+  style = "fill",
+  block = TRUE
+)

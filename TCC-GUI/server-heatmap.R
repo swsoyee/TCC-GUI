@@ -71,14 +71,14 @@ observeEvent(input$sider, {
           justified = TRUE,
           status = "primary"
         ),
-        actionBttn(
-          inputId = "heatmapRun",
-          label = "Run",
-          icon = icon("play"),
-          size = "sm",
-          color = "primary",
-          style = "fill"
-        )
+        do.call(actionBttn, c(
+          list(
+            inputId = "heatmapRun",
+            label = "Run Heatmap",
+            icon = icon("play")
+          ),
+          actionBttnParams
+        ))
       )
     })
   }
