@@ -357,17 +357,17 @@ observeEvent(input$confirmedGroupList, {
 # gene count under specific FDR cutoff condition.
 # Position: In Computation tab, under right.
 # ====================================
-observeEvent(input$TCC,{
-  output$summaryTCC <- renderUI({
-    tagList(
-      wellPanel(
-        tags$h4("FDR vs DEGs"),
-        tags$hr(),
-        tags$p("DEGs count under different FDR cutoff."),
-        tabsetPanel(id = "maplot", 
-                    tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInTCC")),
-                    tabPanel("Plot", plotlyOutput("fdrCutoffPlotInTCC")))
-      )
-    )
-  })
-})
+# observeEvent(input$TCC,{
+#   output$summaryTCC <- renderUI({
+#     tagList(
+#       wellPanel(
+#         tags$h4("FDR vs DEGs"),
+#         tags$hr(),
+#         tags$p("DEGs count under different FDR cutoff."),
+#         tabsetPanel(id = "maplot", 
+#                     tabPanel("Table", DT::dataTableOutput("fdrCutoffTableInTCC")),
+#                     tabPanel("Plot", plotlyOutput("fdrCutoffPlotInTCC")))
+#       )
+#     )
+#   })
+# })

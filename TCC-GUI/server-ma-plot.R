@@ -2,13 +2,14 @@
 
 # ====================================
 # This function render a series UI of MA Plot parameters.
-#
-# Position: In MA Plot tab, upper left.
+# Position: In [MA Plot tab], upper left.
+# ====================================
+# Input: sider (Click the tab in the left siderbar)
+# Output: A series UI object (html tags)
 # ====================================
 
 observeEvent(input$sider, {
   if(input$sider == "maplotTab") {
-  showNotification("Generate MA Plot Parameters.", type = "message")
   output$MAPlotParameter <- renderUI({
     tagList(
       sliderInput(
@@ -46,122 +47,125 @@ observeEvent(input$sider, {
 })
 
 # ====================================
-# This function check the `Generate` button, if the botton is clicked,
+# This function check the `Generate` button, if the botton has been clicked,
 # Generate MA Plot.
-# Position: In MA Plot tab, upper middle.
+# Position: In [MA Plot tab], upper middle.
+# ====================================
+# Input: makeMAPlot (Botton)
+# Output: Plotly object (Plot)
 # ====================================
 
 observeEvent(input$makeMAPlot, {
-  withProgress(message = 'MA Ploting: ', value = 0, {
-    withBars(output$maploty <- renderPlotly({
-      validate(need(resultTable()$a.value != "", "No MA values for ploting."))
+  withBars(output$maploty <- renderPlotly({
+    validate(need(resultTable()$a.value != "", "No MA values for ploting."))
+    
+    req(input$makeMAPlot)
+    isolate({
+      # key for connecting MA Plot and Barplot
+      key <- resultTable()$gene_id
       
-      req(input$makeMAPlot)
-      isolate({
-        # key for connecting MA Plot and Barplot
-        key <- resultTable()$gene_id
+      if (is.null(input$resultTableInPlot_rows_selected)) {
+        annotation <- list()
+      } else {
+        markerSelect <-
+          resultTable()[input$resultTableInPlot_rows_selected,]
         
-        if (is.null(input$resultTableInPlot_rows_selected)) {
-          annotation <- list()
-        } else {
-          markerSelect <-
-            resultTable()[input$resultTableInPlot_rows_selected, ]
-          
-          annotation <- list(
-            x = markerSelect$a.value,
-            y = markerSelect$m.value,
-            text = markerSelect$gene_id,
-            xref = "x",
-            yref = "y",
-            showarrow = TRUE,
-            arrowhead = 7,
-            ax = 20,
-            ay = 40
+        annotation <- list(
+          x = markerSelect$a.value,
+          y = markerSelect$m.value,
+          text = markerSelect$gene_id,
+          xref = "x",
+          yref = "y",
+          showarrow = TRUE,
+          arrowhead = 7,
+          ax = 20,
+          ay = 40
+        )
+      }
+      
+      # If test method is `WAD`, it will not generate p.value,
+      # So we can't pick up DEGs according to p.value, no color
+      # information for marking the DEGs.
+      if (input$testMethod != "wad") {
+        x <- cut(resultTable()$q.value, breaks = c(0, input$maFDR, 1))
+        levels(x) <-
+          list(
+            "DEG" = paste("(0,", input$maFDR, "]", sep = ""),
+            "non-DEG" = paste("(", input$maFDR, ",1]", sep = "")
           )
-        }
         
-        # If test method is `WAD`, it will not generate p.value,
-        # So we can't pick up DEGs according to p.value, no color
-        # information for marking the DEGs.
-        if (input$testMethod != "wad") {
-          x <- cut(resultTable()$q.value, breaks = c(0, input$maFDR, 1))
-          levels(x) <-
-            list(
-              "DEG" = paste("(0,", input$maFDR, "]", sep = ""),
-              "non-DEG" = paste("(", input$maFDR, ",1]", sep = "")
-            )
-          
-          incProgress(0.5, detail = "Ploting...")
-          plot_ly(
-            data = resultTable(),
-            x = ~ a.value,
-            y = ~ m.value,
-            type = "scatter",
-            mode = "markers",
-            color = ~ x,
-            colors = c(input$fdrColor, "#000000"),
-            marker = list(size = 3),
-            hoverinfo = "text",
-            text = ~ paste(
-              "</br>Gene:",
-              resultTable()$gene_id,
-              "</br>A value:",
-              round(a.value, 4),
-              "</br>M value:",
-              round(m.value, 4),
-              "</br>Rank:",
-              rank
-            ),
-            key =  ~ key,
-            source = "ma"
-          ) %>%
-            layout(
-              xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
-              yaxis = list(title = "M = log2(G2)-log2(G1)"),
-              title = paste("MA Plot with FDR <", input$maFDR),
-              annotations = annotation
-            )
-        } else {
-          incProgress(0.5, detail = "Ploting...")
-          
-          plot_ly(
-            data = resultTable(),
-            x = ~ as.numeric(a.value),
-            y = ~ as.numeric(m.value),
-            type = "scatter",
-            mode = "markers",
-            colors = c("#000000"),
-            marker = list(size = 3),
-            hoverinfo = "text",
-            text = ~ paste(
-              "</br>Gene:",
-              resultTable()$gene_id,
-              "</br>A value:",
-              round(as.numeric(a.value), 4),
-              "</br>M value:",
-              round(as.numeric(m.value), 4),
-              "</br>Rank:",
-              rank
-            ),
-            key =  ~ key,
-            source = "ma"
-          ) %>%
-            layout(
-              xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
-              yaxis = list(title = "M = log2(G2)-log2(G1)"),
-              title = "MA Plot",
-              annotations = annotation
-            )
-        }
-      })
-    }))
-  })
-  
-  # ====================================
-  # This function render a button of R code of making MA plot.
-  # Position: In Volcano Plot, upper left, parameter panel.
-  # ====================================
-  
+        plot_ly(
+          data = resultTable(),
+          x = ~ a.value,
+          y = ~ m.value,
+          type = "scatter",
+          mode = "markers",
+          color = ~ x,
+          colors = c(input$fdrColor, "#000000"),
+          marker = list(size = 3),
+          hoverinfo = "text",
+          text = ~ paste(
+            "</br>Gene:",
+            resultTable()$gene_id,
+            "</br>A value:",
+            round(a.value, 4),
+            "</br>M value:",
+            round(m.value, 4),
+            "</br>Rank:",
+            rank
+          ),
+          key =  ~ key,
+          source = "ma"
+        ) %>%
+          layout(
+            xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
+            yaxis = list(title = "M = log2(G2)-log2(G1)"),
+            title = paste("MA Plot with FDR <", input$maFDR),
+            annotations = annotation
+          )
+      } else {
+        plot_ly(
+          data = resultTable(),
+          x = ~ as.numeric(a.value),
+          y = ~ as.numeric(m.value),
+          type = "scatter",
+          mode = "markers",
+          colors = c("#000000"),
+          marker = list(size = 3),
+          hoverinfo = "text",
+          text = ~ paste(
+            "</br>Gene:",
+            resultTable()$gene_id,
+            "</br>A value:",
+            round(as.numeric(a.value), 4),
+            "</br>M value:",
+            round(as.numeric(m.value), 4),
+            "</br>Rank:",
+            rank
+          ),
+          key =  ~ key,
+          source = "ma"
+        ) %>%
+          layout(
+            xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
+            yaxis = list(title = "M = log2(G2)-log2(G1)"),
+            title = "MA Plot",
+            annotations = annotation
+          )
+      }
+    })
+  }))
+})
+
+# ====================================
+# This function render a button of R code of making MA plot.
+# Position: In [MA Plot tab], down right
+# ====================================
+# Input: makeMAPlot (Botton)
+# Output: R Code (Text)
+# ====================================
+
+observeEvent(input$makeMAPlot, {
   output$runMAPlot <- renderText({
     if(resultTable()$a.value == "") {
       "No MA values for plotting."
@@ -170,7 +174,14 @@ observeEvent(input$makeMAPlot, {
   })
 })
 
+# ====================================
 # When hover on the point, show a expresion plot of specific gene.
+# Position: In [MA Plot tab], up right
+# ====================================
+# Input: None (Hover on point)
+# Output: Plotly object (Plot)
+# ====================================
+
 withBars(output$geneBarPlot <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "ma")
@@ -225,8 +236,10 @@ withBars(output$geneBarPlot <- renderPlotly({
 
 # ====================================
 # This function render a table of Result table.
-#
-# Position: In MA plot tab and In Volcano plot tab, under middle.
+# Position: In [MA plot tab] and In [Volcano plot tab], under middle.
+# ====================================
+# Input: None
+# Output: DataTable object (Table)
 # ====================================
 
 output$resultTableInVolcanalPlot <-
@@ -255,31 +268,38 @@ output$resultTableInVolcanalPlot <-
 # ====================================
 # This function render a table of different gene count under specific FDR cutoff
 # condition.
-# Position: In MA plot tab, under left.
+# Position: In [MA plot tab] and In [Volcano plot tab], under left.
+# ====================================
+# Input: None
+# Output: DataTable object (Table)
 # ====================================
 
-output$fdrCutoffTableInMAPage <- DT::renderDataTable({
-  # Create Table
-  df <- make_summary_for_tcc_result(resultTable())
-  
-  # Render Table
-  DT::datatable(
-    df[, c("Cutoff", "Count", "Percentage")],
-    option = list(
-      pageLength = 10,
-      columnDefs = list(list(
-        className = 'dt-right', targets = "_all"
-      )),
-      dom = "tp"
-    ),
-    rownames = FALSE
-  )
-})
+output$fdrCutoffTableInVolcano <-
+  output$fdrCutoffTableInMAPage <- DT::renderDataTable({
+    # Create Table
+    df <- make_summary_for_tcc_result(resultTable())
+    
+    # Render Table
+    DT::datatable(
+      df[, c("Cutoff", "Count", "Percentage")],
+      option = list(
+        pageLength = 10,
+        columnDefs = list(list(
+          className = 'dt-right', targets = "_all"
+        )),
+        dom = "tp"
+      ),
+      rownames = FALSE
+    )
+  })
 
 # ====================================
 # This function render a plotly of different gene count under specific FDR cutoff
 # condition.
-# Position: In MA plot tab, under left.
+# Position: In [MA plot tab], under left.
+# ====================================
+# Input: None
+# Output: Plotly object (Plot)
 # ====================================
 withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
   # Create table

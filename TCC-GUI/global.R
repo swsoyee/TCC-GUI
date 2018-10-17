@@ -1,17 +1,32 @@
-library(shinydashboard)
-library(plotly)
-library(dplyr)
-library(TCC)
-library(DT)
-library(heatmaply)
-library(data.table)
-library(RColorBrewer)
-library(markdown)
-library(plotlyBars)
-library(utils)
-library(shinyWidgets)
+# ====================================
+# This function load multiple packages at once.
+# From: https://stackoverflow.com/questions/8175912/load-multiple-packages-at-once
+# ====================================
+mLoad <- function(...) {
+  sapply(sapply(match.call(), as.character)[-1],
+         require,
+         character.only = TRUE)
+}
 
-sample_data_url <- "sample_data/data_hypodata_3vs3.txt"
+mLoad(
+  shinydashboard,
+  plotly,
+  dplyr,
+  TCC,
+  DT,
+  heatmaply,
+  data.table,
+  RColorBrewer,
+  markdown,
+  plotlyBars,
+  utils,
+  shinyWidgets
+)
+
+# ====================================
+# This function convert the input of group information to
+# a specific format for TCC calculation.
+# ====================================
 
 convert2cl <- function(x, df) {
   grep(x, colnames(df))
@@ -20,7 +35,10 @@ convert2cl <- function(x, df) {
 # ====================================
 # This function input a result table of TCC, and make a summary data.table
 # of gene count under different FDR Cutoff.
-# Position: Computation tab, MA Plot tab, Volcano Plot tab.
+# Position: In [MA Plot tab], [Volcano Plot tab].
+# ====================================
+# Input: TCC Result Table (data.frame)
+# Output: FDR vs Cutoff Table (data.frame)
 # ====================================
 
 make_summary_for_tcc_result <- function(df){

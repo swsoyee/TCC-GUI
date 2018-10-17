@@ -2,8 +2,10 @@
 
 # ====================================
 # This function render a series UI of Volcano Plot parameters.
-#
 # Position: In Volcano Plot tab, upper left.
+# ====================================
+# Input: sider (Click the tab in the left siderbar)
+# Output: A series UI object (html tags)
 # ====================================
 
 observeEvent(input$sider, {
@@ -78,9 +80,12 @@ observeEvent(input$sider, {
 })
 
 # ====================================
-# This function check the `Generate` button, if the botton is clicked,
+# This function check the `Generate` button, if the botton has been clicked,
 # Generate volcano plot.
 # Position: In Volcano Plot tab, upper middle.
+# ====================================
+# Input: makeVolcanoPlot (Botton)
+# Output: Plotly object (Plot)
 # ====================================
 
 observeEvent(input$makeVolcanoPlot, {
@@ -196,21 +201,28 @@ observeEvent(input$makeVolcanoPlot, {
         )
     })
   }))
-  
-  # ====================================
-  # This function render a button of R code of making vocalno plot.
-  # Position: In Volcano Plot, down right
-  # ====================================
-  
+})
+
+# ====================================
+# This function render a button of R code of making vocalno plot.
+# Position: In [Volcano Plot tab], down right
+# ====================================
+# Input: makeVolcanoPlot (Botton)
+# Output: R Code (Text)
+# ====================================
+
+observeEvent(input$makeVolcanoPlot, {
   output$runVolcanoPlot <- renderText({
     variables$runVolcanoPlot
   })
-  
 })
 
 # ====================================
 # This function render a plotly of specific gene expression value in barplot.
-# Position: In Volcano Plot, upper right.
+# Position: In [Volcano Plot tab], upper right.
+# ====================================
+# Input: None (Hover on point)
+# Output: Plotly object (Plot)
 # ====================================
 withBars(output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
@@ -265,38 +277,17 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
 }))
 
 # ====================================
-# This function render a table of different gene count under specific FDR cutoff
-# condition.
-# Position: In Volcano Plot, under right.
-# ====================================
-
-output$fdrCutoffTableInVolcano <- DT::renderDataTable({
-  # Create Table
-  df <- make_summary_for_tcc_result(resultTable())
-  
-  # Render Table
-  DT::datatable(
-    df[, c("Cutoff", "Count", "Percentage")],
-    option = list(
-      pageLength = 10,
-      columnDefs = list(list(
-        className = 'dt-right', targets = "_all"
-      )),
-      dom = "tp"
-    ),
-    rownames = FALSE
-  )
-})
-
-# ====================================
 # This function render a plotly of different gene count under specific FDR cutoff
 # condition.
-# Position: In Volcano Plot tab, under right.
+# Position: In [Volcano Plot tab], under right.
+# ====================================
+# Input: None
+# Output: Plotly object (Plot)
 # ====================================
 withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
-  
+
   # Render Plotly
   plot_ly(
     data = df,
