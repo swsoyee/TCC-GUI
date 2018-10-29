@@ -215,7 +215,7 @@ observeEvent(input$makeVolcanoPlot , {
 ##################
 observeEvent(input$pcRun, {
   if(input$pcFDR != ""){
-    pcaFDR <- paste0("FDR:", pcFDR, sep = " ")
+    pcaFDR <- paste0("FDR:", input$pcFDR, sep = " ")
   } else {
     pcaFDR <- ""
   }
