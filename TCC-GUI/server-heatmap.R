@@ -71,6 +71,19 @@ observeEvent(input$sider, {
           justified = TRUE,
           status = "primary"
         ),
+        selectInput("heatmapColor", "Choose colormap",
+                    choices = list("PiYG",
+                                   "PRGn",
+                                   "BrBG",
+                                   "PuOr",
+                                   "RdGy",
+                                   "RdBu",
+                                   "RdYlBu",
+                                   "RdYlGn",
+                                   "Spectral",
+                                   "coolwarm"),
+                    selected = "RdYlGn"),
+        sliderInput("heatmapColorNumber", "Select the number of colors to be in the palette", min = 1, max = 20, step = 1, value = 10),
         do.call(actionBttn, c(
           list(
             inputId = "heatmapRun",
@@ -171,12 +184,26 @@ observeEvent(input$heatmapRun, {
         showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
         showNotification("Generating, please be patient...", type = "message")
       }
+      
+    # Create color palette
+    colorPal <- switch(input$heatmapColor,
+                       "PiYG"=PiYG(input$heatmapColorNumber),
+                         "PRGn"=PRGn(input$heatmapColorNumber),
+                         "BrBG"=BrBG(input$heatmapColorNumber),
+                         "PuOr"=PuOr(input$heatmapColorNumber),
+                         "RdGy"=RdGy(input$heatmapColorNumber),
+                         "RdBu"=RdBu(input$heatmapColorNumber),
+                         "RdYlBu"=RdYlBu(input$heatmapColorNumber),
+                         "RdYlGn"=RdYlGn(input$heatmapColorNumber),
+                         "Spectral"=Spectral(input$heatmapColorNumber),
+                         "coolwarm"=cool_warm(input$heatmapColorNumber)
+                       )
     # Create Plotly object
     withBars(output$heatmap <- renderPlotly({
       heatmaply(
         t(data),
         k_row = length(variables$groupList),
-        colors = RdYlGn,
+        colors = colorPal,
         dist_method = input$heatmapDist,
         hclust_method = input$heatmapCluster,
         xlab = "Gene",
