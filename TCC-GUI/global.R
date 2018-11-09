@@ -8,20 +8,34 @@ mLoad <- function(...) {
          character.only = TRUE)
 }
 
-mLoad(
-  shinydashboard,
-  plotly,
-  dplyr,
-  TCC,
-  DT,
-  heatmaply,
-  data.table,
-  RColorBrewer,
-  markdown,
-  plotlyBars,
-  utils,
-  shinyWidgets
-)
+# mLoad(
+#   shinydashboard,
+#   plotly,
+#   dplyr,
+#   TCC,
+#   DT,
+#   heatmaply,
+#   data.table,
+#   RColorBrewer,
+#   markdown,
+#   plotlyBars,
+#   utils,
+#   shinyWidgets
+# )
+
+library(shinydashboard)
+library(plotly)
+library(dplyr)
+library(TCC)
+library(DT)
+library(heatmaply)
+library(data.table)
+library(RColorBrewer)
+library(markdown)
+library(plotlyBars)
+library(utils)
+library(shinyWidgets)
+
 
 # ====================================
 # This function convert the input of group information to

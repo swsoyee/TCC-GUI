@@ -86,8 +86,28 @@ observeEvent(input$CountDataSample, {
 
 observeEvent(input$uploadCountData, {
   showNotification("Start uploading file...", type = "message")
-  variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
-  showNotification("Received uploaded file.", type = "message")
+  tryCatch({
+    variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
+    showNotification("Received uploaded file.", type = "message")
+  },
+  error = function(e) {
+    sendSweetAlert(
+      session = session,
+      title = "Input data error!",
+      text = as.character(message(e)),
+      type = "error"
+    )
+    return()
+  },
+  warning = function(w) {
+    sendSweetAlert(
+      session = session,
+      title = "Input data warning!",
+      text = "Some error is in your dataset, it maybe cause some problem we cannot expected.",
+      type = "warning"
+    )
+    return()
+  })
 })
 
 datasetInput <- reactive({
