@@ -9,16 +9,22 @@
 observeEvent(input$CountDataSample, {
   variables$CountData <-
     data.frame(fread(input$SampleDatabase), row.names = 1)
-  showNotification("Count data sample loaded.", type = "message")
+  
+  sendSweetAlert(
+    session = session,
+    title = "SUCCESS",
+    text = "Count data sample loaded.",
+    type = "success"
+  )
   
   sampleGroup <- switch(input$SampleDatabase,
                         "sample_data/data_hypodata_3vs3.txt" = paste(
                           "G1_rep1,control",
                           "G1_rep2,control",
                           "G1_rep3,control",
-                          "G2_rep1,sample",
-                          "G2_rep2,sample",
-                          "G2_rep3,sample",
+                          "G2_rep1,treatment",
+                          "G2_rep2,treatment",
+                          "G2_rep3,treatment",
                           sep = '\n'
                         ),
                         "sample_data/katzmouse_count_table.txt" = paste(
@@ -156,7 +162,7 @@ output$table <- DT::renderDataTable({
 # ====================================
 output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
-    return("No data to show. Click [Load Sample Data] or [Upload] your own dataset.")
+    return("No data to show. Click [Import Data] or [Upload] your own dataset.")
   } else {
     DT::dataTableOutput('table')
   }

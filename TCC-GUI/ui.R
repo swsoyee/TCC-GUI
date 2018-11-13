@@ -1,7 +1,7 @@
 library(shiny)
 
 dashboardPage(
-  dashboardHeader(title = "TCC GUI Version: Graphical User Interface for Tag Count Comparison (TCC) package", titleWidth = 800,
+  dashboardHeader(title = "TCC-GUI version: Graphical User Interface for TCC package", titleWidth = 600,
                   dropdownMenu(type = "messages",
                                messageItem(
                                  from = "TCC Algorithm",
@@ -31,14 +31,16 @@ dashboardPage(
       id = "sider",
       menuItem("Guidance", tabName = "guidence", icon = icon("home"),
                menuSubItem(text = "Welcome", tabName = "welcome"),
-               menuSubItem(text = "1. Data input", tabName = "dataInputHelp"),
+               menuSubItem(text = "1. Data import", tabName = "dataInputHelp"),
                menuSubItem(text = "2. TCC Computation", tabName = "tccComputationHelp"),
-               menuSubItem(text = "3.1. MA Plot", tabName = "maPlotHelp"),
+               tags$hr(style="border-color: black;"),
+               menuSubItem(text = "3.1. MA plot", tabName = "maPlotHelp"),
                menuSubItem(text = "3.2. Volcano plot", tabName = "volcanoPlotHelp"),
                menuSubItem(text = "3.3. PCA analysis", tabName = "pcaHelp"),
                menuSubItem(text = "3.4. Heatmap", tabName = "heatmapHelp"),
                menuSubItem(text = "3.5. Expression level", tabName = "expressionHelp"),
-               menuSubItem(text = "4. Report", tabName = "reportHelp"),
+               tags$hr(style="border-color: black;"),
+               menuSubItem(text = "4. Output", tabName = "reportHelp"),
                startExpanded = TRUE),
       menuItem(
         "Data Import",
@@ -55,7 +57,7 @@ dashboardPage(
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
     ),
-    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved.", 
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.13", 
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(

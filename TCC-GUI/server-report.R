@@ -103,7 +103,7 @@ observeEvent(input$sider, {
           list(
             "Time" = as.character(Sys.time()),
             "Type" = "Tab",
-            "Action" = clickTab,
+            "Action" = paste0(clickTab, collapse = "-"),
             "Parameters" = ""
           ),
           stringsAsFactors = FALSE)

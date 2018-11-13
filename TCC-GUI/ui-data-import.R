@@ -17,10 +17,11 @@ fluidPage(fluidRow(column(
           "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
+      tags$p("Quick start with sample data."),
       do.call(actionBttn, c(
         list(
           inputId = "CountDataSample",
-          label = "Load Sample Data",
+          label = "Import Data",
           icon = icon("plus-square")
         ),
         actionBttnParams
@@ -36,7 +37,8 @@ fluidPage(fluidRow(column(
                    ".csv"),
         buttonLabel = "Upload...",
         placeholder = "No file has been uploaded."
-      )
+      ),
+      tags$p("Text file in tab-delimited format, and the first column is genes' name.")
     )
   )
   ,
@@ -53,16 +55,16 @@ fluidPage(fluidRow(column(
         "G1_rep1,control",
         "G1_rep2,control",
         "G1_rep3,control",
-        "G2_rep1,sample",
-        "G2_rep2,sample",
-        "G2_rep3,sample",
+        "G2_rep1,treatment",
+        "G2_rep2,treatment",
+        "G2_rep3,treatment",
         sep = '\n'
       )
     ),
     do.call(actionBttn, c(
       list(
         inputId = "confirmedGroupList",
-        label = "Confirmed",
+        label = "Confirm",
         icon = icon("check-square")),
         actionBttnParams
       )
