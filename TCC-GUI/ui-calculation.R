@@ -35,7 +35,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
       ),
       sliderInput(
         "iteration",
-        "Interation:",
+        "Iteration:",
         min = 1,
         max = 50,
         value = 3

@@ -1,3 +1,5 @@
+# Steps for data import
+---
 1. First, click **`Data Import (Step 1)`** tab in the side bar on the left of this page.  
   ![data import tab](../www/dataImportTab.png)  
 2. At the left of the top, you can `[Import Data]` just for a test, or click `[Upload]` data tab for uploading your own `tab-delimited text file` like [hypodata.txt](http://www.iu.a.u-tokyo.ac.jp/~kadota/R_seq/data_hypodata_3vs3.txt). Please make sure it's a original `count data` file. If you are going to upload large dataset (such as file in 50,000 rows when using online version TCC-GUI), please wait until the file has been uploaded completely. In this case, offline version is highly recommended.   
