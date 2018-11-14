@@ -60,13 +60,15 @@ observeEvent(input$sider, {
           ),
           selected = "complete"
         ),
+        materialSwitch(inputId = "heatmapLogTrans", label = "log(1+x) transform", value = TRUE, right = TRUE, status = "primary"),
+        materialSwitch(inputId = "heatmapNor", label = "Normalization", value = TRUE, right = TRUE, status = "primary"),
         radioGroupButtons(
           inputId = "heatmapScale",
           label = "Scale",
           choices = list(
-            "Row" = "column",
-            "Column" = "row",
-            "None" = "none"
+            "None" = "none",
+            "Row" = "row",
+            "Column" = "column"
           ), 
           justified = TRUE,
           status = "primary"
@@ -83,7 +85,7 @@ observeEvent(input$sider, {
                                    "Spectral",
                                    "coolwarm"),
                     selected = "RdYlGn"),
-        sliderInput("heatmapColorNumber", "Select the number of colors to be in the palette", min = 1, max = 20, step = 1, value = 10),
+        sliderInput("heatmapColorNumber", "Select the number of colors to be in the palette", min = 1, max = 50, step = 1, value = 20),
         do.call(actionBttn, c(
           list(
             inputId = "heatmapRun",
@@ -138,8 +140,8 @@ output$heatmapSelectGene <- renderUI({
 # ====================================
 
 observeEvent(input$heatmapRun, {
-  req(input$heatmapRun)
-  isolate({
+  # req(input$heatmapRun)
+  # isolate({
     # Select Sample (Column)
     # Grouping.
     data.cl<- variables$groupListConvert
@@ -157,6 +159,7 @@ observeEvent(input$heatmapRun, {
     if (input$heatmapGeneSelectType == "By list") {
       data <-
         data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
+      heatmapTitle <- "Heatmap of specific genes"
     }
     # if (input$heatmapGeneSelectType == "By name") {
     #   data <- data[row.names(data) %in% input$heatmapSelectList, ]
@@ -165,10 +168,18 @@ observeEvent(input$heatmapRun, {
       if (input$testMethod == 'wad') {
         data <-
           data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop,]$gene_id,]
+        heatmapTitle <- "Heatmap of specific genes"
       } else {
         data <-
           data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop &
                                                     resultTable()$q.value <= input$heatmapFDR,]$gene_id,]
+        heatmapTitle <- paste0(
+          "Heatmap of gene expression (FDR < ",
+          input$heatmapFDR,
+          ", ",
+          dim(data)[1],
+          "DEGs)"
+        )
       }
     }
     
@@ -198,28 +209,35 @@ observeEvent(input$heatmapRun, {
                          "Spectral"=Spectral(input$heatmapColorNumber),
                          "coolwarm"=cool_warm(input$heatmapColorNumber)
                        )
+    
+    dataBackup <- t(data)
+    
     # Create Plotly object
     withBars(output$heatmap <- renderPlotly({
+      req(input$heatmapRun)
+      isolate({
+      # Log transform and normalization
+      if(input$heatmapLogTrans == TRUE) {
+        dataBackup <-  log1p(dataBackup)
+      }
+      if(input$heatmapNor == TRUE) {
+        dataBackup <- heatmaply::normalize(dataBackup)
+      }
       heatmaply(
-        t(data),
+        dataBackup,
         k_row = length(variables$groupList),
         colors = colorPal,
         dist_method = input$heatmapDist,
         hclust_method = input$heatmapCluster,
         xlab = "Gene",
         ylab = "Sample",
-        main = paste0(
-          "Heatmap of gene expression (FDR < ",
-          input$heatmapFDR,
-          ", ",
-          dim(data)[1],
-          "DEGs)"
-        ),
+        main = heatmapTitle,
         margins = c(150, 100, 40, 20),
         scale = input$heatmapScale,
         labCol = colnames(t(data)),
         labRow = row.names(t(data))
       )
+      })
     }))
     
     # Generate Result table
@@ -275,7 +293,4 @@ observeEvent(input$heatmapRun, {
   # ====================================
 
 })
-})
-
-
-
+ 
