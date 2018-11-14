@@ -17,7 +17,7 @@ column(
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
-    withBarsUI(plotlyOutput("heatmap")),
+    uiOutput("heatmapPlot"),
     DT::dataTableOutput("resultTableInHeatmap")
   )
 ))

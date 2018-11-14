@@ -18,6 +18,7 @@ shinyServer(function(input, output, session) {
     runMAPlot = "",
     runVolcanoPlot = "",
     runHeatmap = "",
+    heatmapHeight = 500,
     runPCACode = "",
     logList = data.frame("Time" = vector(), 
                          "Type" = vector(),

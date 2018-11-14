@@ -61,7 +61,7 @@ observeEvent(input$sider, {
           selected = "complete"
         ),
         materialSwitch(inputId = "heatmapLogTrans", label = "log(1+x) transform", value = TRUE, right = TRUE, status = "primary"),
-        materialSwitch(inputId = "heatmapNor", label = "Normalization", value = TRUE, right = TRUE, status = "primary"),
+        materialSwitch(inputId = "heatmapNor", label = "Normalization", value = FALSE, right = TRUE, status = "primary"),
         radioGroupButtons(
           inputId = "heatmapScale",
           label = "Scale",
@@ -73,6 +73,12 @@ observeEvent(input$sider, {
           justified = TRUE,
           status = "primary"
         ),
+        radioGroupButtons(inputId = "heatmapSwap", 
+                          label = "Direction",
+                          choices = list("Horizontal" = "h",
+                                         "Vertical" = "v"),
+                          justified = TRUE,
+                          status = "primary"),
         selectInput("heatmapColor", "Choose colormap",
                     choices = list("PiYG",
                                    "PRGn",
@@ -140,8 +146,6 @@ output$heatmapSelectGene <- renderUI({
 # ====================================
 
 observeEvent(input$heatmapRun, {
-  # req(input$heatmapRun)
-  # isolate({
     # Select Sample (Column)
     # Grouping.
     data.cl<- variables$groupListConvert
@@ -161,9 +165,7 @@ observeEvent(input$heatmapRun, {
         data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
       heatmapTitle <- "Heatmap of specific genes"
     }
-    # if (input$heatmapGeneSelectType == "By name") {
-    #   data <- data[row.names(data) %in% input$heatmapSelectList, ]
-    # }
+
     if (input$heatmapGeneSelectType == "By FDR") {
       if (input$testMethod == 'wad') {
         data <-
@@ -223,6 +225,9 @@ observeEvent(input$heatmapRun, {
       if(input$heatmapNor == TRUE) {
         dataBackup <- heatmaply::normalize(dataBackup)
       }
+      
+      if(input$heatmapSwap == "h"){
+        variables$heatmapHeight <- 10 * ncol(dataBackup)
       heatmaply(
         dataBackup,
         k_row = length(variables$groupList),
@@ -234,9 +239,25 @@ observeEvent(input$heatmapRun, {
         main = heatmapTitle,
         margins = c(150, 100, 40, 20),
         scale = input$heatmapScale,
-        labCol = colnames(t(data)),
-        labRow = row.names(t(data))
-      )
+        labCol = colnames(dataBackup),
+        labRow = row.names(dataBackup)
+      )} else {
+        variables$heatmapHeight <- 20 * ncol(dataBackup)
+        heatmaply(
+          t(dataBackup),
+          k_col = length(variables$groupList),
+          colors = colorPal,
+          dist_method = input$heatmapDist,
+          hclust_method = input$heatmapCluster,
+          xlab = "Sample",
+          ylab = "Gene",
+          main = heatmapTitle,
+          margins = c(150, 100, 40, 20),
+          scale = input$heatmapScale,
+          labCol = row.names(dataBackup),
+          labRow = colnames(dataBackup)
+        )
+      }
       })
     }))
     
@@ -294,3 +315,6 @@ observeEvent(input$heatmapRun, {
 
 })
  
+output$heatmapPlot <- renderUI({
+  withBarsUI(plotlyOutput("heatmap", height = paste0(variables$heatmapHeight, "px")))
+})
