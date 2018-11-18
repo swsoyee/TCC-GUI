@@ -43,6 +43,13 @@ dashboardPage(
                menuSubItem(text = "4. Output", tabName = "reportHelp"),
                startExpanded = TRUE),
       menuItem(
+        "Simulation Data",
+        tabName = "simulationData",
+        icon = icon("database"),
+        badgeLabel = "Step 1",
+        badgeColor = "yellow"
+      ), 
+      menuItem(
         "Data Import",
         tabName = "dateImport",
         icon = icon("database"),
@@ -115,6 +122,11 @@ dashboardPage(
       
       tabItem(tabName = "guidence", source(
         file = "ui-homepage.R",
+        local = TRUE,
+        encoding = "UTF-8"
+      )$value),
+      tabItem(tabName = "simulationData", source(
+        file = "ui-simulation.R",
         local = TRUE,
         encoding = "UTF-8"
       )$value),

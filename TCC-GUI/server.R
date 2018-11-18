@@ -8,6 +8,7 @@ source(file = "global.R",
 # Define server
 shinyServer(function(input, output, session) {
   variables = reactiveValues(
+    simulationData = "",
     CountData = data.frame("Load your data first." = character(0)),
     groupList = "",
     groupListConvert = "",
@@ -25,7 +26,9 @@ shinyServer(function(input, output, session) {
                          "Action" = vector(), 
                          "Parameters" = vector())
   )
-  
+  source(file = "server-simulation.R",
+         local = TRUE,
+         encoding = "UTF-8")
   source(file = "server-data-import.R",
          local = TRUE,
          encoding = "UTF-8")
