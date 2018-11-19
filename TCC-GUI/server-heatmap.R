@@ -79,18 +79,22 @@ observeEvent(input$sider, {
                                          "Vertical" = "v"),
                           justified = TRUE,
                           status = "primary"),
-        selectInput("heatmapColor", "Choose colormap",
-                    choices = list("PiYG",
-                                   "PRGn",
-                                   "BrBG",
-                                   "PuOr",
-                                   "RdGy",
-                                   "RdBu",
-                                   "RdYlBu",
-                                   "RdYlGn",
-                                   "Spectral",
-                                   "coolwarm"),
-                    selected = "RdYlGn"),
+        selectInput(inputId = "colorSelectionMethod", 
+                    label = "Color selection method",
+                    choices = c("Color map", "Two colors", "Three colors")),
+        uiOutput("heatmapColorSelectionPanel"),
+        # selectInput("heatmapColor", "Choose colormap",
+        #             choices = list("PiYG",
+        #                            "PRGn",
+        #                            "BrBG",
+        #                            "PuOr",
+        #                            "RdGy",
+        #                            "RdBu",
+        #                            "RdYlBu",
+        #                            "RdYlGn",
+        #                            "Spectral",
+        #                            "coolwarm"),
+        #             selected = "RdYlGn"),
         sliderInput("heatmapColorNumber", "Select the number of colors to be in the palette", min = 1, max = 50, step = 1, value = 20),
         do.call(actionBttn, c(
           list(
@@ -100,6 +104,107 @@ observeEvent(input$sider, {
           ),
           actionBttnParams
         ))
+      )
+    })
+  }
+})
+
+observeEvent(input$colorSelectionMethod, {
+  if (input$colorSelectionMethod == "Color map") {
+    output$heatmapColorSelectionPanel <- renderUI({
+      tagList(
+        selectInput(
+          "heatmapColor",
+          "Choose colormap",
+          choices = list(
+            "PiYG",
+            "PRGn",
+            "BrBG",
+            "PuOr",
+            "OrRd",
+            "Oranges",
+            "RdGy",
+            "RdBu",
+            "RdYlBu",
+            "RdYlGn",
+            "Spectral",
+            "coolwarm"
+          ),
+          selected = "RdYlGn"
+        )#,
+        # sliderInput(
+        #   "heatmapColorNumber",
+        #   "Select the number of colors to be in the palette",
+        #   min = 1,
+        #   max = 50,
+        #   step = 1,
+        #   value = 20
+        # )
+      )
+    })
+  }
+  if (input$colorSelectionMethod %in% c("Two colors", "Three colors")) {
+    output$heatmapColorSelectionPanel <- renderUI({
+      tagList(
+        spectrumInput(
+          inputId = "heatmapTwoColorLow",
+          label = "Low:",
+          choices = list(
+            list(
+              "#FEFCDB",
+              'black',
+              'white',
+              'blanchedalmond',
+              'steelblue',
+              'forestgreen'
+            ),
+            as.list(brewer.pal(n = 9, name = "Blues")),
+            as.list(brewer.pal(n = 9, name = "Greens")),
+            as.list(brewer.pal(n = 11, name = "Spectral")),
+            as.list(brewer.pal(n = 8, name = "Dark2"))
+          ),
+          options = list(`toggle-palette-more-text` = "Show more")
+        ),
+        if (input$colorSelectionMethod == "Three colors") {
+          spectrumInput(
+            inputId = "heatmapTwoColorMiddle",
+            label = "Middle:",
+            choices = list(
+              list(
+                "#B22222",
+                'black',
+                'white',
+                'blanchedalmond',
+                'steelblue',
+                'forestgreen'
+              ),
+              as.list(brewer.pal(n = 9, name = "Blues")),
+              as.list(brewer.pal(n = 9, name = "Greens")),
+              as.list(brewer.pal(n = 11, name = "Spectral")),
+              as.list(brewer.pal(n = 8, name = "Dark2"))
+            ),
+            options = list(`toggle-palette-more-text` = "Show more")
+          )
+        },
+        spectrumInput(
+          inputId = "heatmapTwoColorHigh",
+          label = "High:",
+          choices = list(
+            list(
+              "#8C0004",
+              'black',
+              'white',
+              'blanchedalmond',
+              'steelblue',
+              'forestgreen'
+            ),
+            as.list(brewer.pal(n = 9, name = "Blues")),
+            as.list(brewer.pal(n = 9, name = "Greens")),
+            as.list(brewer.pal(n = 11, name = "Spectral")),
+            as.list(brewer.pal(n = 8, name = "Dark2"))
+          ),
+          options = list(`toggle-palette-more-text` = "Show more")
+        )
       )
     })
   }
@@ -199,18 +304,37 @@ observeEvent(input$heatmapRun, {
       }
       
     # Create color palette
-    colorPal <- switch(input$heatmapColor,
-                       "PiYG"=PiYG(input$heatmapColorNumber),
-                         "PRGn"=PRGn(input$heatmapColorNumber),
-                         "BrBG"=BrBG(input$heatmapColorNumber),
-                         "PuOr"=PuOr(input$heatmapColorNumber),
-                         "RdGy"=RdGy(input$heatmapColorNumber),
-                         "RdBu"=RdBu(input$heatmapColorNumber),
-                         "RdYlBu"=RdYlBu(input$heatmapColorNumber),
-                         "RdYlGn"=RdYlGn(input$heatmapColorNumber),
-                         "Spectral"=Spectral(input$heatmapColorNumber),
-                         "coolwarm"=cool_warm(input$heatmapColorNumber)
-                       )
+      if (input$colorSelectionMethod == "Color map") {
+        colorPal <- switch(
+          input$heatmapColor,
+          "PiYG" = PiYG(input$heatmapColorNumber),
+          "PRGn" = PRGn(input$heatmapColorNumber),
+          "BrBG" = BrBG(input$heatmapColorNumber),
+          "PuOr" = PuOr(input$heatmapColorNumber),
+          "OrRd" = OrRd(input$heatmapColorNumber),
+          "Oranges" = Oranges(input$heatmapColorNumber),
+          "RdGy" = RdGy(input$heatmapColorNumber),
+          "RdBu" = RdBu(input$heatmapColorNumber),
+          "RdYlBu" = RdYlBu(input$heatmapColorNumber),
+          "RdYlGn" = RdYlGn(input$heatmapColorNumber),
+          "Spectral" = Spectral(input$heatmapColorNumber),
+          "coolwarm" = cool_warm(input$heatmapColorNumber)
+        )
+      }
+      if (input$colorSelectionMethod == "Two colors") {
+        colorPal <-
+          colorRampPalette(c(input$heatmapTwoColorLow, input$heatmapTwoColorHigh))(input$heatmapColorNumber)
+      }
+      if (input$colorSelectionMethod == "Three colors") {
+        colorPal <-
+          colorRampPalette(
+            c(
+              input$heatmapTwoColorLow,
+              input$heatmapTwoColorMiddle,
+              input$heatmapTwoColorHigh
+            )
+          )(input$heatmapColorNumber)
+      }
     
     dataBackup <- t(data)
     

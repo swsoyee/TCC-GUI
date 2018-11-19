@@ -1,7 +1,7 @@
 library(shiny)
 
 dashboardPage(
-  dashboardHeader(title = "TCC-GUI version: Graphical User Interface for TCC package", titleWidth = 600,
+  dashboardHeader(title = "TCC-GUI: Graphical User Interface for TCC package", titleWidth = 500,
                   dropdownMenu(type = "messages",
                                messageItem(
                                  from = "TCC Algorithm",
@@ -64,7 +64,7 @@ dashboardPage(
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
     ),
-    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.15", 
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.19", 
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(

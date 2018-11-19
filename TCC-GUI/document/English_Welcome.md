@@ -10,7 +10,7 @@ TCC internally uses functions provided by **edgeR**^[2], **DESeq**^[3], **DESeq2
 
 
 
-# 🔬TCC-GUI version: Graphical User Interface for TCC package
+# 🔬TCC-GUI: Graphical User Interface for TCC package
 ---
 In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now. 
 
