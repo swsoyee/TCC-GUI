@@ -12,9 +12,9 @@ fluidPage(fluidRow(column(
         "SampleDatabase",
         "Select Sample Data",
         choices = c(
-          "hypodata" = "sample_data/data_hypodata_3vs3.txt",
-          "katz.mouse" = "sample_data/katzmouse_count_table.txt",
-          "cheung" = "sample_data/cheung_count_table.txt"
+          "hypodata" = "sample_data/data_hypodata_3vs3.txt" #,
+          # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
+          # "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
       tags$p("Quick start with sample data."),

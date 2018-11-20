@@ -7,7 +7,7 @@ observeEvent(input$simulationGroupNum, {
         4,
         numericInput(
           inputId = paste0("DEGAssign", x),
-          label = paste0("Proportion of DEGs up- or down-regulated"),
+          label = paste0("Proportion of DEGs up-regulated"),
           value = 0.5,
           min = 0,
           max = 1
@@ -18,7 +18,7 @@ observeEvent(input$simulationGroupNum, {
         numericInput(
           inputId = paste0("DEGFoldchange", x),
           label = paste0("Degree of fold-change"),
-          value = 3,
+          value = 4,
           min = 0
         )
       ),

@@ -1,6 +1,8 @@
 # R-code.R
 
-#### TCC Runing Code
+# TCC Runing Code ---------------------------------------------------------
+
+
 observeEvent(input$TCC, {
   group <- paste(variables$groupList, collapse = ", ")
   runTCCCode <- paste0(
@@ -51,7 +53,10 @@ normalizedData <- tcc$getNormalizedData()
   variables$runTCCCode <- runTCCCode
 })
 
-#### MA Plot Runing Code
+
+# MA Plot Runing Code -----------------------------------------------------
+
+
 observeEvent(input$makeMAPlot, {
   runMAPlot <- paste0(
     '# Make sure the code run after [TCC Calculation code]
@@ -78,7 +83,10 @@ plot_ly(data = result,
   variables$runMAPlot <- runMAPlot
 })
 
-#### Volcano Plot Runing Code
+
+# Volcano Plot Runing Code ------------------------------------------------
+
+
 observeEvent(input$makeVolcanoPlot, {
   runVolcanoPlot <- paste0(
     '# Make sure the code run after [TCC Calculation code]
@@ -142,7 +150,10 @@ plot_ly(data = dt,
   variables$runVolcanoPlot <- runVolcanoPlot
 })
 
-#### PCA Plot Runing Code
+
+# PCA Plot Runing Code ----------------------------------------------------
+
+
 observeEvent(input$pcRun, {
   group <- paste(variables$groupList, collapse = ", ")
   runPCACode <- paste0(
@@ -182,7 +193,10 @@ data.pca <- prcomp(data[ , apply(data, 2, var) != 0],
 
 })
 
-#### Heatmap Plot Runing Code
+
+# Heatmap Plot Runing Code ------------------------------------------------
+
+
 observeEvent(input$heatmapRun, {
   group <- paste(variables$groupList, collapse = ", ")
   runHeatmapCode <- paste0('
@@ -250,4 +264,7 @@ if (', input$heatmapGeneSelectType, ' == "Select genes according FDR") {
   variables$runHeatmap <- runHeatmapCode
 })
 
-#### Expression Plot Runing Code
+
+# Expression Plot Runing Code ---------------------------------------------
+
+

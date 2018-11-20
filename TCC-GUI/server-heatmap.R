@@ -1,10 +1,9 @@
 # server-heatmap.R
 
-# ====================================
-# This function render a series UI for heatmap parameters.
-# After TCC calculation, generate these UI.
-# Position: In Heatmap tab, upper left.
-# ====================================
+
+
+# Generate heatmap parameters panel ---------------------------------------
+
 
 observeEvent(input$sider, {
   if (input$sider == "heatmapTab") {
@@ -13,11 +12,9 @@ observeEvent(input$sider, {
         radioGroupButtons(
           inputId = "heatmapGeneSelectType",
           label = "Select gene",
-          choices = c(
-            "By list",
-            # "By name",
-            "By FDR"
-          ),
+          choices = c("By list",
+                      # "By name",
+                      "By FDR"),
           justified = TRUE,
           status = "primary"
         ),
@@ -60,8 +57,20 @@ observeEvent(input$sider, {
           ),
           selected = "complete"
         ),
-        materialSwitch(inputId = "heatmapLogTrans", label = "log(1+x) transform", value = TRUE, right = TRUE, status = "primary"),
-        materialSwitch(inputId = "heatmapNor", label = "Normalization", value = FALSE, right = TRUE, status = "primary"),
+        materialSwitch(
+          inputId = "heatmapLogTrans",
+          label = "log(1+x) transform",
+          value = TRUE,
+          right = TRUE,
+          status = "primary"
+        ),
+        materialSwitch(
+          inputId = "heatmapNor",
+          label = "Normalization",
+          value = FALSE,
+          right = TRUE,
+          status = "primary"
+        ),
         radioGroupButtons(
           inputId = "heatmapScale",
           label = "Scale",
@@ -69,33 +78,40 @@ observeEvent(input$sider, {
             "None" = "none",
             "Row" = "row",
             "Column" = "column"
-          ), 
+          ),
           justified = TRUE,
           status = "primary"
         ),
-        radioGroupButtons(inputId = "heatmapSwap", 
-                          label = "Direction",
-                          choices = list("Horizontal" = "h",
-                                         "Vertical" = "v"),
-                          justified = TRUE,
-                          status = "primary"),
-        selectInput(inputId = "colorSelectionMethod", 
-                    label = "Color selection method",
-                    choices = c("Color map", "Two colors", "Three colors")),
+        radioGroupButtons(
+          inputId = "heatmapSwap",
+          label = "Direction",
+          choices = list("Horizontal" = "h",
+                         "Vertical" = "v"),
+          justified = TRUE,
+          status = "primary"
+        ),
+        selectInput(
+          inputId = "colorSelectionMethod",
+          label = "Color selection method",
+          choices = c("Color map", "Two colors", "Three colors")
+        ),
         uiOutput("heatmapColorSelectionPanel"),
-        # selectInput("heatmapColor", "Choose colormap",
-        #             choices = list("PiYG",
-        #                            "PRGn",
-        #                            "BrBG",
-        #                            "PuOr",
-        #                            "RdGy",
-        #                            "RdBu",
-        #                            "RdYlBu",
-        #                            "RdYlGn",
-        #                            "Spectral",
-        #                            "coolwarm"),
-        #             selected = "RdYlGn"),
-        sliderInput("heatmapColorNumber", "Select the number of colors to be in the palette", min = 1, max = 50, step = 1, value = 20),
+        sliderInput(
+          "heatmapColorNumber",
+          "Select the number of colors to be in the palette",
+          min = 1,
+          max = 50,
+          step = 1,
+          value = 20
+        ),
+        tags$b("Color preview"),
+        plotOutput("colorPreview", height = "20px"),
+        numericInput(
+          inputId = "heatmapHeight",
+          label = "Height of heatmap",
+          value = 500,
+          min = 100
+        ),
         do.call(actionBttn, c(
           list(
             inputId = "heatmapRun",
@@ -108,6 +124,9 @@ observeEvent(input$sider, {
     })
   }
 })
+
+# According to color selection method, render color selection part --------
+
 
 observeEvent(input$colorSelectionMethod, {
   if (input$colorSelectionMethod == "Color map") {
@@ -131,15 +150,7 @@ observeEvent(input$colorSelectionMethod, {
             "coolwarm"
           ),
           selected = "RdYlGn"
-        )#,
-        # sliderInput(
-        #   "heatmapColorNumber",
-        #   "Select the number of colors to be in the palette",
-        #   min = 1,
-        #   max = 50,
-        #   step = 1,
-        #   value = 20
-        # )
+        )
       )
     })
   }
@@ -151,7 +162,7 @@ observeEvent(input$colorSelectionMethod, {
           label = "Low:",
           choices = list(
             list(
-              "#FEFCDB",
+              "blue",
               'black',
               'white',
               'blanchedalmond',
@@ -171,9 +182,8 @@ observeEvent(input$colorSelectionMethod, {
             label = "Middle:",
             choices = list(
               list(
-                "#B22222",
+                "white",
                 'black',
-                'white',
                 'blanchedalmond',
                 'steelblue',
                 'forestgreen'
@@ -191,7 +201,7 @@ observeEvent(input$colorSelectionMethod, {
           label = "High:",
           choices = list(
             list(
-              "#8C0004",
+              "red",
               'black',
               'white',
               'blanchedalmond',
@@ -210,10 +220,71 @@ observeEvent(input$colorSelectionMethod, {
   }
 })
 
-# ====================================
-# This function render UI of ways of gene selection.
-# Position: In Heatmap tab, upper left.
-# ====================================
+# Color palette reactive value --------------------------------------------
+
+
+colorPanel <- reactive({
+  colorPal <- c("white")
+  # Create color palette
+  if (input$colorSelectionMethod == "Color map" && length(input$heatmapColor) > 0) {
+    colorPal <- switch(
+      input$heatmapColor,
+      "PiYG" = PiYG(input$heatmapColorNumber),
+      "PRGn" = PRGn(input$heatmapColorNumber),
+      "BrBG" = BrBG(input$heatmapColorNumber),
+      "PuOr" = PuOr(input$heatmapColorNumber),
+      "OrRd" = OrRd(input$heatmapColorNumber),
+      "Oranges" = Oranges(input$heatmapColorNumber),
+      "RdGy" = RdGy(input$heatmapColorNumber),
+      "RdBu" = RdBu(input$heatmapColorNumber),
+      "RdYlBu" = RdYlBu(input$heatmapColorNumber),
+      "RdYlGn" = RdYlGn(input$heatmapColorNumber),
+      "Spectral" = Spectral(input$heatmapColorNumber),
+      "coolwarm" = cool_warm(input$heatmapColorNumber)
+    )
+  }
+  if (input$colorSelectionMethod == "Two colors" && length(input$heatmapTwoColorLow) > 0) {
+    colorPal <-
+      colorRampPalette(c(input$heatmapTwoColorLow, input$heatmapTwoColorHigh))(input$heatmapColorNumber)
+  }
+  if (input$colorSelectionMethod == "Three colors" && length(input$heatmapTwoColorLow) > 0) {
+    colorPal <-
+      colorRampPalette(
+        c(
+          input$heatmapTwoColorLow,
+          input$heatmapTwoColorMiddle,
+          input$heatmapTwoColorHigh
+        )
+      )(input$heatmapColorNumber)
+  }
+  
+  colorPal
+})
+
+# Render a plot of color preview ------------------------------------------
+
+
+output$colorPreview <- renderPlot({
+  colorPal <- colorPanel()
+  op <- par(mar = c(0.5, 0, 0, 0))
+  plot(
+    c(0, length(colorPal)),
+    c(0, 1),
+    type = "n",
+    xlab = "",
+    ylab = "",
+    ann = F,
+    bty = "n",
+    xaxt = "n",
+    yaxt = "n"
+  )
+  i <- 0:(length(colorPal) - 1)
+  rect(0 + i, 0, 1 + i, 1, col = colorPal, lwd = 0)
+  par(op)
+})
+
+# Render gene list selection part in parameters panel ---------------------
+
 
 output$heatmapSelectGene <- renderUI({
   switch(
@@ -245,151 +316,117 @@ output$heatmapSelectGene <- renderUI({
   )
 })
 
-# ====================================
-# This function render Heatmap Plot and result table.
-# Position: In Heatmap tab, upper middle.
-# ====================================
+
+# Create heatmaply object and DataTable object ----------------------------
+
 
 observeEvent(input$heatmapRun, {
-    # Select Sample (Column)
-    # Grouping.
-    data.cl<- variables$groupListConvert
-    
-    # Using Original Dataset or Normalized Dataset.
-    if (input$heatmapData == "o") {
-      data <- variables$CountData[data.cl != 0]
-    } else {
-      data <- variables$norData
-    }
-    data.cl <- data.cl[data.cl != 0]
-    
-    # Select DEGs (Row)
-    tryCatch({
+  # Select Sample (Column)
+  # Grouping.
+  data.cl <- variables$groupListConvert
+  
+  # Using Original Dataset or Normalized Dataset.
+  if (input$heatmapData == "o") {
+    data <- variables$CountData[data.cl != 0]
+  } else {
+    data <- variables$norData
+  }
+  data.cl <- data.cl[data.cl != 0]
+  
+  # Select DEGs (Row)
+  tryCatch({
     if (input$heatmapGeneSelectType == "By list") {
       data <-
-        data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')), ]
+        data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')),]
       heatmapTitle <- "Heatmap of specific genes"
     }
-
+    
     if (input$heatmapGeneSelectType == "By FDR") {
       if (input$testMethod == 'wad') {
         data <-
-          data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop,]$gene_id,]
+          data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop, ]$gene_id, ]
         heatmapTitle <- "Heatmap of specific genes"
       } else {
         data <-
           data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop &
-                                                    resultTable()$q.value <= input$heatmapFDR,]$gene_id,]
-        heatmapTitle <- paste0(
-          "Heatmap of gene expression (FDR < ",
-          input$heatmapFDR,
-          ", ",
-          dim(data)[1],
-          "DEGs)"
-        )
+                                                    resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
+        heatmapTitle <- paste0("Heatmap of gene expression (FDR < ",
+                               input$heatmapFDR,
+                               ", ",
+                               dim(data)[1],
+                               "DEGs)")
       }
     }
     
-      if(nrow(data) == 0) {
-        sendSweetAlert(
-          session = session,
-          title = "List contents error!",
-          text = "Genes list is empty!",
-          type = "error"
-        )
-        return()
-      } else {
-        showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
-        showNotification("Generating, please be patient...", type = "message")
-      }
-      
-    # Create color palette
-      if (input$colorSelectionMethod == "Color map") {
-        colorPal <- switch(
-          input$heatmapColor,
-          "PiYG" = PiYG(input$heatmapColorNumber),
-          "PRGn" = PRGn(input$heatmapColorNumber),
-          "BrBG" = BrBG(input$heatmapColorNumber),
-          "PuOr" = PuOr(input$heatmapColorNumber),
-          "OrRd" = OrRd(input$heatmapColorNumber),
-          "Oranges" = Oranges(input$heatmapColorNumber),
-          "RdGy" = RdGy(input$heatmapColorNumber),
-          "RdBu" = RdBu(input$heatmapColorNumber),
-          "RdYlBu" = RdYlBu(input$heatmapColorNumber),
-          "RdYlGn" = RdYlGn(input$heatmapColorNumber),
-          "Spectral" = Spectral(input$heatmapColorNumber),
-          "coolwarm" = cool_warm(input$heatmapColorNumber)
-        )
-      }
-      if (input$colorSelectionMethod == "Two colors") {
-        colorPal <-
-          colorRampPalette(c(input$heatmapTwoColorLow, input$heatmapTwoColorHigh))(input$heatmapColorNumber)
-      }
-      if (input$colorSelectionMethod == "Three colors") {
-        colorPal <-
-          colorRampPalette(
-            c(
-              input$heatmapTwoColorLow,
-              input$heatmapTwoColorMiddle,
-              input$heatmapTwoColorHigh
-            )
-          )(input$heatmapColorNumber)
-      }
+    if (nrow(data) == 0) {
+      sendSweetAlert(
+        session = session,
+        title = "List contents error!",
+        text = "Genes list is empty!",
+        type = "error"
+      )
+      return()
+    } else {
+      showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
+      showNotification("Generating, please be patient...", type = "message")
+    }
+    
+    colorPal <- colorPanel()
     
     dataBackup <- t(data)
     
     # Create Plotly object
     withBars(output$heatmap <- renderPlotly({
-      req(input$heatmapRun)
       isolate({
-      # Log transform and normalization
-      if(input$heatmapLogTrans == TRUE) {
-        dataBackup <-  log1p(dataBackup)
-      }
-      if(input$heatmapNor == TRUE) {
-        dataBackup <- heatmaply::normalize(dataBackup)
-      }
-      
-      if(input$heatmapSwap == "h"){
-        variables$heatmapHeight <- 10 * ncol(dataBackup)
-      heatmaply(
-        dataBackup,
-        k_row = length(variables$groupList),
-        colors = colorPal,
-        dist_method = input$heatmapDist,
-        hclust_method = input$heatmapCluster,
-        xlab = "Gene",
-        ylab = "Sample",
-        main = heatmapTitle,
-        margins = c(150, 100, 40, 20),
-        scale = input$heatmapScale,
-        labCol = colnames(dataBackup),
-        labRow = row.names(dataBackup)
-      )} else {
-        variables$heatmapHeight <- 20 * ncol(dataBackup)
-        heatmaply(
-          t(dataBackup),
-          k_col = length(variables$groupList),
-          colors = colorPal,
-          dist_method = input$heatmapDist,
-          hclust_method = input$heatmapCluster,
-          xlab = "Sample",
-          ylab = "Gene",
-          main = heatmapTitle,
-          margins = c(150, 100, 40, 20),
-          scale = input$heatmapScale,
-          labCol = row.names(dataBackup),
-          labRow = colnames(dataBackup)
-        )
-      }
+        # Log transform and normalization
+        if (input$heatmapLogTrans == TRUE) {
+          dataBackup <-  log1p(dataBackup)
+        }
+        if (input$heatmapNor == TRUE) {
+          dataBackup <- heatmaply::normalize(dataBackup)
+        }
+        
+        if (input$heatmapSwap == "h") {
+          variables$heatmapHeight <- 80 * nrow(dataBackup)
+          heatmaply(
+            dataBackup,
+            k_row = length(variables$groupList),
+            colors = colorPal,
+            dist_method = input$heatmapDist,
+            hclust_method = input$heatmapCluster,
+            xlab = "Gene",
+            ylab = "Sample",
+            main = heatmapTitle,
+            margins = c(150, 100, 40, 20),
+            scale = input$heatmapScale,
+            labCol = colnames(dataBackup),
+            labRow = row.names(dataBackup)
+          ) %>% layout(height = input$heatmapHeight)
+        } else {
+          variables$heatmapHeight <- 20 * ncol(dataBackup)
+          heatmaply(
+            t(dataBackup),
+            k_col = length(variables$groupList),
+            colors = colorPal,
+            dist_method = input$heatmapDist,
+            hclust_method = input$heatmapCluster,
+            xlab = "Sample",
+            ylab = "Gene",
+            main = heatmapTitle,
+            margins = c(150, 100, 40, 20),
+            scale = input$heatmapScale,
+            labCol = row.names(dataBackup),
+            labRow = colnames(dataBackup)
+          ) %>% layout(height = input$heatmapHeight)
+        }
       })
     }))
     
     # Generate Result table
     output$resultTableInHeatmap <- DT::renderDataTable({
       # Combine TCC Result and Raw Count Data
-      gene_id<-row.names(data)
-      data<-cbind(data, gene_id = gene_id)
+      gene_id <- row.names(data)
+      data <- cbind(data, gene_id = gene_id)
       
       resultTable <- merge(variables$result, data, by = "gene_id")
       
@@ -402,13 +439,23 @@ observeEvent(input$heatmapRun, {
           orderClasses = TRUE
         )
       ) %>% formatRound(
-        columns = c("a.value",
-                    "m.value",
-                    "p.value",
-                    "q.value",
-                    colnames(data)),
+        columns = c(
+          "a.value",
+          "m.value",
+          "p.value",
+          "q.value",
+          colnames(data)
+        ),
         digits = 3
       )
+    })
+    
+    # Render interactive heatmap plot -----------------------------------------
+    
+    
+    output$heatmapPlot <- renderUI({
+      tagList(withBarsUI(plotlyOutput("heatmap",
+                                      height = "auto")))
     })
   },
   error = function(e) {
@@ -427,18 +474,49 @@ observeEvent(input$heatmapRun, {
       text = "Genes list incorrect!",
       type = "error"
     )
-    # showNotification("Genes list incorrect!", type = "error")
     return()
   })
   
-  # ====================================
-  # This function render a button of showing the Heatmap code.
-  #
-  # Position: In Heatmap tab, under right, in Heatmap Parameters panel.
-  # ====================================
+  output$heatmapRcode <- renderText({
+    # if (input$heatmapSwap == "h") {
+    #   code <- paste0(
+    #   "heatmaply(",
+    #     dataBackup,
+    #     k_row = length(variables$groupList),
+    #     colors = colorPal,
+    #     dist_method = input$heatmapDist,
+    #     hclust_method = input$heatmapCluster,
+    #     xlab = "Gene",
+    #     ylab = "Sample",
+    #     main = heatmapTitle,
+    #     margins = c(150, 100, 40, 20),
+    #     scale = input$heatmapScale,
+    #     labCol = colnames(dataBackup),
+    #     labRow = row.names(dataBackup)
+    #   )
+    # } else {
+    #   heatmaply(
+    #     t(dataBackup),
+    #     k_col = length(variables$groupList),
+    #     colors = colorPal,
+    #     dist_method = input$heatmapDist,
+    #     hclust_method = input$heatmapCluster,
+    #     xlab = "Sample",
+    #     ylab = "Gene",
+    #     main = heatmapTitle,
+    #     margins = c(150, 100, 40, 20),
+    #     scale = input$heatmapScale,
+    #     labCol = row.names(dataBackup),
+    #     labRow = colnames(dataBackup)
+    #   )
+    # }
+    # variables$runHeatmap
+    "Under developing..."
+  })
+  
+})
 
-})
- 
-output$heatmapPlot <- renderUI({
-  withBarsUI(plotlyOutput("heatmap", height = paste0(variables$heatmapHeight, "px")))
-})
+
+# output$heatmapPlot <- renderUI({
+#   withBarsUI(plotlyOutput("heatmap", height = paste0(variables$heatmapHeight, "px")))
+# })

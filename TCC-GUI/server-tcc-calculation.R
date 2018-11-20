@@ -1,10 +1,8 @@
 # server-tcc-calculation.R
 
-# ====================================
-# This function check the `Run TCC` button, if the botton is clicked,
-# run TCC calculation.
-# Position: In Computation tab, upper right.
-# ====================================
+
+# If the run TCC botton has been clicked, execute TCC calculation ---------
+
 
 observeEvent(input$TCC, {
   progressSweetAlert(
@@ -86,9 +84,6 @@ observeEvent(input$TCC, {
     title = "Save normalized data",
     value = 87
   )
-  # Here is a switch, if this is the firs time of running TCC,
-  # Render other Tabs
-  variables$runTimes <- variables$runTimes + 1
   
   # Show computation time notification
   # Set time end
