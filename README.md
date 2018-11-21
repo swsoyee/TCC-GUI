@@ -1,3 +1,5 @@
+
+
 # TCC-GUI
 
 **TCC: Differential expression analysis for tag count data with robust normalization strategies**
@@ -85,9 +87,9 @@ This method always download the source code from github before launching, so may
 
 1. Click `Clone or download` button on the top of this page, then click `Download ZIP`;
 
-2. Unzip the file to your working directory (use `getwd()` to know your working directory);
+2. Unzip the file to your working directory ( use `getwd()` to know your working directory );
 
-3. Run the code of launching (According to your structure of working directory it may be different). 
+3. Run the code of launching ( according to your structure of working directory it may be different ). 
 
    ```R
    runApp("TCC-GUI-master//TCC-GUI")
@@ -96,6 +98,7 @@ This method always download the source code from github before launching, so may
 
 
 ## 📈 Screenshot
+(Screenshots are not to the date!)
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/dataImport.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/calculation.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
@@ -104,4 +107,6 @@ This method always download the source code from github before launching, so may
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Heatmap.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Expression.png">
+
+This function is under developing now...
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/report.png">
