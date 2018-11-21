@@ -22,12 +22,13 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 
 
-### Online version
+## 🌐 Online version
 
-Go to [TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
+Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 
-### Local version
+## 💻 Local version
 
+### 📥 Installation
 Make sure that you have already installed those packages in your environment.
 
 `shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`, `plotlyBars`, `markdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`.
@@ -69,13 +70,32 @@ if( !is.element("plotlyBars", .packages(all.available = TRUE)) ) {
 }
 ```
 
-Run the following command to launch `TCC-GUI` in your local environment.
+### ▶ Launch
+Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.
+
+#### Method 1
 
 ```R
 shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
 ```
 
+This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it. 
 
+#### Method 2
+
+1. Click `Clone or download` button on the top of this page, then click `Download ZIP`;
+
+2. Unzip the file to your working directory (use `getwd()` to know your working directory);
+
+3. Run the code of launching (According to your structure of working directory it may be different). 
+
+   ```R
+   runApp("TCC-GUI-master//TCC-GUI")
+   ```
+4. Enjoy your analysis with `TCC-GUI`!
+
+
+## 📈 Screenshot
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/dataImport.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/calculation.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
