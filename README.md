@@ -92,7 +92,7 @@ This method always download the source code from github before launching, so may
 3. Run the code of launching ( according to your structure of working directory it may be different ). 
 
    ```R
-   runApp("TCC-GUI-master//TCC-GUI")
+   shiny::runApp("TCC-GUI-master//TCC-GUI")
    ```
 4. Enjoy your analysis with `TCC-GUI`!
 
