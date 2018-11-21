@@ -281,7 +281,7 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
     ) %>%
     layout(
       xaxis = xform,
-      yaxis = list(title = "Raw Count"),
+      yaxis = list(title = "Count"),
       title = paste(colnames(expression), "Expression Plot"),
       legend = list(orientation = 'h')
     )

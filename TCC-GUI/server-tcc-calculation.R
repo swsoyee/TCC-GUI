@@ -15,7 +15,7 @@ observeEvent(input$TCC, {
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
-    title = "TCC Calculation:",
+    title = "TCC computation",
     value = 10
   )
   # Set time start
@@ -74,7 +74,7 @@ observeEvent(input$TCC, {
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
-    title = "Save TCC calculation result",
+    title = "Save TCC computation result",
     value = 83
   )
   variables$norData <- tcc$getNormalizedData()
@@ -276,7 +276,7 @@ observeEvent(input$TCC, {
       title = ""
     )
     
-    showNotification("Ploting Normalized Sample Distribution", type = "message")
+    showNotification("Ploting normalized sample distribution", type = "message")
 
     plot_ly(
       x = cpm_stack[, 2],
