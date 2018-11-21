@@ -30,7 +30,7 @@ Go to [TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 
 Make sure that you have already installed those packages in your environment.
 
-`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`, `plotlyBars`, `markdown`, `data.table`, `RColorBrewer`, `utils`.
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`, `plotlyBars`, `markdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`.
 
 If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.
 
@@ -42,7 +42,8 @@ libs <- c("shiny",
           "plotly", 
           "dplyr", 
           "DT", 
-          "heatmaply"
+          "heatmaply",
+          "tidyr",
           "devtools",
           "utils",
           "markdown",
