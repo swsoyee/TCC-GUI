@@ -9,7 +9,7 @@ fluidPage(column(
     status = "primary",
     uiOutput("pcaParameter")
   ),
-  box(title = "PCA Analysis Code",
+  box(title = "PCA Code",
       solidHeader = TRUE,
       status = "danger",
       collapsible = TRUE,
@@ -21,13 +21,13 @@ fluidPage(column(
 column(
   9,
   tabBox(
-    title = "PCA Analysis",
+    title = "PCA Plot",
     width = NULL,
-    tabPanel("Variances",
+    tabPanel("Scree plot",
              plotlyOutput("pcaVariances")),
-    tabPanel("3D",
+    tabPanel("3D Plot",
              plotlyOutput("pcabiplot3d")),
-    tabPanel("2D",
+    tabPanel("2D Plot",
              plotlyOutput("pcabiplot"))#,
     # tabPanel("Cluster",
     #          plotOutput("pcacluster")),

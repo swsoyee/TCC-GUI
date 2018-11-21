@@ -22,7 +22,21 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 ---
 
+## 📈 Screenshot
+(Screenshots are not to the date!)
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Home.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Simulation.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/dataImport.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/calculation.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/VolcanoPlot.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/PCA.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Heatmap.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Expression.png">
 
+This function is under developing now...
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/report.png">
 
 ## 🌐 Online version
 
@@ -94,19 +108,5 @@ This method always download the source code from github before launching, so may
    ```R
    shiny::runApp("TCC-GUI-master//TCC-GUI")
    ```
-4. Enjoy your analysis with `TCC-GUI`!
+4. Enjoy your analysis on `TCC-GUI`!
 
-
-## 📈 Screenshot
-(Screenshots are not to the date!)
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/dataImport.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/calculation.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/VolcanoPlot.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/PCA.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Heatmap.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Expression.png">
-
-This function is under developing now...
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/report.png">

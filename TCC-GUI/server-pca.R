@@ -40,7 +40,7 @@ observeEvent(input$sider, {
         do.call(actionBttn, c(
           list(
             inputId = "pcRun",
-            label = "Run PCA Analysis",
+            label = "Run PCA",
             icon = icon("play")
           ),
           actionBttnParams
