@@ -35,6 +35,7 @@ library(markdown)
 library(plotlyBars)
 library(utils)
 library(shinyWidgets)
+library(tidyr)
 
 
 # ====================================

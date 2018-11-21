@@ -23,20 +23,20 @@ observeEvent(input$sider, {
           justified = TRUE,
           status = "primary"
         ),
-        selectInput(
-          "dendMethod",
-          "Hierarchical Clustering Method",
-          choices = list(
-            "ward.D" = "ward.D",
-            "ward.D2" = "ward.D2",
-            "Single" = "single",
-            "Complete" = "complete",
-            "UPGMA" = "average",
-            "WPGMA" = "mcquitty",
-            "WOGMC" = "median",
-            "UPGMC" = "centroid"
-          )
-        ),
+        # selectInput(
+        #   "dendMethod",
+        #   "Hierarchical Clustering Method",
+        #   choices = list(
+        #     "ward.D" = "ward.D",
+        #     "ward.D2" = "ward.D2",
+        #     "Single" = "single",
+        #     "Complete" = "complete",
+        #     "UPGMA" = "average",
+        #     "WPGMA" = "mcquitty",
+        #     "WOGMC" = "median",
+        #     "UPGMC" = "centroid"
+        #   )
+        # ),
         do.call(actionBttn, c(
           list(
             inputId = "pcRun",
@@ -138,11 +138,11 @@ observeEvent(input$pcRun, {
   )
   
   # Cluster Dendrogram
-  data.cluster <- hclust(dist(data.pca$x),method = input$dendMethod)
-  
-  output$pcacluster <- renderPlot(
-    plot(data.cluster, xlab = "Sample")
-  )
+  # data.cluster <- hclust(dist(data.pca$x),method = input$dendMethod)
+  # 
+  # output$pcacluster <- renderPlot(
+  #   plot(data.cluster, xlab = "Sample")
+  # )
   
   # Summary Table
   output$summaryPCA <- DT::renderDataTable({

@@ -12,19 +12,19 @@ shinyServer(function(input, output, session) {
     CountData = data.frame("Load your data first." = character(0)),
     groupList = "",
     groupListConvert = "",
-    runTimes = 0,
     result = data.frame("Results will show here." = character(0)),
     norData = "",
     runTCCCode = "",
     runMAPlot = "",
     runVolcanoPlot = "",
     runHeatmap = "",
-    heatmapHeight = 500,
     runPCACode = "",
-    logList = data.frame("Time" = vector(), 
-                         "Type" = vector(),
-                         "Action" = vector(), 
-                         "Parameters" = vector())
+    logList = data.frame(
+      "Time" = vector(),
+      "Type" = vector(),
+      "Action" = vector(),
+      "Parameters" = vector()
+    )
   )
   source(file = "server-simulation.R",
          local = TRUE,

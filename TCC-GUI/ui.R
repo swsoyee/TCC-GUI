@@ -45,7 +45,7 @@ dashboardPage(
       menuItem(
         "Simulation Data",
         tabName = "simulationData",
-        icon = icon("database"),
+        icon = icon("random"),
         badgeLabel = "Step 0",
         badgeColor = "yellow"
       ), 
@@ -64,7 +64,7 @@ dashboardPage(
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
     ),
-    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.20", 
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.21", 
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(

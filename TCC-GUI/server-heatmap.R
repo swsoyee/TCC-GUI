@@ -386,8 +386,51 @@ observeEvent(input$heatmapRun, {
           dataBackup <- heatmaply::normalize(dataBackup)
         }
         
+        # This part is for code output ----
+        
+        
+        value <- as.character(data.frame(round(dataBackup, 2)))
+        sample_name <- row.names(dataBackup)
+        gene_name <- colnames(dataBackup)
+        
+        value_row <-
+          strsplit(x = gsub("c\\(", "", value), split = "(\\), )|(\\))")
+        value_row <-
+          data.frame(matrix(unlist(value_row)), row.names = gene_name)
+        data <-
+          data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")
+        data <- data.frame(lapply(data,as.numeric), row.names = gene_name)
+        
+        code <- paste0(
+          "# Your values of data\n",
+          "value <- ",
+          paste0("c(", paste0("'", value, "'", collapse = ",\n"), ")", collapse = ""),
+          "\n\n# Your gene name\n",
+          "gene_name <- ",
+          paste0("c(", paste0("'", gene_name, "'", collapse = ","), ")", collapse = ""),
+          "\n\n# Your sample name\n",
+          "sample_name <- ", paste0("c(", paste0("'", sample_name, "'", collapse = ","), ")", collapse = ""),
+          "\n\n# Convert string to data.frame\n",
+          "library(tidyr)",
+          '\nvalue_row <- strsplit(x = gsub("c\\\\(", "", value), split = "(\\\\), )|(\\\\))")',
+          "\nvalue_row <- data.frame(matrix(unlist(value_row)), row.names = gene_name)",
+          '\ndata <- data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")',
+          "\ndata <- data.frame(lapply(data,as.numeric), row.names = gene_name)",
+          "\n\n# Generate heatmap\n",
+          "library(heatmaply)\n"
+        )
         if (input$heatmapSwap == "h") {
-          variables$heatmapHeight <- 80 * nrow(dataBackup)
+          output$heatmapRcode <- renderText({
+            codeHeatmap <- paste0(
+              "heatmaply(t(data), k_row = ", length(variables$groupList), 
+              ", color = ", paste0("c(", paste0("'", colorPal, "'", collapse = ","), ")", collapse = ""),
+              ", dist_method = '", input$heatmapDist,
+              "', hclust_method = '", input$heatmapCluster,
+              "', xlab = 'Sample', ylab = 'Gene', scale = '", input$heatmapScale,
+              "', labRow = colnames(data), labCol = row.names(data))", collapse = ""
+            )
+            paste0(code, codeHeatmap, collapse = "")
+          })
           heatmaply(
             dataBackup,
             k_row = length(variables$groupList),
@@ -403,7 +446,17 @@ observeEvent(input$heatmapRun, {
             labRow = row.names(dataBackup)
           ) %>% layout(height = input$heatmapHeight)
         } else {
-          variables$heatmapHeight <- 20 * ncol(dataBackup)
+          output$heatmapRcode <- renderText({
+            codeHeatmap <- paste0(
+              "heatmaply(data, k_row = ", length(variables$groupList), 
+              ", color = ", paste0("c(", paste0("'", colorPal, "'", collapse = ","), ")", collapse = ""),
+              ", dist_method = '", input$heatmapDist,
+              "', hclust_method = '", input$heatmapCluster,
+              "', xlab = 'Gene', ylab = 'Sample', scale = '", input$heatmapScale,
+              "', labCol = colnames(data), labRow = row.names(data))", collapse = ""
+            )
+            paste0(code, codeHeatmap, collapse = "")
+          })
           heatmaply(
             t(dataBackup),
             k_col = length(variables$groupList),
@@ -477,46 +530,4 @@ observeEvent(input$heatmapRun, {
     return()
   })
   
-  output$heatmapRcode <- renderText({
-    # if (input$heatmapSwap == "h") {
-    #   code <- paste0(
-    #   "heatmaply(",
-    #     dataBackup,
-    #     k_row = length(variables$groupList),
-    #     colors = colorPal,
-    #     dist_method = input$heatmapDist,
-    #     hclust_method = input$heatmapCluster,
-    #     xlab = "Gene",
-    #     ylab = "Sample",
-    #     main = heatmapTitle,
-    #     margins = c(150, 100, 40, 20),
-    #     scale = input$heatmapScale,
-    #     labCol = colnames(dataBackup),
-    #     labRow = row.names(dataBackup)
-    #   )
-    # } else {
-    #   heatmaply(
-    #     t(dataBackup),
-    #     k_col = length(variables$groupList),
-    #     colors = colorPal,
-    #     dist_method = input$heatmapDist,
-    #     hclust_method = input$heatmapCluster,
-    #     xlab = "Sample",
-    #     ylab = "Gene",
-    #     main = heatmapTitle,
-    #     margins = c(150, 100, 40, 20),
-    #     scale = input$heatmapScale,
-    #     labCol = row.names(dataBackup),
-    #     labRow = colnames(dataBackup)
-    #   )
-    # }
-    # variables$runHeatmap
-    "Under developing..."
-  })
-  
 })
-
-
-# output$heatmapPlot <- renderUI({
-#   withBarsUI(plotlyOutput("heatmap", height = paste0(variables$heatmapHeight, "px")))
-# })

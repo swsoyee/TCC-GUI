@@ -228,18 +228,23 @@ observeEvent(input$confirmedGroupList, {
       # Position: In Data import tab, down middle.
       # ====================================
       data <- variables$CountData[variables$groupListConvert != 0]
-      cpm <- log2(data/1000000)
+      cpm <- log2(data / 1000000)
       cpm_stack <- stack(cpm)
       # Add a group column in case of bugs.
       cpm_stack$group <- 0
       # Add Group info
       for (i in 1:length(variables$groupList)) {
-        cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]),]$group <- names(variables$groupList[i])
+        cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]), ]$group <-
+          names(variables$groupList[i])
       }
-      cpm_stack_order <- unique(cpm_stack[order(cpm_stack$group), ]$ind)
-      xform <- list(categoryorder = "array",
-                    categoryarray = cpm_stack_order,
-                    title = input$sampleDistributionTitle)
+      # Reorder X axis, in case of some those dataset which sample name are not 
+      # in group order
+      cpm_stack_order <-
+        unique(cpm_stack[order(cpm_stack$group), ]$ind)
+      xform <- list(
+        categoryorder = "array",
+        categoryarray = cpm_stack_order
+      )
       
       updateProgressBar(
         session = session,
@@ -256,11 +261,17 @@ observeEvent(input$confirmedGroupList, {
         split =  ~ group
       )
       withBars(output$sampleDistribution <- renderPlotly({
+        xform$title <- input$sampleDistributionXlab
         psd %>%
           layout(
-            title = input$sampleDistributionTitle,
             xaxis = xform,
-            yaxis = list(title = input$sampleDistributionYlab)
+            yaxis = list(title = input$sampleDistributionYlab),
+            legend = list(
+              orientation = 'h',
+              xanchor = "center",
+              x = 0.5,
+              y = input$sampleDistributionLegendY
+            )
           )
       }))
       updateProgressBar(
@@ -271,11 +282,17 @@ observeEvent(input$confirmedGroupList, {
       )
       # The same plot used in Calculation tab.
       withBars(output$sampleDistributionTCC <- renderPlotly({
+        xform$title <- input$sampleDistributionXlab
         psd %>%
           layout(
-            title = input$sampleDistributionTitle,
             xaxis = xform,
-            yaxis = list(title = input$sampleDistributionYlab)
+            yaxis = list(title = input$sampleDistributionYlab),
+            legend = list(
+              orientation = 'h',
+              xanchor = "center",
+              x = 0.5,
+              y = input$sampleDistributionLegendY
+            )
           )
       }))
       # ====================================
@@ -301,19 +318,31 @@ observeEvent(input$confirmedGroupList, {
       
       withBars(output$sampleDistributionDensity <- renderPlotly({
         p %>%
-          layout(title = input$sampleDistributionDensityTitle,
-                 xaxis = list(title = input$sampleDistributionDensityXlab),
-                 yaxis = list(title = input$sampleDistributionDensityYlab),
-                 legend = list(orientation = 'h'))
+          layout(
+            xaxis = list(title = input$sampleDistributionDensityXlab),
+            yaxis = list(title = input$sampleDistributionDensityYlab),
+            legend = list(
+              orientation = 'h',
+              xanchor = "center",
+              x = 0.5,
+              y = input$sampleDistributionDensityLegendY
+            )
+          )
       }))
       
       # The same plot used in Calculation tab.
       withBars(output$sampleDistributionDensityTCC <- renderPlotly({
         p %>%
-          layout(title = input$sampleDistributionDensityTitle,
-                 xaxis = list(title = input$sampleDistributionDensityXlab),
-                 yaxis = list(title = input$sampleDistributionDensityYlab),
-                 legend = list(orientation = 'h'))
+          layout(
+            xaxis = list(title = input$sampleDistributionDensityXlab),
+            yaxis = list(title = input$sampleDistributionDensityYlab),
+            legend = list(
+              orientation = 'h',
+              xanchor = "center",
+              x = 0.5,
+              y = input$sampleDistributionDensityLegendY
+            )
+          )
       }))
       
       # ====================================
@@ -327,42 +356,56 @@ observeEvent(input$confirmedGroupList, {
         title = "Summarizing data",
         value = 90
       )
+
+      # Infobox of row and column number in the row count dataset ---------------
+      
+      
       output$rowOfCountData <- renderUI({
         infoBox(
-          "Row of Count data", 
-          dim(variables$CountData)[1],
+          title = "SHAPE",
+          value = paste0(
+            "c(",
+            dim(variables$CountData)[1],
+            ", ",
+            dim(variables$CountData)[2],
+            ")"
+          ),
+          subtitle = "Row and column count number in the dataset",
           width = NULL,
           icon = icon("list"),
           fill = TRUE,
           color = "yellow"
         )
       })
-      output$ColumnOfCountData <- renderUI({
-        infoBox(
-          "Column of Count data", 
-          dim(variables$CountData)[2],
-          width = NULL,
-          icon = icon("columns"),
-          fill = TRUE,
-          color = "purple"
-        )
-      })
+      
+      # Infobox of group informations -------------------------------------------
+      
+      
       output$groupCount <- renderUI({
         groupText <- sapply(variables$groupList, length)
         infoBox(
-          "Group Count", 
-          paste0(names(groupText), ": ",groupText, collapse = "-VS-"),
+          title = "Group Count", 
+          value = length(groupText), 
+          subtitle = paste0(names(groupText), ": ",groupText, collapse = "\n"),
           width = NULL,
           icon = icon("users"),
           fill = TRUE,
           color = "aqua"
         )
       })
+      
+      # Infobox of zero expression in all sample --------------------------------
       output$zeroValue <- renderUI({
-        zeroValue <- sum((apply(variables$CountData, 1, function(x){sum(x) == 0})))
+        zeroValue <-
+          sum((apply(variables$CountData, 1, function(x) {
+            sum(x) == 0
+          })))
         infoBox(
-          "0 value count in dataset", 
-          paste0(zeroValue, " (", round(zeroValue/nrow(variables$CountData) * 100, 2), "%)"),
+          title = "zero value",
+          value = paste0(zeroValue, " (", round(
+            zeroValue / nrow(variables$CountData) * 100, 2
+          ), "%)"),
+          subtitle = "Number of gene which expression level equal to zero in all sample",
           width = NULL,
           icon = icon("exclamation-circle"),
           fill = TRUE,
@@ -395,3 +438,7 @@ observeEvent(input$confirmedGroupList, {
     }
   )
 })
+
+
+
+

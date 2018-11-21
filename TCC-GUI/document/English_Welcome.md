@@ -16,6 +16,7 @@ In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available j
 
 ## 🛠Function
 
+- Generalization of Simulation data .
 - Dataset `summarization` and sample `distribution plot` for sample quality control.
 - Detection of differentially expressed genes (DEGs).
 - Interactive visualization of `MA plot`, `Volcano plot`, `expression level plot` and so on.

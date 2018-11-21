@@ -69,8 +69,39 @@ fluidPage(fluidRow(column(
         actionBttnParams
       )
     )
+  ),
+  box(
+    title = "Summary of Data",
+    solidHeader = TRUE,
+    status = "info",
+    width = NULL,
+    uiOutput("rowOfCountData"),
+    uiOutput("groupCount"),
+    uiOutput("zeroValue")
   )
 ),
+# column(
+#   9,
+#   box(
+#     title = "Read Count Table",
+#     solidHeader = TRUE,
+#     status = "info",
+#     width = NULL,
+#     uiOutput("emptyTable")
+#   )
+# )),
+# fluidRow(column(
+#   3,
+#   # box(
+#   #   title = "Summary of Data",
+#   #   solidHeader = TRUE,
+#   #   status = "info",
+#   #   width = NULL,
+#   #   uiOutput("rowOfCountData"),
+#   #   uiOutput("groupCount"),
+#   #   uiOutput("zeroValue")
+#   # )
+# ),
 column(
   9,
   box(
@@ -79,23 +110,7 @@ column(
     status = "info",
     width = NULL,
     uiOutput("emptyTable")
-  )
-)),
-fluidRow(column(
-  3,
-  box(
-    title = "Summary of Data",
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    uiOutput("rowOfCountData"),
-    uiOutput("ColumnOfCountData"),
-    uiOutput("groupCount"),
-    uiOutput("zeroValue")
-  )
-),
-column(
-  9,
+  ),
   box(
     title = "Sample Distribution",
     solidHeader = TRUE,
@@ -104,11 +119,10 @@ column(
       1,
       dropdownButton(
         tags$h3("Plot options"),
-        textInput(
-          inputId = "sampleDistributionTitle",
-          label = "Title",
-          value = "Row Count Sample Distribution",
-          placeholder = "Row Count Sample Distribution"
+        numericInput(
+          inputId = "sampleDistributionLegendY",
+          label = "Legend Y",
+          value = 1.2
         ),
         textInput(
           inputId = "sampleDistributionXlab",
@@ -142,18 +156,17 @@ column(
     withBarsUI(plotlyOutput("sampleDistribution"))
   ),
   box(
-    title = "Row Count Distribution",
+    title = "Raw Count Distribution",
     solidHeader = TRUE,
     status = "info",
     fluidRow(column(
       1,
       dropdownButton(
         tags$h3("Plot options"),
-        textInput(
-          inputId = "sampleDistributionDensityTitle",
-          label = "Title",
-          value = "Row Count Distribution",
-          placeholder = "Row Count Distribution"
+        numericInput(
+          inputId = "sampleDistributionDensityLegendY",
+          label = "Legend Y",
+          value = 1.2
         ),
         textInput(
           inputId = "sampleDistributionDensityXlab",

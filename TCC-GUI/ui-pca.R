@@ -23,14 +23,15 @@ column(
   tabBox(
     title = "PCA Analysis",
     width = NULL,
+    tabPanel("Variances",
+             plotlyOutput("pcaVariances")),
     tabPanel("3D",
              plotlyOutput("pcabiplot3d")),
     tabPanel("2D",
-             plotlyOutput("pcabiplot")),
-    tabPanel("Cluster",
-             plotOutput("pcacluster")),
-    tabPanel("Variances",
-             plotlyOutput("pcaVariances"))
+             plotlyOutput("pcabiplot"))#,
+    # tabPanel("Cluster",
+    #          plotOutput("pcacluster")),
+    # )
   ),
   box(
     title = "Summary of PCA",
