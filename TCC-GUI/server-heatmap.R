@@ -311,7 +311,7 @@ output$heatmapSelectGene <- renderUI({
           value = 0.05
         )
       },
-      numericInput("heatmapFDRTop", "Top gene count:", value = 50)
+      numericInput("heatmapFDRTop", "Number of top-ranked genes", value = 50)
     )
   )
 })
@@ -350,7 +350,7 @@ observeEvent(input$heatmapRun, {
         data <-
           data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop &
                                                     resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
-        heatmapTitle <- paste0("Heatmap of gene expression (FDR < ",
+        heatmapTitle <- paste0("Heatmap of gene expression (q.value < ",
                                input$heatmapFDR,
                                ", ",
                                dim(data)[1],

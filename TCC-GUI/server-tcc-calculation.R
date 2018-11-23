@@ -161,7 +161,7 @@ observeEvent(input$TCC, {
     # Render Plotly
     plot_ly(
       data = df,
-      x = ~ as.numeric(Cutoff),
+      x = ~ Cutoff,
       y = ~ Between_Count,
       type = "bar",
       hoverinfo = "text",
@@ -186,7 +186,10 @@ observeEvent(input$TCC, {
         )
       ) %>%
       layout(
-        xaxis = list(title = "FDR Cutoff"),
+        xaxis = list(title = "FDR Cutoff" #,
+                     #tickvals = 1:22,
+                     #ticktext = Cutoff
+                     ),
         yaxis = list(title = "DEGs Count"),
         yaxis2 = list(overlaying = "y", side = "right"),
         showlegend = FALSE
@@ -298,7 +301,7 @@ observeEvent(input$TCC, {
     for(i in 1:length(densityTable)){
       p <- add_trace(p, x = densityTable[[i]][[1]],
                      y = densityTable[[i]][[2]],
-                     fill = "tozeroy",
+                     # fill = "tozeroy",
                      name = names(densityTable[i]))
     }
     p %>%

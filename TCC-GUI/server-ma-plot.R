@@ -42,7 +42,7 @@ observeEvent(input$sider, {
       do.call(actionBttn, c(
         list(
           inputId = "makeMAPlot",
-          label = "Generate MA-Plot",
+          label = "Generate MA Plot",
           icon = icon("play")
         ),
         actionBttnParams
@@ -323,8 +323,9 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
     y = ~ Between_Count,
     type = "bar",
     hoverinfo = "text",
-    text = ~ paste("</br>FDR Cutoff: ", Cutoff,
-                   "</br>DEGs Count: ", Between_Count)
+    text = ~ paste("</br>FDR cutoff: ", Cutoff,
+                   "</br>DEGs between cutoff: ", Between_Count,
+                   "</br>Total DEGs under cufoff: ", Under_Count)
   ) %>%
     add_trace(
       y = ~ Under_Count,
@@ -340,9 +341,12 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
       )
     ) %>%
     layout(
-      xaxis = list(title = "FDR Cutoff"),
-      yaxis = list(title = "DEGs Count"),
-      yaxis2 = list(overlaying = "y", side = "right"),
-      showlegend = FALSE
+      xaxis = list(title = "FDR Cutoff (%)", 
+                   tickvals = c(2, 4, 6), 
+                   ticktext = c(1, 10, 20)),
+      yaxis = list(title = "DEGs count between cutoff"),
+      yaxis2 = list(title = "Total DEGs under cufoff", overlaying = "y", side = "right"),
+      showlegend = FALSE,
+      margin = list(r = 50)
     )
 }))

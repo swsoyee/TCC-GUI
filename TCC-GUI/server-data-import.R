@@ -19,12 +19,12 @@ observeEvent(input$CountDataSample, {
   
   sampleGroup <- switch(input$SampleDatabase,
                         "sample_data/data_hypodata_3vs3.txt" = paste(
-                          "G1_rep1,control",
-                          "G1_rep2,control",
-                          "G1_rep3,control",
-                          "G2_rep1,treatment",
-                          "G2_rep2,treatment",
-                          "G2_rep3,treatment",
+                          "G1_rep1,Group1",
+                          "G1_rep2,Group1",
+                          "G1_rep3,Group1",
+                          "G2_rep1,Group2",
+                          "G2_rep2,Group2",
+                          "G2_rep3,Group2",
                           sep = '\n'
                         ),
                         "sample_data/katzmouse_count_table.txt" = paste(
@@ -312,7 +312,7 @@ observeEvent(input$confirmedGroupList, {
       for(i in 1:length(densityTable)){
         p <- add_trace(p, x = densityTable[[i]][[1]],
                        y = densityTable[[i]][[2]],
-                       fill = "tozeroy",
+                       # fill = "tozeroy",
                        name = names(densityTable[i]))
       }
       

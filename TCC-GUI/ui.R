@@ -31,14 +31,14 @@ dashboardPage(
       id = "sider",
       menuItem("Guidance", tabName = "guidence", icon = icon("home"),
                menuSubItem(text = "Welcome", tabName = "welcome"),
-               menuSubItem(text = "1. Data import", tabName = "dataInputHelp"),
+               menuSubItem(text = "1. Data Import", tabName = "dataInputHelp"),
                menuSubItem(text = "2. TCC Computation", tabName = "tccComputationHelp"),
                tags$hr(style="border-color: black;"),
-               menuSubItem(text = "3.1. MA plot", tabName = "maPlotHelp"),
-               menuSubItem(text = "3.2. Volcano plot", tabName = "volcanoPlotHelp"),
-               menuSubItem(text = "3.3. Exploratory analysis (PCA)", tabName = "pcaHelp"),
+               menuSubItem(text = "3.1. MA Plot", tabName = "maPlotHelp"),
+               menuSubItem(text = "3.2. Volcano Plot", tabName = "volcanoPlotHelp"),
+               menuSubItem(text = "3.3. PCA", tabName = "pcaHelp"),
                menuSubItem(text = "3.4. Heatmap", tabName = "heatmapHelp"),
-               menuSubItem(text = "3.5. Expression level", tabName = "expressionHelp"),
+               menuSubItem(text = "3.5. Expression Level", tabName = "expressionHelp"),
                tags$hr(style="border-color: black;"),
                menuSubItem(text = "4. Output", tabName = "reportHelp"),
                startExpanded = TRUE),
@@ -64,7 +64,7 @@ dashboardPage(
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
     ),
-    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.22", 
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.23", 
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(

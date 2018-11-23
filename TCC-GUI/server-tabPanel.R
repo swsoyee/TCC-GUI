@@ -57,7 +57,7 @@ observeEvent(input$TCC, {
   })
   output$expressionTab <- renderMenu({
     menuItem(
-      "Expression",
+      "Expression Level",
       tabName = "expressionTab",
       icon = icon("bar-chart"),
       badgeLabel = "Step 3",

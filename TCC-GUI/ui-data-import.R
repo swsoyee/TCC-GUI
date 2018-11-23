@@ -52,12 +52,12 @@ fluidPage(fluidRow(column(
       "Input your group info:",
       rows = 6,
       placeholder = paste(
-        "G1_rep1,control",
-        "G1_rep2,control",
-        "G1_rep3,control",
-        "G2_rep1,treatment",
-        "G2_rep2,treatment",
-        "G2_rep3,treatment",
+        "G1_rep1,Group1",
+        "G1_rep2,Group1",
+        "G1_rep3,Group1",
+        "G2_rep1,Group2",
+        "G2_rep2,Group2",
+        "G2_rep3,Group2",
         sep = '\n'
       )
     ),
@@ -80,28 +80,6 @@ fluidPage(fluidRow(column(
     uiOutput("zeroValue")
   )
 ),
-# column(
-#   9,
-#   box(
-#     title = "Read Count Table",
-#     solidHeader = TRUE,
-#     status = "info",
-#     width = NULL,
-#     uiOutput("emptyTable")
-#   )
-# )),
-# fluidRow(column(
-#   3,
-#   # box(
-#   #   title = "Summary of Data",
-#   #   solidHeader = TRUE,
-#   #   status = "info",
-#   #   width = NULL,
-#   #   uiOutput("rowOfCountData"),
-#   #   uiOutput("groupCount"),
-#   #   uiOutput("zeroValue")
-#   # )
-# ),
 column(
   9,
   box(
