@@ -308,10 +308,13 @@ output$heatmapSelectGene <- renderUI({
           "FDR:",
           min = 0.01,
           max = 1,
-          value = 0.05
+          value = 0.01
         )
-      },
-      numericInput("heatmapFDRTop", "Number of top-ranked genes", value = 50)
+      } else {
+        tagList(
+        tags$p("No FDR value for WAD method, please select genes by rank."),
+        numericInput("heatmapFDRTop", "Number of top-ranked genes", value = 50))
+      }
     )
   )
 })
@@ -348,8 +351,7 @@ observeEvent(input$heatmapRun, {
         heatmapTitle <- "Heatmap of specific genes"
       } else {
         data <-
-          data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop &
-                                                    resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
+          data[row.names(data) %in% resultTable()[resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
         heatmapTitle <- paste0("Heatmap of gene expression (q.value < ",
                                input$heatmapFDR,
                                ", ",
