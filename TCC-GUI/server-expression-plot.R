@@ -26,15 +26,8 @@ output$expressionParameters <- renderUI({
   )
 })
 
-# ====================================
-# This function render a series output of expression level
-# Position: In [Expression Plot tab], right.
-# ====================================
-# Input: expressionGeneList (Observe input gene list)
-# Output: Plotly Object & DataTable Object
-# ====================================
 observeEvent(input$runExpression, {
-  
+    # Convert data for ploting -----
     data <- variables$CountData
     data.cl <- variables$groupListConvert
     
@@ -43,17 +36,9 @@ observeEvent(input$runExpression, {
     data <- data[, data.cl != 0]
     data.cl <- data.cl[data.cl != 0]
     
-    # ====================================
-    # This function render a plotly of specific gene expression value in barplot.
-    # Position: In [Expression Plot tab], upper right.
-    # ====================================
-    # Input: None
-    # Output: Plotly object (Plot)
-    # ====================================
+    
+    # Render plotly object of barplot -----
     output$geneBarPlotExpression <- renderPlotly({
-      # validate(
-      #   need(input$expressionGeneList != "", "Please select gene(s).")
-      # )
       isolate({
       p <- list(0)
       
@@ -108,14 +93,11 @@ observeEvent(input$runExpression, {
       }
       subplot(f, nrows = j - 1, margin = 0.05)
       })
+      
     })
-    # ====================================
-    # This function render a plotly of specific gene expression value in boxplot.
-    # Position: In [Expression Plot tab], upper right.
-    # ====================================
-    # Input: None
-    # Output: Plotly object (Plot)
-    # ====================================
+
+    
+    # Render plotly object of boxplot -----
     
     output$geneBoxPlotExpression <- renderPlotly({
       # validate(
@@ -170,14 +152,139 @@ observeEvent(input$runExpression, {
       })
     })
     
-    # ====================================
-    # This function render a Data.Table of specific gene expression level.
-    # Position: In [Expression Plot tab], down right.
-    # ====================================
-    # Input: None
-    # Output: DataTable object (Table)
-    # ====================================
     
+    
+    # R code of expression plot in barplot -----
+    output$expressionLevelCodeText <- renderText({
+      code <- paste0(
+        "# Dataset\n",
+        "data <- ",
+        paste0("c(", paste0("'", as.character(data.frame(round(data, 2))), "'", collapse = ",\n"), ")", collapse = ""),
+        "\n\n# Gene name\n",
+        "gene_name <- ",
+        paste0("c(", paste0("'", colnames(data), "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Sample name\n",
+        "sample_name <- ",
+        paste0("c(", paste0("'", row.names(data), "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Group name\n",
+        "group_name <- ",
+        paste0("c(", paste0("'", data.cl, "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Convert vector to data.frame\nlibrary(tidyr)\nlibrary(plotly)\n",
+        '\nvalue_row <- strsplit(x = gsub("c\\\\(", "", data), split = "(\\\\), )|(\\\\))")',
+        "\nvalue_row <- data.frame(matrix(unlist(value_row)), row.names = gene_name)",
+        '\ndata <- data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")',
+        "\ndata <- data.frame(lapply(data,as.numeric), row.names = gene_name)",
+        "\ndata <- t(data)",
+        "\n\n# Barplot\n# Reorder x label (if necessary)\n",
+        '\nxOrder <- data.frame("name" = colnames(data), "group" = group_name)',
+        '\nxOrderVector <- unique(xOrder[order(xOrder$group),]$name)',
+        '\nxform <- list(categoryorder = "array", categoryarray = xOrderVector, title = "")',
+        '\np <- list(0)',
+        '\n\nfor (i in 1:nrow(data)) {\n',
+        '    p[[i]] <- plot_ly(x = colnames(data), y = t(data[i,]), color = factor(group_name), type = "bar")\n ',
+        '    p[[i]] <- p[[i]] %>% layout(annotations = list(x = 0.5, y = 1.05, text = row.names(data)[i], showarrow = F, xref = "paper", yref = "paper" ),\n',
+        '                                showlegend = FALSE, xaxis = xform)\n',
+        '}\n',
+        'f <- list(0)\n',
+        'j <- 1\n',
+        'for (i in seq(1, nrow(data), 2)) {\n',
+        '    if(i + 1 <= nrow(data)){\n',
+        '        f[[j]] <- subplot(p[[i]], p[[i+1]])\n',
+        '    } else {\n',
+        '        f[[j]] <- subplot(p[[i]])\n',
+        '    }\n',
+        '    j <- j + 1\n',
+        '}\n',
+        'subplot(f, nrows = j - 1, margin = 0.05)\n'
+      )
+    })
+    
+    
+    # R code of expression plot in boxplot
+    output$expressionLevelBoxCodeText <- renderText({
+      code <- paste0(
+        "# Dataset\n",
+        "data <- ",
+        paste0("c(", paste0("'", as.character(data.frame(round(data, 2))), "'", collapse = ",\n"), ")", collapse = ""),
+        "\n\n# Gene name\n",
+        "gene_name <- ",
+        paste0("c(", paste0("'", colnames(data), "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Sample name\n",
+        "sample_name <- ",
+        paste0("c(", paste0("'", row.names(data), "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Group name\n",
+        "group_name <- ",
+        paste0("c(", paste0("'", data.cl, "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Convert vector to data.frame\nlibrary(tidyr)\nlibrary(plotly)\n",
+        '\nvalue_row <- strsplit(x = gsub("c\\\\(", "", data), split = "(\\\\), )|(\\\\))")',
+        "\nvalue_row <- data.frame(matrix(unlist(value_row)), row.names = gene_name)",
+        '\ndata <- data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")',
+        "\ndata <- data.frame(lapply(data,as.numeric), row.names = gene_name)",
+        "\ndata <- t(data)",
+        "\n\n# Barplot\n",
+        '\np <- list(0)',
+        '\n\nfor (i in 1:nrow(data)) {\n',
+        '    p[[i]] <- plot_ly(x = colnames(data), y = t(data[i,]), color = factor(group_name), type = "bar")\n ',
+        '    p[[i]] <- p[[i]] %>% layout(annotations = list(x = 0.5, y = 1.05, text = row.names(data)[i], showarrow = F, xref = "paper", yref = "paper" ),\n',
+        '                                showlegend = FALSE, xaxis = xform)\n',
+        '}\n',
+        'f <- list(0)\n',
+        'j <- 1\n',
+        'for (i in seq(1, nrow(data), 2)) {\n',
+        '    if(i + 1 <= nrow(data)){\n',
+        '        f[[j]] <- subplot(p[[i]], p[[i+1]])\n',
+        '    } else {\n',
+        '        f[[j]] <- subplot(p[[i]])\n',
+        '    }\n',
+        '    j <- j + 1\n',
+        '}\n',
+        'subplot(f, nrows = j - 1, margin = 0.05)\n'
+      )
+    })
+    # R code of expression plot in boxplot ----
+    output$expressionLevelBoxCodeText <- renderText({
+      code <- paste0(
+        "# Dataset\n",
+        "data <- ",
+        paste0("c(", paste0("'", as.character(data.frame(round(data, 2))), "'", collapse = ",\n"), ")", collapse = ""),
+        "\n\n# Gene name\n",
+        "gene_name <- ",
+        paste0("c(", paste0("'", colnames(data), "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Sample name\n",
+        "sample_name <- ",
+        paste0("c(", paste0("'", row.names(data), "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Group name\n",
+        "group_name <- ",
+        paste0("c(", paste0("'", data.cl, "'", collapse = ","), ")", collapse = ""),
+        "\n\n# Convert vector to data.frame\nlibrary(tidyr)\nlibrary(plotly)\n",
+        '\nvalue_row <- strsplit(x = gsub("c\\\\(", "", data), split = "(\\\\), )|(\\\\))")',
+        "\nvalue_row <- data.frame(matrix(unlist(value_row)), row.names = gene_name)",
+        '\ndata <- data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")',
+        "\ndata <- data.frame(lapply(data,as.numeric), row.names = gene_name)",
+        "\ndata <- t(data)",
+        "\n\n# Barplot\n# Reorder x label (if necessary)\n",
+        '\nxOrder <- data.frame("name" = colnames(data), "group" = group_name)',
+        '\nxOrderVector <- unique(xOrder[order(xOrder$group),]$name)',
+        '\nxform <- list(categoryorder = "array", categoryarray = xOrderVector, title = "")',
+        '\np <- list(0)',
+        '\n\nfor (i in 1:nrow(data)) {\n',
+        '    p[[i]] <- plot_ly(x = factor(group_name), y = t(data[i,]), color = factor(group_name), type = "box", boxpoints = "all", jitter = 0.3, pointpos = -1.8)\n',
+        '    p[[i]] <- p[[i]] %>% layout(annotations = list(x = 0.5, y = 1.05, text = row.names(data)[i], showarrow = F, xref = "paper", yref = "paper"), showlegend = FALSE)\n',
+        '}\n',
+        'f <- list(0)\n',
+        'j <- 1\n',
+        'for (i in seq(1, nrow(data), 2)) {\n',
+        '    if(i + 1 <= nrow(data)){\n',
+        '        f[[j]] <- subplot(p[[i]], p[[i+1]])\n',
+        '    } else {\n',
+        '        f[[j]] <- subplot(p[[i]])\n',
+        '    }\n',
+        '    j <- j + 1\n',
+        '}\n',
+        'subplot(f, nrows = j - 1, margin = 0.05)\n'
+      )
+    })
+    # Selected gene row count DataTable ----
     output$geneTable <- DT::renderDataTable({
       df <- data
       # Create 19 breaks and 20 rgb color values ranging from white to red
@@ -193,14 +300,8 @@ observeEvent(input$runExpression, {
         formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
     })
     
-    # ====================================
-    # This function render a Data.Table of specific gene calculated result.
-    # Position: In [Expression Plot tab], down right.
-    # ====================================
-    # Input: None
-    # Output: DataTable object (Table)
-    # ====================================
-    
+
+    # Selected gene TCC result DataTable -----
     output$geneTableCal <- DT::renderDataTable({
       DT::datatable(resultTable()[resultTable()$gene_id %in% row.names(data), ],
                     options = list(dom = "t")) %>% formatRound(

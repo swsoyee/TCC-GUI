@@ -8,6 +8,20 @@ fluidPage(column(
     width = NULL,
     status = "primary",
     uiOutput("expressionParameters")
+  ),
+  box(
+    title = "Expression Level R Code",
+    solidHeader = TRUE,
+    width = NULL,
+    status = "danger",
+    collapsible = TRUE,
+    collapsed = TRUE,
+    tabsetPanel(
+      tabPanel(title = "Barplot",
+               verbatimTextOutput("expressionLevelCodeText")),
+      tabPanel(title = "Boxplot",
+               verbatimTextOutput("expressionLevelBoxCodeText"))
+    )
   )
 ),
 column(
