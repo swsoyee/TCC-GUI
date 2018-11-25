@@ -1,0 +1,162 @@
+---
+title: "Plot Report"
+output: html_document
+params:
+  CountData: NA
+  groupList: NA
+  zeroValue: NA
+  sampleDistributionBar: NA
+  sampleDistributionDensity: NA
+  norSampleDistributionBar: NA
+  norSampleDistributionDensity: NA
+  MAPlotObject: NA
+  VolcanoPlotObject: NA
+  screePlot: NA
+  pca3d: NA
+  pca2d: NA
+  heatmapObject: NA
+  expressionLevelBar: NA
+  expressionLevelBox: NA
+  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, results='asis')
+library(plotly)
+```
+
+# Session infomation
+
+Generated at: `r Sys.time()`  
+
+Size of original dataset: `r nrow(params$CountData)` rows / `r ncol(params$CountData)` column
+
+Number of group: `r length(params$groupList)`  
+Detail:  
+```{r}
+for(i in 1:length(params$groupList)){
+  group_name <- names(params$groupList)[i]
+  cat(paste0(group_name, ": ",
+             paste0(params$groupList[[i]], collapse = ", "), 
+             "  \n")
+      )
+}
+```
+
+Number of gene which expression level equal to zero in all sample: `r params$zeroValue`
+
+
+
+## Sample Distribution  
+
+### Sample distribution in boxplot  
+```{r}
+if(params$sampleDistributionBar != ""){
+  params$sampleDistributionBar
+} else {
+  "Not available"
+}
+```
+
+### Sample distribution in boxplot (normalized)  
+```{r}
+if(params$norSampleDistributionBar != ""){
+  params$norSampleDistributionBar
+} else {
+  "Not available"
+}
+```
+
+### Sample distribution density plot  
+```{r}
+if(params$sampleDistributionDensity != ""){
+  params$sampleDistributionDensity
+} else {
+  "Not available"
+}
+```
+
+### Sample distribution density plot (normalized)  
+```{r}
+if(params$norSampleDistributionDensity != ""){
+  params$norSampleDistributionDensity
+} else {
+  "Not available"
+}
+```
+
+## MA Plot  
+```{r}
+if(params$MAPlotObject != ""){
+  params$MAPlotObject
+} else {
+  "Not available"
+}
+```
+
+## Volcano Plot  
+```{r}
+if(params$VolcanoPlotObject != ""){
+  params$VolcanoPlotObject
+} else {
+  "Not available"
+}
+```
+
+## PCA  
+
+### Scree plot  
+```{r}
+if(params$screePlot != ""){
+  params$screePlot
+} else {
+  "Not available"
+}
+```
+
+### 3D  
+```{r}
+if(params$pca3d != ""){
+  params$pca3d
+} else {
+  "Not available"
+}
+```
+
+### 2D  
+```{r}
+if(params$pca2d != ""){
+  params$pca2d
+} else {
+  "Not available"
+}
+```
+
+## Heatmap  
+```{r}
+if(params$heatmapObject != ""){
+  params$heatmapObject
+} else {
+  "Not available"
+}
+```
+
+## Expression Level  
+
+### Barplot  
+```{r}
+if(params$expressionLevelBar != ""){
+  params$expressionLevelBar
+} else {
+  "Not available"
+}
+```
+
+### Boxplot  
+```{r}
+if(params$expressionLevelBox != ""){
+  params$expressionLevelBox
+} else {
+  "Not available"
+}
+```

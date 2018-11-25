@@ -23,8 +23,8 @@ fluidPage(useSweetAlert(), fluidRow(column(
           "DESeq2" = "deseq2",
           "baySeq" = "bayseq",
           "SAMSeq" = "samseq",
-          "Voom" = "voom",
-          "WAD" = "wad"
+          "Voom" = "voom"#,
+          # "WAD" = "wad"
         )
       ),
       numericInput(

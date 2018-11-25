@@ -99,7 +99,7 @@ observeEvent(input$makeMAPlot, {
             "non-DEG" = paste("(", input$maFDR, ",1]", sep = "")
           )
         
-        plot_ly(
+        p <- plot_ly(
           data = resultTable(),
           x = ~ a.value,
           y = ~ m.value,
@@ -128,8 +128,10 @@ observeEvent(input$makeMAPlot, {
             title = paste("MA Plot with FDR <", input$maFDR),
             annotations = annotation
           )
+        variables$MAPlotObject <- p
+        p
       } else {
-        plot_ly(
+        p <- plot_ly(
           data = resultTable(),
           x = ~ as.numeric(a.value),
           y = ~ as.numeric(m.value),
@@ -157,6 +159,8 @@ observeEvent(input$makeMAPlot, {
             title = "MA Plot",
             annotations = annotation
           )
+        variables$MAPlotObject <- p
+        p
       }
     })
   }))

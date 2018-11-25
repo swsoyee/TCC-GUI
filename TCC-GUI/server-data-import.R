@@ -82,13 +82,8 @@ observeEvent(input$CountDataSample, {
   
 })
 
-# ====================================
-# If Upload Data button has been clicked, load the data via upload. 
-# Position: In [Data Import tab], upper left. 
-# ====================================
-# Input: uploadCountData (Button)
-# Output: None (Save uploaded data into variables)
-# ====================================
+
+# If Upload Data button has been clicked, load the data via upload ----
 
 observeEvent(input$uploadCountData, {
   showNotification("Start uploading file...", type = "message")
@@ -120,13 +115,8 @@ datasetInput <- reactive({
   variables$CountData
 })
 
-# ====================================
-# Render a table of raw count data, adding color.
-# Position: In Computation tab, upper middle. 
-# ====================================
-# Input: None
-# Output: DataTable (Table)
-# ====================================
+
+# Render a table of raw count data, adding color ----
 
 output$table <- DT::renderDataTable({
   df <- datasetInput()
@@ -152,14 +142,9 @@ output$table <- DT::renderDataTable({
     formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, clrs))
 })
 
-# ====================================
-# If you haven't load any dataset into the server, show a message.
-# Otherwise render DataTable of row data count.
-# Position: In [Data Import tab], upper middle. 
-# ====================================
-# Input: None
-# Output: DataTable (Table)
-# ====================================
+
+# Render DataTable of row data count ----
+
 output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
     return("No data to show. Click [Import Data] or [Upload] your own dataset.")
@@ -222,11 +207,8 @@ observeEvent(input$confirmedGroupList, {
       )
 
       
-      # ====================================
-      # This function render a boxplot of sample distribution
-      #
-      # Position: In Data import tab, down middle.
-      # ====================================
+      # This function render a boxplot of sample distribution ----
+      
       data <- variables$CountData[variables$groupListConvert != 0]
       cpm <- log2(data / 1000000)
       cpm_stack <- stack(cpm)
@@ -262,7 +244,7 @@ observeEvent(input$confirmedGroupList, {
       )
       withBars(output$sampleDistribution <- renderPlotly({
         xform$title <- input$sampleDistributionXlab
-        psd %>%
+        p <- psd %>%
           layout(
             xaxis = xform,
             yaxis = list(title = input$sampleDistributionYlab),
@@ -273,6 +255,8 @@ observeEvent(input$confirmedGroupList, {
               y = input$sampleDistributionLegendY
             )
           )
+        variables$sampleDistributionBar <- p
+        p
       }))
       updateProgressBar(
         session = session,
@@ -295,11 +279,9 @@ observeEvent(input$confirmedGroupList, {
             )
           )
       }))
-      # ====================================
-      # This function render a density plot of sample distribution
-      #
-      # Position: In Data import tab, down right
-      # ====================================
+
+      # This function render a density plot of sample distribution ----
+
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
@@ -317,7 +299,7 @@ observeEvent(input$confirmedGroupList, {
       }
       
       withBars(output$sampleDistributionDensity <- renderPlotly({
-        p %>%
+        pp <- p %>%
           layout(
             xaxis = list(title = input$sampleDistributionDensityXlab),
             yaxis = list(title = input$sampleDistributionDensityYlab),
@@ -328,6 +310,8 @@ observeEvent(input$confirmedGroupList, {
               y = input$sampleDistributionDensityLegendY
             )
           )
+        variables$sampleDistributionDensity <- pp
+        pp
       }))
       
       # The same plot used in Calculation tab.
@@ -345,11 +329,8 @@ observeEvent(input$confirmedGroupList, {
           )
       }))
       
-      # ====================================
-      # This function render a series infoBox of summary of data
-      #
-      # Position: In Data import tab, left down
-      # ====================================
+      # This function render a series infoBox of summary of data ----
+
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
@@ -400,11 +381,16 @@ observeEvent(input$confirmedGroupList, {
           sum((apply(variables$CountData, 1, function(x) {
             sum(x) == 0
           })))
+        variables$zeroValue <- paste0(zeroValue, 
+                                      " (", 
+                                      round(zeroValue / nrow(variables$CountData) * 100, 2), 
+                                      "%)")
         infoBox(
           title = "zero value",
-          value = paste0(zeroValue, " (", round(
-            zeroValue / nrow(variables$CountData) * 100, 2
-          ), "%)"),
+          # value = paste0(zeroValue, " (", round(
+          #   zeroValue / nrow(variables$CountData) * 100, 2
+          # ), "%)"),
+          value = variables$zeroValue,
           subtitle = "Number of gene which expression level equal to zero in all sample",
           width = NULL,
           icon = icon("exclamation-circle"),

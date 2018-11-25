@@ -145,7 +145,7 @@ observeEvent(input$makeVolcanoPlot, {
         )
       }
       
-      plot_ly(
+      p <- plot_ly(
         data = dt,
         x = ~ m.value,
         y = ~ -log10(p.value),
@@ -204,6 +204,8 @@ observeEvent(input$makeVolcanoPlot, {
             )
           )
         )
+      variables$VolcanoPlotObject <- p
+      p 
     })
   }))
 })

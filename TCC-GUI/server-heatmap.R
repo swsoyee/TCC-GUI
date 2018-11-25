@@ -324,6 +324,19 @@ output$heatmapSelectGene <- renderUI({
 
 
 observeEvent(input$heatmapRun, {
+  progressSweetAlert(
+    session = session,
+    id = "heatmapProgress",
+    title = "Work in progress",
+    display_pct = TRUE,
+    value = 0
+  )
+  updateProgressBar(
+    session = session,
+    id = "heatmapProgress",
+    title = "Processing data",
+    value = 10
+  )
   # Select Sample (Column)
   # Grouping.
   data.cl <- variables$groupListConvert
@@ -377,6 +390,12 @@ observeEvent(input$heatmapRun, {
     
     dataBackup <- t(data)
     
+    updateProgressBar(
+      session = session,
+      id = "heatmapProgress",
+      title = "Converting data",
+      value = 30
+    )
     # Create Plotly object
     withBars(output$heatmap <- renderPlotly({
       isolate({
@@ -433,7 +452,13 @@ observeEvent(input$heatmapRun, {
             )
             paste0(code, codeHeatmap, collapse = "")
           })
-          heatmaply(
+          updateProgressBar(
+            session = session,
+            id = "heatmapProgress",
+            title = "Ploting",
+            value = 70
+          )
+          p <- heatmaply(
             dataBackup,
             k_row = length(variables$groupList),
             colors = colorPal,
@@ -447,6 +472,9 @@ observeEvent(input$heatmapRun, {
             labCol = colnames(dataBackup),
             labRow = row.names(dataBackup)
           ) %>% layout(height = input$heatmapHeight)
+          
+          variables$heatmapObject <- p
+          p
         } else {
           output$heatmapRcode <- renderText({
             codeHeatmap <- paste0(
@@ -459,7 +487,13 @@ observeEvent(input$heatmapRun, {
             )
             paste0(code, codeHeatmap, collapse = "")
           })
-          heatmaply(
+          updateProgressBar(
+            session = session,
+            id = "heatmapProgress",
+            title = "Ploting",
+            value = 70
+          )
+          p <- heatmaply(
             t(dataBackup),
             k_col = length(variables$groupList),
             colors = colorPal,
@@ -473,10 +507,19 @@ observeEvent(input$heatmapRun, {
             labCol = row.names(dataBackup),
             labRow = colnames(dataBackup)
           ) %>% layout(height = input$heatmapHeight)
+          
+          variables$heatmapObject <- p
+          p
         }
       })
     }))
     
+    updateProgressBar(
+      session = session,
+      id = "heatmapProgress",
+      title = "Extracting data",
+      value = 90
+    )
     # Generate Result table
     output$resultTableInHeatmap <- DT::renderDataTable({
       # Combine TCC Result and Raw Count Data
@@ -512,6 +555,16 @@ observeEvent(input$heatmapRun, {
       tagList(withBarsUI(plotlyOutput("heatmap",
                                       height = "auto")))
     })
+    updateProgressBar(
+      session = session,
+      id = "heatmapProgress",
+      title = "All done",
+      value = 100
+    )
+    closeSweetAlert(session = session)
+    sendSweetAlert(session = session,
+                   title = "Completed!",
+                   type = "success")
   },
   error = function(e) {
     sendSweetAlert(

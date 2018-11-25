@@ -1,78 +1,125 @@
 # server-report.R
-output$reportPreview <- renderUI({
-  reportParameter <- list(
-    CountData = variables$CountData,
-    groupList = variables$groupList,
-    filterLowCount = input$filterLowCount,
-    normMethod = input$normMethod,
-    testMethod = input$testMethod,
-    iteration = input$iteration,
-    fdr = input$fdr,
-    floorpdeg = input$floorpdeg,
-    runMAPlot = variables$runMAPlot,
-    resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
-    GeneAttribute = input$GeneAttribute,
-    maFDR = input$maFDR,
-    fdrColor = input$fdrColor,
-    runVolcanoPlot = variables$runVolcanoPlot,
-    CutFC = input$CutFC,
-    Cutpvalue = input$Cutpvalue,
-    resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
-    downColor = input$downColor,
-    upColor = input$upColor,
-    xlabs = input$xlabs,
-    ylabs = input$ylabs,
-    graphicTitle = input$graphicTitle
-  )
-  # report <- rmarkdown::render('report.Rmd', params = reportParameter, md_document())
-  includeMarkdown("report.Rmd")
-})
+# output$reportPreview <- renderUI({
+#   reportParameter <- list(
+#     CountData = variables$CountData,
+#     groupList = variables$groupList,
+#     filterLowCount = input$filterLowCount,
+#     normMethod = input$normMethod,
+#     testMethod = input$testMethod,
+#     iteration = input$iteration,
+#     fdr = input$fdr,
+#     floorpdeg = input$floorpdeg,
+#     runMAPlot = variables$runMAPlot,
+#     resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
+#     GeneAttribute = input$GeneAttribute,
+#     maFDR = input$maFDR,
+#     fdrColor = input$fdrColor,
+#     runVolcanoPlot = variables$runVolcanoPlot,
+#     CutFC = input$CutFC,
+#     Cutpvalue = input$Cutpvalue,
+#     resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
+#     downColor = input$downColor,
+#     upColor = input$upColor,
+#     xlabs = input$xlabs,
+#     ylabs = input$ylabs,
+#     graphicTitle = input$graphicTitle
+#   )
+#   # report <- rmarkdown::render('report.Rmd', params = reportParameter, md_document())
+#   includeMarkdown("report.Rmd")
+# })
 
-output$downloadReport <- downloadHandler(
+# output$downloadReport <- downloadHandler(
+#   filename = function() {
+#     paste('my-report', sep = '.', switch(
+#       input$format,
+#       Markdown = 'md',
+#       HTML = 'html',
+#       Word = 'docx'
+#     ))
+#   },
+#   
+#   content = function(file) {
+#     src <- normalizePath('report.Rmd')
+#     
+#     owd <- setwd(tempdir())
+#     on.exit(setwd(owd))
+#     file.copy(src, 'report.Rmd', overwrite = TRUE)
+#     
+#     library(rmarkdown)
+#     
+#     reportParameter <- list(
+#       CountData = variables$CountData,
+#       groupList = variables$groupList,
+#       filterLowCount = input$filterLowCount,
+#       normMethod = input$normMethod,
+#       testMethod = input$testMethod,
+#       iteration = input$iteration,
+#       fdr = input$fdr,
+#       floorpdeg = input$floorpdeg,
+#       runMAPlot = variables$runMAPlot,
+#       resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
+#       GeneAttribute = input$GeneAttribute,
+#       maFDR = input$maFDR,
+#       fdrColor = input$fdrColor,
+#       runVolcanoPlot = variables$runVolcanoPlot,
+#       CutFC = input$CutFC,
+#       Cutpvalue = input$Cutpvalue,
+#       resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
+#       downColor = input$downColor,
+#       upColor = input$upColor,
+#       xlabs = input$xlabs,
+#       ylabs = input$ylabs,
+#       graphicTitle = input$graphicTitle
+#     )
+#     
+#     out <- render('report.Rmd', params = reportParameter, switch(
+#       input$format,
+#       Markdown = md_document(),
+#       HTML = html_document(),
+#       Word = word_document()
+#     ))
+#     file.rename(out, file)
+#   }
+# )
+
+output$downloadPlotReport <- downloadHandler(
   filename = function() {
-    paste('my-report', sep = '.', switch(
+    paste('Plot_Report', sep = '.', switch(
       input$format,
       Markdown = 'md',
       HTML = 'html',
       Word = 'docx'
     ))
   },
-  
+
   content = function(file) {
-    src <- normalizePath('report.Rmd')
-    
+    src <- normalizePath('Plot_Report.Rmd')
+
     owd <- setwd(tempdir())
     on.exit(setwd(owd))
-    file.copy(src, 'report.Rmd', overwrite = TRUE)
-    
+    file.copy(src, 'Plot_Report.Rmd', overwrite = TRUE)
+
     library(rmarkdown)
-    
+
     reportParameter <- list(
       CountData = variables$CountData,
       groupList = variables$groupList,
-      filterLowCount = input$filterLowCount,
-      normMethod = input$normMethod,
-      testMethod = input$testMethod,
-      iteration = input$iteration,
-      fdr = input$fdr,
-      floorpdeg = input$floorpdeg,
-      runMAPlot = variables$runMAPlot,
-      resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
-      GeneAttribute = input$GeneAttribute,
-      maFDR = input$maFDR,
-      fdrColor = input$fdrColor,
-      runVolcanoPlot = variables$runVolcanoPlot,
-      CutFC = input$CutFC,
-      Cutpvalue = input$Cutpvalue,
-      resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
-      downColor = input$downColor,
-      upColor = input$upColor,
-      xlabs = input$xlabs,
-      ylabs = input$ylabs,
-      graphicTitle = input$graphicTitle
+      zeroValue = variables$zeroValue,
+      sampleDistributionBar = variables$sampleDistributionBar,
+      sampleDistributionDensity = variables$sampleDistributionDensity,
+      norSampleDistributionBar = variables$norSampleDistributionBar,
+      norSampleDistributionDensity = variables$norSampleDistributionDensity,
+      MAPlotObject = variables$MAPlotObject,
+      VolcanoPlotObject = variables$VolcanoPlotObject,
+      screePlot = variables$screePlot,
+      pca3d = variables$pca3d,
+      pca2d = variables$pca2d,
+      heatmapObject = variables$heatmapObject,
+      expressionLevelBar = variables$expressionLevelBar,
+      expressionLevelBox = variables$expressionLevelBox
     )
-    
-    out <- render('report.Rmd', params = reportParameter, switch(
+
+    out <- render('Plot_Report.Rmd', params = reportParameter, switch(
       input$format,
       Markdown = md_document(),
       HTML = html_document(),
@@ -82,9 +129,7 @@ output$downloadReport <- downloadHandler(
   }
 )
 
-##################
-# Tab click log
-##################
+# Tab click logs -----
 observeEvent(input$sider, {
   clickTab <- switch(
     input$sider,
@@ -109,9 +154,8 @@ observeEvent(input$sider, {
           stringsAsFactors = FALSE)
 })
 
-##################
-# Load Sample Data botton log
-##################
+
+# Load Sample Data botton log -----
 observeEvent(input$CountDataSample, {
   variables$logList <- rbind(
     variables$logList,
@@ -125,9 +169,7 @@ observeEvent(input$CountDataSample, {
   )
 })
 
-##################
-# Click TCC botton log
-##################
+# Click TCC botton log ----
 observeEvent(input$TCC, {
   TCCParaLog <- paste(
     "Filter low count genes threshold:",
@@ -156,9 +198,8 @@ observeEvent(input$TCC, {
   )
 })
 
-##################
-# Click MA botton log
-##################
+
+# Click MA botton log ----
 observeEvent(input$makeMAPlot , {
   MAParaLog <- paste(
     "Point Size:",
@@ -181,9 +222,8 @@ observeEvent(input$makeMAPlot , {
   )
 })
 
-##################
-# Click Volcano botton log
-##################
+# Click Volcano botton log ----
+
 observeEvent(input$makeVolcanoPlot , {
   VolcanoParaLog <- paste(
     "Fold Change cut-off:",
@@ -210,9 +250,9 @@ observeEvent(input$makeVolcanoPlot , {
   )
 })
 
-##################
-# Click PCA botton log
-##################
+
+# Click PCA botton log ----
+
 observeEvent(input$pcRun, {
   if(input$pcFDR != ""){
     pcaFDR <- paste0("FDR:", input$pcFDR, sep = " ")
@@ -245,6 +285,19 @@ observeEvent(input$pcRun, {
   )
 })
 
+# Input table ----
 output$inputLogTable <- DT::renderDataTable({
   DT::datatable(variables$logList)
 })
+
+# AllInputs <- reactive({
+#   x <- reactiveValuesToList(input)
+#   data.frame(
+#     names = names(x),
+#     values = unlist(x, use.names = FALSE)
+#   )
+# })
+# 
+# output$showInputs <- renderTable({
+#   AllInputs()
+# })

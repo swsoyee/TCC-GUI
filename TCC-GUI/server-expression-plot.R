@@ -91,7 +91,9 @@ observeEvent(input$runExpression, {
         }
         j <- j + 1
       }
-      subplot(f, nrows = j - 1, margin = 0.05)
+      pp <- subplot(f, nrows = j - 1, margin = 0.05)
+      variables$expressionLevelBar <- pp
+      pp
       })
       
     })
@@ -148,7 +150,9 @@ observeEvent(input$runExpression, {
         }
         j <- j + 1
       }
-      subplot(f, nrows = j - 1, margin = 0.05)
+      pp <- subplot(f, nrows = j - 1, margin = 0.05)
+      variables$expressionLevelBox <- pp
+      pp
       })
     })
     

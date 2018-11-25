@@ -90,8 +90,8 @@ observeEvent(input$pcRun, {
   # Scree Plot
   summaryTable <- summary(data.pca)$importance
   
-  output$pcaVariances <-renderPlotly(
-    plot_ly(x = colnames(summaryTable), 
+  output$pcaVariances <-renderPlotly({
+    p <- plot_ly(x = colnames(summaryTable), 
             y = summaryTable[2, ], 
             text = paste0(summaryTable[2, ] * 100, "%"), 
             textposition = "auto",
@@ -105,37 +105,46 @@ observeEvent(input$pcRun, {
              yaxis = list(title = "Proportion"),
              title = "Scree Plot",
              legend = list(orientation = 'h'))
-      
-  )
+    variables$screePlot <- p 
+    p 
+  })
   
   # Scatter Plot 2D
-  output$pcabiplot <- renderPlotly(
-    plot_ly(data = data.frame(data.pca$x),
-            x = ~PC1,
-            y = ~PC2,
-            color = as.factor(data.cl),
-            text = row.names(data.pca$x),
-            textposition = "top right",
-            type = "scatter",
-            mode = "markers+text") %>%
+  output$pcabiplot <- renderPlotly({
+    p <- plot_ly(
+      data = data.frame(data.pca$x),
+      x = ~ PC1,
+      y = ~ PC2,
+      color = as.factor(data.cl),
+      text = row.names(data.pca$x),
+      textposition = "top right",
+      type = "scatter",
+      mode = "markers+text"
+    ) %>%
       layout(title = "PCA Clusters Plot",
              legend = list(orientation = 'h'))
-  )
+    variables$pca2d <- p
+    p
+  })
   
   # Scatter Plot 3D
-  output$pcabiplot3d <- renderPlotly(
-    plot_ly(data = data.frame(data.pca$x),
-            x = ~PC1,
-            y = ~PC2,
-            z = ~PC3,
-            color = as.factor(data.cl),
-            text = row.names(data.pca$x),
-            textposition = "top right",
-            type = "scatter3d",
-            mode = "markers+text") %>%
+  output$pcabiplot3d <- renderPlotly({
+    p <- plot_ly(
+      data = data.frame(data.pca$x),
+      x = ~ PC1,
+      y = ~ PC2,
+      z = ~ PC3,
+      color = as.factor(data.cl),
+      text = row.names(data.pca$x),
+      textposition = "top right",
+      type = "scatter3d",
+      mode = "markers+text"
+    ) %>%
       layout(title = "PCA Clusters Plot 3D",
              legend = list(orientation = 'h'))
-  )
+    variables$pca3d <- p
+    p
+  })
   
   # Cluster Dendrogram
   # data.cluster <- hclust(dist(data.pca$x),method = input$dendMethod)
