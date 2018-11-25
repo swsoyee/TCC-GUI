@@ -1,9 +1,11 @@
 ---
-title: "Plot Report"
+title: "TCC GUI Analysis Report"
 output: html_document
 params:
   CountData: NA
   groupList: NA
+  result: NA
+  norData: NA
   zeroValue: NA
   sampleDistributionBar: NA
   sampleDistributionDensity: NA
@@ -17,23 +19,32 @@ params:
   heatmapObject: NA
   expressionLevelBar: NA
   expressionLevelBox: NA
+  groupListConvert: NA
+  filterLowCount: NA
+  normMethod: NA
+  testMethod: NA
+  iteration: NA
+  fdr: NA
+  floorpdeg: NA
   
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, results='asis')
 library(plotly)
+library(knitr)
+library(DT)
 ```
 
 # Session infomation
 
 Generated at: `r Sys.time()`  
 
-Size of original dataset: `r nrow(params$CountData)` rows / `r ncol(params$CountData)` column
+Size of original dataset: `r nrow(params$CountData)` rows / `r ncol(params$CountData)` columns
 
 Number of group: `r length(params$groupList)`  
-Detail:  
-```{r}
+Detail (Used columns):  
+```{r groupList}
 for(i in 1:length(params$groupList)){
   group_name <- names(params$groupList)[i]
   cat(paste0(group_name, ": ",
@@ -45,7 +56,67 @@ for(i in 1:length(params$groupList)){
 
 Number of gene which expression level equal to zero in all sample: `r params$zeroValue`
 
+# TCC Computation
 
+Parameters is shown as below. 
+```{r tcc parameters}
+tccPara <- rbind(
+  c("params$CountData", "Count data", class(params$CountData)),
+  c("params$groupListConvert", "List of group infomation", class(params$groupListConvert)),
+  c("params$filterLowCount", "Filter low count genes threshold", params$filterLowCount),
+  c("params$normMethod", "Normalization method", params$normMethod),
+  c("params$testMethod", "DEGs identify method", params$testMethod),
+  c("params$iteration", "Iteration", params$iteration),
+  c("params$fdr", "FDR", params$fdr),
+  c("params$floorpdeg", "Elimination of potential DEGs", params$floorpdeg)
+  )
+colnames(tccPara) <- c("Parameters", "Explanation", "Value / class")
+kable(tccPara, caption = "Paramters used in TCC computation.")
+```
+
+```{r show count data}
+kable(head(params$CountData, 10), caption = "First 10 row of original dataset.")
+```
+
+List of group infomation:
+```{r groupListConvert, results='markup'}
+params$groupListConvert
+```
+
+Computation code is shown as below.
+```{r tcc computation, echo=TRUE, eval=FALSE}
+library(TCC)
+# Dataset
+data <- params$CountData
+# Group infomation
+data.cl <- params$groupListConvert
+
+# Create TCC Object
+tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
+# Filter low count genes before calculation
+tcc <- filterLowCountGenes(tcc, low.count = params$filterLowCount)
+# Run TCC and calculate normalized factor
+tcc <- calcNormFactors(tcc, 
+                       norm.method = params$normMethod,
+                       test.method = params$testMethod,
+                       iteration = params$iteration,
+                       FDR = params$fdr,
+                       floorPDEG = params$floorpdeg)
+
+# Estimate DEGs
+tcc <- estimateDE(tcc,
+                  test.method = input$testMethod,
+                  FDR = input$fdr)
+
+# Get final result of TCC
+result <- getResult(tcc, sort = FALSE)
+norData <- tcc$getNormalizedData()
+```
+
+```{r tcc result}
+kable(head(params$result, 10), caption = "First 10 row of TCC result table")
+kable(head(params$norData, 10), caption = "First 10 row of normalized data")
+```
 
 ## Sample Distribution  
 

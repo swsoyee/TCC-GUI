@@ -64,7 +64,7 @@ dashboardPage(
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
     ),
-    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.23", 
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.25", 
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(
@@ -114,7 +114,7 @@ dashboardPage(
                                               width = NULL,
                                               status = "info",
                                               includeMarkdown("document/English_Expression.md"))),
-      tabItem(tabName = "reportHelp", box(title = "Users' Logs & Report",
+      tabItem(tabName = "reportHelp", box(title = "Analysis Report",
                                           solidHeader = TRUE,
                                           width = NULL,
                                           status = "info",
