@@ -3,20 +3,20 @@
 fluidPage(useSweetAlert(), fluidRow(column(
   3,
   box(
-    title = "TCC Parameters",
+    title = "TCC Computation Parameters",
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
     tagList(
       selectInput(
         "normMethod",
-        "Normalization method:",
+        "Normalization Method",
         c("TMM" = "tmm",
           "DESeq" = "deseq")
       ),
       selectInput(
         "testMethod",
-        "DEGs identify method:",
+        "DEG Identification Method",
         c(
           "edgeR" = "edger",
           "DESeq" = "deseq",
@@ -29,7 +29,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
       ),
       numericInput(
         "filterLowCount",
-        "Filter low count genes threshold:",
+        "Filtering Threshold for Low Count Genes",
         value = 0,
         min = 0
       ),
@@ -89,7 +89,7 @@ column(
     title = "Sample Distribution",
     id = "sampleDistributionInTCC",
     width = NULL,
-    tabPanel(title = "Box plot",
+    tabPanel(title = "Box Plot",
              fluidRow(
                column(6,
                       withBarsUI(plotlyOutput(
@@ -101,7 +101,7 @@ column(
                         plotlyOutput("NormalizedSampleDistribution")
                       ))
              )),
-    tabPanel(title = "Density plot",
+    tabPanel(title = "Density Plot",
              fluidRow(
                column(6,
                       withBarsUI(

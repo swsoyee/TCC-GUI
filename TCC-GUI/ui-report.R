@@ -7,7 +7,7 @@ fluidPage(column(
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
-    footer = "HTML report is highly recommended.",
+    footer = "HTML report (default) is highly recommended.",
     radioGroupButtons(
       inputId = 'format',
       label = 'Document format',

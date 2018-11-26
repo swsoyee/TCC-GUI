@@ -11,7 +11,7 @@ output$expressionParameters <- renderUI({
   tagList(
     textAreaInput(
       "expressionGeneList",
-      "Paste a list of genes",
+      "Paste Gene List",
       rows = 5,
       placeholder = "Input gene's name (first column in the dataset), one gene per line."
     ),

@@ -29,7 +29,7 @@ Please check other tab in `Guidance` for details.
 
 ---
 
-If you have any question about the application, comment and advise, please contact 📧[kadota(at)bi.a.u-tokyo.ac.jp](mailto:kadota@bi.a.u-tokyo.ac.jp) or 📧[suwei(at)bi.a.u-tokyo.ac.jp](mailto:suwei@bi.a.u-tokyo.ac.jp). 
+If you have any question, comment or advise about the application, please contact📧[suwei(at)bi.a.u-tokyo.ac.jp](mailto:suwei@bi.a.u-tokyo.ac.jp) or 📧[kadota(at)bi.a.u-tokyo.ac.jp](mailto:kadota@bi.a.u-tokyo.ac.jp).   
 
 Also, you can access 🔗[Github](https://github.com/swsoyee/TCC-GUI/issues) and open a new issue for bug report or function requirement (you can write in English, Chinese or Japanese as you like).  
 
@@ -45,3 +45,4 @@ Also, you can access 🔗[Github](https://github.com/swsoyee/TCC-GUI/issues) and
 [4] Love M I, Huber W, Anders S. Moderated estimation of fold change and dispersion for RNA-seq data with **DESeq2**. Genome biology, 2014, 15(12): 550.  
 [5] Hardcastle T J, Kelly K A. **baySeq** : empirical Bayesian methods for identifying differential expression in sequence count data. BMC bioinformatics, 2010, 11(1): 422.  
 
+🔗Emoji icons supplied by [EmojiOne](https://www.emojione.com/)  

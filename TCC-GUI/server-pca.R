@@ -87,7 +87,7 @@ observeEvent(input$pcRun, {
                      center = input$pcCenter,
                      scale. = input$pcScale) 
   
-  # Scree Plot
+  # Scree Plot plotly object ----
   summaryTable <- summary(data.pca)$importance
   
   output$pcaVariances <-renderPlotly({
@@ -104,12 +104,17 @@ observeEvent(input$pcRun, {
       layout(xaxis = list(title = "Principal Components"),
              yaxis = list(title = "Proportion"),
              title = "Scree Plot",
-             legend = list(orientation = 'h'))
+             legend = list(
+               orientation = 'h',
+               xanchor = "center",
+               x = 0.5,
+               y = 1
+             ))
     variables$screePlot <- p 
     p 
   })
   
-  # Scatter Plot 2D
+  # Scatter Plot 2D plotly object ----
   output$pcabiplot <- renderPlotly({
     p <- plot_ly(
       data = data.frame(data.pca$x),
@@ -121,13 +126,18 @@ observeEvent(input$pcRun, {
       type = "scatter",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Clusters Plot",
-             legend = list(orientation = 'h'))
+      layout(title = "PCA Plot (2D)",
+             legend = list(
+               orientation = 'h',
+               xanchor = "center",
+               x = 0.5,
+               y = 1
+             ))
     variables$pca2d <- p
     p
   })
   
-  # Scatter Plot 3D
+  # Scatter Plot 3D plotly object ----
   output$pcabiplot3d <- renderPlotly({
     p <- plot_ly(
       data = data.frame(data.pca$x),
@@ -140,8 +150,13 @@ observeEvent(input$pcRun, {
       type = "scatter3d",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Clusters Plot 3D",
-             legend = list(orientation = 'h'))
+      layout(title = "PCA Plot (3D)",
+             legend = list(
+               orientation = 'h',
+               xanchor = "center",
+               x = 0.5,
+               y = 1
+             ))
     variables$pca3d <- p
     p
   })
@@ -155,6 +170,7 @@ observeEvent(input$pcRun, {
   
   # Summary Table
   output$summaryPCA <- DT::renderDataTable({
+    row.names(summaryTable)[1] <- "Standard Deviation"
     DT::datatable(summaryTable, options = list(dom = "t")) %>% 
       formatRound(
         columns = colnames(summaryTable),

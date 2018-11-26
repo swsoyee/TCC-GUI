@@ -246,6 +246,7 @@ observeEvent(input$confirmedGroupList, {
         xform$title <- input$sampleDistributionXlab
         p <- psd %>%
           layout(
+            title = input$sampleDistributionTitle,
             xaxis = xform,
             yaxis = list(title = input$sampleDistributionYlab),
             legend = list(
@@ -269,6 +270,7 @@ observeEvent(input$confirmedGroupList, {
         xform$title <- input$sampleDistributionXlab
         psd %>%
           layout(
+            title = input$sampleDistributionTitle,
             xaxis = xform,
             yaxis = list(title = input$sampleDistributionYlab),
             legend = list(
@@ -301,6 +303,7 @@ observeEvent(input$confirmedGroupList, {
       withBars(output$sampleDistributionDensity <- renderPlotly({
         pp <- p %>%
           layout(
+            title = input$sampleDistributionDenstityTitle,
             xaxis = list(title = input$sampleDistributionDensityXlab),
             yaxis = list(title = input$sampleDistributionDensityYlab),
             legend = list(
@@ -318,6 +321,7 @@ observeEvent(input$confirmedGroupList, {
       withBars(output$sampleDistributionDensityTCC <- renderPlotly({
         p %>%
           layout(
+            title = input$sampleDistributionDenstityTitle,
             xaxis = list(title = input$sampleDistributionDensityXlab),
             yaxis = list(title = input$sampleDistributionDensityYlab),
             legend = list(

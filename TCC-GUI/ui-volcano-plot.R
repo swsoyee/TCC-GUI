@@ -2,7 +2,7 @@
 fluidPage(fluidRow(column(
   3,
   box(
-    title = "Volcano Plot Parameter",
+    title = "Volcano Plot Parameters",
     solidHeader = TRUE,
     status = "primary",
     width = NULL,

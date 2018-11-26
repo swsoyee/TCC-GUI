@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = "Expression Parameters",
+    title = "Expression Level Parameters",
     solidHeader = TRUE,
     width = NULL,
     status = "primary",

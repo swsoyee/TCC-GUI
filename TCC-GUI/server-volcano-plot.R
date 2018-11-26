@@ -33,8 +33,8 @@ observeEvent(input$sider, {
           value = 3,
           step = 0.2
         ),
-        textInput("xlabs", "X-axis (Fold Change) label:", value = "log2(Fold Change)"),
-        textInput("ylabs", "Y-axis (P-value) label:", value = "-log10(P-value)"),
+        textInput("xlabs", "X-axis (Fold Change) Label:", value = "log2(Fold Change)"),
+        textInput("ylabs", "Y-axis (P-value) Label:", value = "-log10(P-value)"),
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
         
         column(6,

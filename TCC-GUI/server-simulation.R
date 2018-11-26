@@ -17,7 +17,7 @@ observeEvent(input$simulationGroupNum, {
         4,
         numericInput(
           inputId = paste0("DEGFoldchange", x),
-          label = paste0("Degree of fold-change"),
+          label = paste0("Degree of Fold-change"),
           value = 4,
           min = 0
         )
@@ -26,7 +26,7 @@ observeEvent(input$simulationGroupNum, {
         4,
         numericInput(
           inputId = paste0("replicates", x),
-          label = paste0("Number of replicates"),
+          label = paste0("Number of Replicates"),
           value = 3,
           min = 0
         )

@@ -148,11 +148,8 @@ observeEvent(input$TCC, {
     title = "Rendering plots",
     value = 97
   )
-  # ====================================
-  # This function render a plotly of different gene count under specific FDR cutoff
-  # condition.
-  # Position: In Computation tab, under right.
-  # ====================================
+
+  # Render a plotly of different gene count under specific FDR cutoff condition. ----
   
   output$fdrCutoffPlotInTCC <- renderPlotly({
     # Create table
@@ -196,7 +193,7 @@ observeEvent(input$TCC, {
       )
   })
   
-  # Download TCC Result Table function
+  # Download TCC Result Table function ----
   output$downLoadResultTable <- downloadHandler(
     filename = function() {
       paste(
@@ -215,7 +212,7 @@ observeEvent(input$TCC, {
     }
   )
   
-  # Download TCC Normalized Table function
+  # Download TCC Normalized Table function ----
   output$downLoadNormalized <- downloadHandler(
     filename = function() {
       paste(
@@ -235,11 +232,9 @@ observeEvent(input$TCC, {
   )
   
   
-  # ====================================
-  # This function render a series UI of Result table.
-  #
-  # Position: In Computation tab, under middle.
-  # ====================================
+
+  # This function render a series UI of Result table. ----
+
   output$mainResultTable <- renderUI({
     tagList(fluidRow(column(
       3,
@@ -252,11 +247,8 @@ observeEvent(input$TCC, {
     DT::dataTableOutput('resultTable'))
   })
   
-  # ====================================
-  # This function render a boxplot of normalized sample distribution
-  #
-  # Position: In Computation tab, middle middle.
-  # ====================================
+
+  # Render a boxplot of normalized sample distribution ----
   
   withBars(output$NormalizedSampleDistribution <- renderPlotly({
     validate(need(
@@ -276,7 +268,7 @@ observeEvent(input$TCC, {
     xform <- list(
       categoryorder = "array",
       categoryarray = cpm_stack_order,
-      title = ""
+      title = input$sampleDistributionXlab
     )
     
     showNotification("Ploting normalized sample distribution", type = "message")
@@ -290,9 +282,17 @@ observeEvent(input$TCC, {
       layout(
         title = "Normalized Sample Distribution",
         xaxis = xform,
-        yaxis = list(title = "log2(CPM)")
+        yaxis = list(title = "log2(CPM)"),
+        legend = list(
+          orientation = 'h',
+          xanchor = "center",
+          x = 0.5,
+          y = input$sampleDistributionLegendY
+        )
       )
   }))
+  
+  # Render a density plot of normalized sample distribution ----
   
   withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
     cpm <- log2(variables$norData/1000000)
@@ -308,7 +308,12 @@ observeEvent(input$TCC, {
       layout(title = "Normalized Sample Distribution",
              xaxis = list(title = "log2(CPM)"),
              yaxis = list(title = "Density"),
-             legend = list(orientation = 'h'))
+             legend = list(
+               orientation = 'h',
+               xanchor = "center",
+               x = 0.5,
+               y = input$sampleDistributionDensityLegendY
+             ))
   }))
   updateProgressBar(
     session = session,

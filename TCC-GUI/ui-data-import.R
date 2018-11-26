@@ -97,10 +97,16 @@ column(
       1,
       dropdownButton(
         tags$h3("Plot options"),
+        textInput(
+          inputId = "sampleDistributionTitle",
+          label = "Title",
+          value = "Sample Distribution",
+          placeholder = "Sample Distribution"
+        ),
         numericInput(
           inputId = "sampleDistributionLegendY",
           label = "Legend Y",
-          value = 1.2
+          value = 1
         ),
         textInput(
           inputId = "sampleDistributionXlab",
@@ -141,10 +147,16 @@ column(
       1,
       dropdownButton(
         tags$h3("Plot options"),
+        textInput(
+          inputId = "sampleDistributionDenstityTitle",
+          label = "Title",
+          value = "",
+          placeholder = "Raw Count Distribution"
+        ),
         numericInput(
           inputId = "sampleDistributionDensityLegendY",
           label = "Legend Y",
-          value = 1.2
+          value = 1.1
         ),
         textInput(
           inputId = "sampleDistributionDensityXlab",

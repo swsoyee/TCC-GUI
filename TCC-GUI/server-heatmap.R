@@ -11,10 +11,10 @@ observeEvent(input$sider, {
       tagList(
         radioGroupButtons(
           inputId = "heatmapGeneSelectType",
-          label = "Select gene",
-          choices = c("By list",
+          label = "Select Gene",
+          choices = c("By List" = "By list",
                       # "By name",
-                      "By FDR"),
+                      "By FDR" = "By FDR"),
           justified = TRUE,
           status = "primary"
         ),
@@ -23,7 +23,7 @@ observeEvent(input$sider, {
         
         radioGroupButtons(
           inputId = "heatmapData",
-          label = "Source:",
+          label = "Source",
           choices = c("Original" = "o",
                       "Normalized" = "n"),
           justified = TRUE,
@@ -92,7 +92,7 @@ observeEvent(input$sider, {
         ),
         selectInput(
           inputId = "colorSelectionMethod",
-          label = "Color selection method",
+          label = "Color Selection Method",
           choices = c("Color map", "Two colors", "Three colors")
         ),
         uiOutput("heatmapColorSelectionPanel"),
@@ -104,11 +104,11 @@ observeEvent(input$sider, {
           step = 1,
           value = 20
         ),
-        tags$b("Color preview"),
+        tags$b("Color Preview"),
         plotOutput("colorPreview", height = "20px"),
         numericInput(
           inputId = "heatmapHeight",
-          label = "Height of heatmap",
+          label = "Height of Heatmap",
           value = 500,
           min = 100
         ),
@@ -125,6 +125,14 @@ observeEvent(input$sider, {
   }
 })
 
+# Preview gene count -----
+observeEvent(input$heatmapFDR, {
+  gene_count <- nrow(resultTable()[resultTable()$q.value <= input$heatmapFDR, ])
+  output$heatmapGeneCountPreview <- renderText({
+    paste0("Gene count: ", gene_count, " | Generation time: ~", round(gene_count/30,2), "s")
+  })
+})
+
 # According to color selection method, render color selection part --------
 
 
@@ -134,7 +142,7 @@ observeEvent(input$colorSelectionMethod, {
       tagList(
         selectInput(
           "heatmapColor",
-          "Choose colormap",
+          "Choose Colormap",
           choices = list(
             "PiYG",
             "PRGn",
@@ -303,12 +311,15 @@ output$heatmapSelectGene <- renderUI({
     # ),
     "By FDR" = tagList(
       if (input$testMethod != 'wad') {
-        sliderInput(
-          "heatmapFDR",
-          "FDR:",
-          min = 0.01,
-          max = 1,
-          value = 0.01
+        tagList(
+          sliderInput(
+            "heatmapFDR",
+            "FDR",
+            min = 0.01,
+            max = 1,
+            value = 0.01
+          ),
+          textOutput("heatmapGeneCountPreview")
         )
       } else {
         tagList(
