@@ -9,7 +9,7 @@ observeEvent(input$confirmedGroupList, {
       tabName = "calculationTab",
       icon = icon("calculator"),
       badgeLabel = "Step 2",
-      badgeColor = "orange"
+      badgeColor = "red"
     )
   })
 })
@@ -25,7 +25,7 @@ observeEvent(input$TCC, {
       tabName = "maplotTab",
       icon = icon("line-chart"),
       badgeLabel = "Step 3",
-      badgeColor = "red"
+      badgeColor = "maroon"
     )
   })
   output$volcanoplotTab <- renderMenu({
@@ -34,7 +34,7 @@ observeEvent(input$TCC, {
       tabName = "volcanoplotTab",
       icon = icon("area-chart"),
       badgeLabel = "Step 3",
-      badgeColor = "red"
+      badgeColor = "maroon"
     )
   })
   output$pcaTab <- renderMenu({
@@ -43,7 +43,7 @@ observeEvent(input$TCC, {
       tabName = "pcaTab",
       icon = icon("tachometer"),
       badgeLabel = "Step 3",
-      badgeColor = "red"
+      badgeColor = "maroon"
     )
   })
   output$heatmapTab <- renderMenu({
@@ -52,7 +52,7 @@ observeEvent(input$TCC, {
       tabName = "heatmapTab",
       icon = icon("th"),
       badgeLabel = "Step 3",
-      badgeColor = "red"
+      badgeColor = "maroon"
     )
   })
   output$expressionTab <- renderMenu({
@@ -61,7 +61,7 @@ observeEvent(input$TCC, {
       tabName = "expressionTab",
       icon = icon("bar-chart"),
       badgeLabel = "Step 3",
-      badgeColor = "red"
+      badgeColor = "maroon"
     )
   })
   output$reportTab <- renderMenu({
@@ -70,7 +70,7 @@ observeEvent(input$TCC, {
       tabName = "reportTab",
       icon = icon("file-pdf-o"),
       badgeLabel = "Step 4",
-      badgeColor = "maroon"
+      badgeColor = "fuchsia"
     )
   })
 })

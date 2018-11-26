@@ -79,6 +79,7 @@ make_summary_for_tcc_result <- function(df){
     tbl_df(df) %>% mutate(Between_Count = Under_Count - lag(Under_Count)) %>%
     mutate(Count = paste0(Under_Count, "(+", Between_Count, ")"))
   
+  # colnames(df) <- c("Cut-off", "DEGs(#)", "DEGs(%)")
   return(df)
 }
 

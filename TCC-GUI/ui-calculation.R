@@ -35,14 +35,14 @@ fluidPage(useSweetAlert(), fluidRow(column(
       ),
       sliderInput(
         "iteration",
-        "Iteration:",
+        "Iteration",
         min = 1,
         max = 50,
         value = 3
       ),
       sliderInput(
         "fdr",
-        "FDR:",
+        "FDR",
         min = 0,
         max = 1,
         value = 0.1,
@@ -50,7 +50,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
       ),
       sliderInput(
         "floorpdeg",
-        "Elimination of Potential DEGs:",
+        "Elimination of Potential DEGs",
         min = 0,
         max = 1,
         value = 0.05,

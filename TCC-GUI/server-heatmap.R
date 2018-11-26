@@ -167,7 +167,7 @@ observeEvent(input$colorSelectionMethod, {
       tagList(
         spectrumInput(
           inputId = "heatmapTwoColorLow",
-          label = "Low:",
+          label = "Low",
           choices = list(
             list(
               "blue",
@@ -187,7 +187,7 @@ observeEvent(input$colorSelectionMethod, {
         if (input$colorSelectionMethod == "Three colors") {
           spectrumInput(
             inputId = "heatmapTwoColorMiddle",
-            label = "Middle:",
+            label = "Middle",
             choices = list(
               list(
                 "white",
@@ -206,7 +206,7 @@ observeEvent(input$colorSelectionMethod, {
         },
         spectrumInput(
           inputId = "heatmapTwoColorHigh",
-          label = "High:",
+          label = "High",
           choices = list(
             list(
               "red",
@@ -299,7 +299,7 @@ output$heatmapSelectGene <- renderUI({
     input$heatmapGeneSelectType,
     "By list" = textAreaInput(
       "heatmapTextList",
-      "Paste a list of genes",
+      "Paste Gene List",
       rows = 5,
       placeholder = "Input gene's name (first column in the dataset), one gene per line."
     ),

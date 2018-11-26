@@ -280,7 +280,7 @@ observeEvent(input$TCC, {
       split = cpm_stack$group
     ) %>%
       layout(
-        title = "Normalized Sample Distribution",
+        title = "Normalized Count",
         xaxis = xform,
         yaxis = list(title = "log2(CPM)"),
         legend = list(
@@ -305,7 +305,7 @@ observeEvent(input$TCC, {
                      name = names(densityTable[i]))
     }
     p %>%
-      layout(title = "Normalized Sample Distribution",
+      layout(title = "Normalized Count",
              xaxis = list(title = "log2(CPM)"),
              yaxis = list(title = "Density"),
              legend = list(

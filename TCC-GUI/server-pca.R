@@ -7,7 +7,7 @@ observeEvent(input$sider, {
       tagList(
         if (input$testMethod != 'wad') {
           sliderInput("pcFDR",
-                      "FDR:",
+                      "FDR",
                       min = 0.01,
                       max = 1,
                       value = 0.05)
@@ -17,7 +17,7 @@ observeEvent(input$sider, {
         materialSwitch(inputId = "pcTransform", label = "Log transform", value = TRUE, right = TRUE, status = "primary"),
         radioGroupButtons(
           "pcData",
-          "Source:",
+          "Source",
           choices = c("Original" = "o",
                       "Normalized" = "n"), 
           justified = TRUE,

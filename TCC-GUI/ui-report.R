@@ -10,7 +10,7 @@ fluidPage(column(
     footer = "HTML report (default) is highly recommended.",
     radioGroupButtons(
       inputId = 'format',
-      label = 'Document format',
+      label = 'Document Format',
       choices = c(#'Markdown', 
                   'HTML', 
                   'Word'),

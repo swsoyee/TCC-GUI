@@ -14,7 +14,7 @@ observeEvent(input$sider, {
     tagList(
       sliderInput(
         "pointSize",
-        "Point Size:",
+        "Point Size",
         min = 1,
         max = 5,
         value = 3,
@@ -29,7 +29,7 @@ observeEvent(input$sider, {
       ),
       spectrumInput(
         inputId = "fdrColor",
-        label = "DEGs color:",
+        label = "DEGs Color",
         choices = list(
           list("#B22222", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
           as.list(brewer.pal(n = 9, name = "Blues")),
@@ -166,13 +166,8 @@ observeEvent(input$makeMAPlot, {
   }))
 })
 
-# ====================================
-# This function render a button of R code of making MA plot.
-# Position: In [MA Plot tab], down right
-# ====================================
-# Input: makeMAPlot (Botton)
-# Output: R Code (Text)
-# ====================================
+
+# This function render a button of R code of making MA plot. ----
 
 observeEvent(input$makeMAPlot, {
   output$runMAPlot <- renderText({
@@ -183,13 +178,8 @@ observeEvent(input$makeMAPlot, {
   })
 })
 
-# ====================================
-# When hover on the point, show a expresion plot of specific gene.
-# Position: In [MA Plot tab], up right
-# ====================================
-# Input: None (Hover on point)
-# Output: Plotly object (Plot)
-# ====================================
+
+# When hover on the point, show a expresion plot of specific gene. ----
 
 withBars(output$geneBarPlot <- renderPlotly({
   # Read in hover data
@@ -244,18 +234,14 @@ withBars(output$geneBarPlot <- renderPlotly({
     layout(
       xaxis = xform,
       yaxis = list(title = "Count"),
-      title = paste(colnames(expression), "Expression Plot"),
+      title = colnames(expression),
       legend = list(orientation = 'h')
     )
 }))
 
-# ====================================
-# This function render a table of Result table.
+
+# This function render a table of Result table. ----
 # Position: In [MA plot tab] and In [Volcano plot tab], under middle.
-# ====================================
-# Input: None
-# Output: DataTable object (Table)
-# ====================================
 
 output$resultTableInVolcanalPlot <-
   output$resultTableInPlot <- DT::renderDataTable({
@@ -280,23 +266,20 @@ output$resultTableInVolcanalPlot <-
     }
   })
 
-# ====================================
-# This function render a table of different gene count under specific FDR cutoff
-# condition.
-# Position: In [MA plot tab] and In [Volcano plot tab], under left.
-# ====================================
-# Input: None
-# Output: DataTable object (Table)
-# ====================================
+
+# Render a table of different gene count under specific FDR cutoff condition. ----
 
 output$fdrCutoffTableInVolcano <-
   output$fdrCutoffTableInMAPage <- DT::renderDataTable({
     # Create Table
     df <- make_summary_for_tcc_result(resultTable())
     
+    df <- df[, c("Cutoff", "Count", "Percentage")]
+    colnames(df) <- c("Cut-off", "DEGs(#)", "DEGs(%)")
+    
     # Render Table
     DT::datatable(
-      df[, c("Cutoff", "Count", "Percentage")],
+      df,
       option = list(
         pageLength = 10,
         columnDefs = list(list(
@@ -327,9 +310,9 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
     y = ~ Between_Count,
     type = "bar",
     hoverinfo = "text",
-    text = ~ paste("</br>FDR cutoff: ", Cutoff,
-                   "</br>DEGs between cutoff: ", Between_Count,
-                   "</br>Total DEGs under cufoff: ", Under_Count)
+    text = ~ paste("</br>FDR Cut-off: ", Cutoff,
+                   "</br>DEGs between Cut-off: ", Between_Count,
+                   "</br>Total DEGs under Cuf-off: ", Under_Count)
   ) %>%
     add_trace(
       y = ~ Under_Count,
@@ -338,18 +321,24 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
       mode = "lines+markers",
       hoverinfo = "text",
       text = ~ paste(
-        "</br>FDR Cutoff: ",
+        "</br>FDR Cut-off: ",
         Cutoff,
         "</br>Cumulative curve: ",
         Percentage
       )
     ) %>%
     layout(
-      xaxis = list(title = "FDR Cutoff (%)", 
+      xaxis = list(title = "FDR Cut-off", 
                    tickvals = c(2, 4, 6), 
-                   ticktext = c(1, 10, 20)),
-      yaxis = list(title = "DEGs count between cutoff"),
-      yaxis2 = list(title = "Total DEGs under cufoff", overlaying = "y", side = "right"),
+                   ticktext = c("0.01", "0.10", "0.20")),
+      yaxis = list(title = "DEGs (#) between cut-offs", 
+                   rangemode = "nonnegative",
+                   titlefont = list(color = "#1F77B4")),
+      yaxis2 = list(title = "Cumulative number of DEGs", 
+                    titlefont = list(color = "#FF7F0E"),
+                    rangemode = "nonnegative",
+                    overlaying = "y", 
+                    side = "right"),
       showlegend = FALSE,
       margin = list(r = 50)
     )

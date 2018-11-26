@@ -9,7 +9,7 @@ fluidPage(column(
     status = "primary",
     numericInput(inputId = "simulationGeneNum", label = "Number of Genes", value = 10000),
     sliderInput(inputId = "simulationPDEG", label = "Proportion of DEGs", min = 0, max = 1, value = 0.2),
-    sliderInput(inputId = "simulationGroupNum", label = "Number of Group", min = 2, value = 2, max = 10),
+    sliderInput(inputId = "simulationGroupNum", label = "Number of Groups", min = 2, value = 2, max = 10),
     do.call(actionBttn, c(
       list(
         inputId = "simulationRun",

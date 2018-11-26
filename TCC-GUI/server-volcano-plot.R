@@ -1,12 +1,7 @@
 # server-volcano-plot.R
 
-# ====================================
-# This function render a series UI of Volcano Plot parameters.
-# Position: In Volcano Plot tab, upper left.
-# ====================================
-# Input: sider (Click the tab in the left siderbar)
-# Output: A series UI object (html tags)
-# ====================================
+
+# This function render a series UI of Volcano Plot parameters ----
 
 observeEvent(input$sider, {
   if(input$sider == "volcanoplotTab"){
@@ -18,29 +13,29 @@ observeEvent(input$sider, {
       tagList(
         sliderInput(
           "CutFC",
-          "Fold Change cut-off:",
+          "Fold Change Cut-off",
           min = -10,
           max = 10,
           value = c(-1, 1),
           step = 0.5
         ),
-        textInput("Cutpvalue", "p-value cut-off:", value = 0.05),
+        textInput("Cutpvalue", "P-value Cut-off:", value = 0.05),
         sliderInput(
           "pointSize",
-          "Point Size:",
+          "Point Size",
           min = 1,
           max = 5,
           value = 3,
           step = 0.2
         ),
-        textInput("xlabs", "X-axis (Fold Change) Label:", value = "log2(Fold Change)"),
-        textInput("ylabs", "Y-axis (P-value) Label:", value = "-log10(P-value)"),
+        textInput("xlabs", "X-axis (Fold Change) Label", value = "log2(Fold Change)"),
+        textInput("ylabs", "Y-axis (P-value) Label", value = "-log10(P-value)"),
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
         
         column(6,
         spectrumInput(
           inputId = "downColor",
-          label = "Down-regulate:",
+          label = "Down-regulate",
           choices = list(
             list("green", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
             as.list(brewer.pal(n = 9, name = "Blues")),
@@ -53,7 +48,7 @@ observeEvent(input$sider, {
         column(6,
         spectrumInput(
           inputId = "upColor",
-          label = "Up-regulate:",
+          label = "Up-regulate",
           choices = list(
             list("red", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
             as.list(brewer.pal(n = 9, name = "Blues")),
@@ -84,14 +79,7 @@ observeEvent(input$sider, {
   }}
 })
 
-# ====================================
-# This function check the `Generate` button, if the botton has been clicked,
-# Generate volcano plot.
-# Position: In Volcano Plot tab, upper middle.
-# ====================================
-# Input: makeVolcanoPlot (Botton)
-# Output: Plotly object (Plot)
-# ====================================
+# Check the `Generate` button, if the botton has been clicked, generate volcano plot ----
 
 observeEvent(input$makeVolcanoPlot, {
   withBars(output$volcanoPloty <- renderPlotly({
@@ -210,13 +198,8 @@ observeEvent(input$makeVolcanoPlot, {
   }))
 })
 
-# ====================================
-# This function render a button of R code of making vocalno plot.
-# Position: In [Volcano Plot tab], down right
-# ====================================
-# Input: makeVolcanoPlot (Botton)
-# Output: R Code (Text)
-# ====================================
+
+# This function render a button of R code of making vocalno plot ----
 
 observeEvent(input$makeVolcanoPlot, {
   output$runVolcanoPlot <- renderText({
@@ -224,13 +207,9 @@ observeEvent(input$makeVolcanoPlot, {
   })
 })
 
-# ====================================
-# This function render a plotly of specific gene expression value in barplot.
-# Position: In [Volcano Plot tab], upper right.
-# ====================================
-# Input: None (Hover on point)
-# Output: Plotly object (Plot)
-# ====================================
+
+# This function render a plotly of specific gene expression value in barplot.----
+
 withBars(output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "volcano")
@@ -284,19 +263,14 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
     layout(
       xaxis = xform,
       yaxis = list(title = "Count"),
-      title = paste(colnames(expression), "Expression Plot"),
+      title = colnames(expression),
       legend = list(orientation = 'h')
     )
 }))
 
-# ====================================
-# This function render a plotly of different gene count under specific FDR cutoff
-# condition.
-# Position: In [Volcano Plot tab], under right.
-# ====================================
-# Input: None
-# Output: Plotly object (Plot)
-# ====================================
+
+# Render a plotly of different gene count under specific FDR cutoff condition.----
+
 withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
@@ -308,9 +282,9 @@ withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
     y = ~ Between_Count,
     type = "bar",
     hoverinfo = "text",
-    text = ~ paste("</br>FDR cutoff: ", Cutoff,
-                   "</br>DEGs count between cutoff: ", Between_Count,
-                   "</br>Total DEGs under cufoff: ", Under_Count)
+    text = ~ paste("</br>FDR Cut-off: ", Cutoff,
+                   "</br>DEGs between Cut-off: ", Between_Count,
+                   "</br>Total DEGs under Cuf-off: ", Under_Count)
   ) %>%
     add_trace(
       y = ~ Under_Count,
@@ -319,18 +293,24 @@ withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
       mode = "lines+markers",
       hoverinfo = "text",
       text = ~ paste(
-        "</br>FDR Cutoff: ",
+        "</br>FDR Cut-off: ",
         Cutoff,
         "</br>Cumulative curve: ",
         Percentage
       )
     ) %>%
     layout(
-      xaxis = list(title = "FDR Cutoff (%)", 
+      xaxis = list(title = "FDR Cut-off", 
                    tickvals = c(2, 4, 6), 
-                   ticktext = c(1, 10, 20)),
-      yaxis = list(title = "DEGs count between cutoff"),
-      yaxis2 = list(title = "Total DEGs under cufoff", overlaying = "y", side = "right"),
+                   ticktext = c("0.01", "0.10", "0.20")),
+      yaxis = list(title = "DEGs (#) between cut-offs", 
+                   rangemode = "nonnegative",
+                   titlefont = list(color = "#1F77B4")),
+      yaxis2 = list(title = "Cumulative number of DEGs", 
+                    titlefont = list(color = "#FF7F0E"),
+                    rangemode = "nonnegative",
+                    overlaying = "y", 
+                    side = "right"),
       showlegend = FALSE,
       margin = list(r = 50)
     )

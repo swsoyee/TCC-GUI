@@ -100,8 +100,8 @@ column(
         textInput(
           inputId = "sampleDistributionTitle",
           label = "Title",
-          value = "Sample Distribution",
-          placeholder = "Sample Distribution"
+          value = "Original Raw Count",
+          placeholder = "Original Raw Count"
         ),
         numericInput(
           inputId = "sampleDistributionLegendY",
@@ -150,8 +150,8 @@ column(
         textInput(
           inputId = "sampleDistributionDenstityTitle",
           label = "Title",
-          value = "",
-          placeholder = "Raw Count Distribution"
+          value = "Original Raw Count",
+          placeholder = "Original Raw Count"
         ),
         numericInput(
           inputId = "sampleDistributionDensityLegendY",

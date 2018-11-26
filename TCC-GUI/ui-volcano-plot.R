@@ -13,12 +13,12 @@ fluidPage(fluidRow(column(
     width = NULL,
     tabPanel(
       title = "Table",
-      tags$p("DEGs count under different FDR cutoff."),
+      tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       DT::dataTableOutput("fdrCutoffTableInVolcano")
     ),
     tabPanel(
       title = "Plot",
-      tags$p("DEGs count under different FDR cutoff."),
+      tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       withBarsUI(plotlyOutput("fdrCutoffPlotInVolcano"))
     )
   )

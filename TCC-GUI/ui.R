@@ -54,7 +54,7 @@ dashboardPage(
         tabName = "dateImport",
         icon = icon("database"),
         badgeLabel = "Step 1",
-        badgeColor = "yellow"
+        badgeColor = "orange"
       ),
       menuItemOutput("calculationTab"),
       menuItemOutput("maplotTab"),
