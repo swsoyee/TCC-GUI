@@ -284,6 +284,7 @@ output$fdrCutoffTableInVolcano <-
     # Render Table
     DT::datatable(
       df,
+      caption = "Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off.",
       option = list(
         pageLength = 10,
         columnDefs = list(list(

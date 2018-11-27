@@ -43,9 +43,10 @@ library(DT)
 
 This report is generated at: 
 `r Sys.time()`  
+
 > If "Not available" is shown in the report, it means you haven't generate the plot in TCC-GUI. Only the plot was shown in TCC-GUI at least one time, it can be output to the report.  
 
-Size of original dataset: 
+Size of original dataset:   
 `r nrow(params$CountData)` rows  
 `r ncol(params$CountData)` columns
 
@@ -194,6 +195,7 @@ PCA parameters is shown as below:
 ```{r pca para}
 pcaPara <- rbind(
   c("data", "Data source", "data.frame"),
+  c("input$pcFDR", "FDR Cut-off", params$pcFDR),
   c("input$pcTransform", "Log(x+1) transform", params$pcTransform),
   c("input$pcCenter", "Center", params$pcCenter),
   c("input$pcScale", "Scale", params$pcScale)

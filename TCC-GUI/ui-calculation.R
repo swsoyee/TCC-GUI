@@ -97,9 +97,11 @@ column(
                       )))
                ,
                column(6,
-                      withBarsUI(
-                        plotlyOutput("NormalizedSampleDistribution")
-                      ))
+                      # withBarsUI(
+                        # plotlyOutput("NormalizedSampleDistribution")
+                      # ))
+                      DT::dataTableOutput("tccSummation")
+                      )
              )),
     tabPanel(title = tagList(icon("area-chart"), "Density Plot"),
              fluidRow(

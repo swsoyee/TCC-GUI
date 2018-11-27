@@ -15,7 +15,7 @@ observeEvent(input$sider, {
         textOutput("pcaGeneCountPreview"),
         materialSwitch(inputId = "pcCenter", label = "Center", value = TRUE, right = TRUE, status = "primary"),
         materialSwitch(inputId = "pcScale", label = "Scale", value = TRUE, right = TRUE, status = "primary"),
-        materialSwitch(inputId = "pcTransform", label = "Log transform", value = TRUE, right = TRUE, status = "primary"),
+        materialSwitch(inputId = "pcTransform", label = "Log(x+1) transform", value = TRUE, right = TRUE, status = "primary"),
         radioGroupButtons(
           "pcData",
           "Source",
@@ -89,7 +89,7 @@ observeEvent(input$pcRun, {
   
   # PCA processing
   if (input$pcTransform == TRUE) {
-    data <- t(log(data + 1))
+    data <- t(log1p(data))
   } else {
     data <- t(data)
   }

@@ -37,12 +37,12 @@ fluidRow(column(
     width = NULL,
     tabPanel(
       tagList(icon("table"), "Table"),
-      tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
+      # tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       DT::dataTableOutput("fdrCutoffTableInMAPage")
     ),
     tabPanel(
       tagList(icon("bar-chart"), "Plot"),
-      tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
+      # tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       withBarsUI(plotlyOutput("fdrCutoffPlotInMAPage"))
     )
   )

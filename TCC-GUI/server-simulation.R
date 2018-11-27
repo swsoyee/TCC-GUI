@@ -8,7 +8,7 @@ observeEvent(input$simulationGroupNum, {
         4,
         numericInput(
           inputId = paste0("DEGAssign", x),
-          label = paste0("Proportion of assigned DEGs (ingroup)"),
+          label = paste0("Proportion of assigned DEGs (in this group)"),
           value = 0.5,
           step = 0.01,
           min = 0,
@@ -48,7 +48,7 @@ observeEvent(input$simulationGroupNum, {
 # According to group number, update proportion ingroup DEGs ----
 observeEvent(input$simulationGroupNum, {
   lapply(1:input$simulationGroupNum, function(x) {
-    updateNumericInput(session, paste0("DEGAssign", x), value = round(1 / input$simulationGroupNum, 2))
+    updateNumericInput(session, paste0("DEGAssign", x), value = round(1 / input$simulationGroupNum, 5))
   })
 })
 

@@ -124,6 +124,32 @@ observeEvent(input$TCC, {
     }
   })
   
+  
+  # Render a table of norm.factors and lib.sizes ----
+  output$tccSummation <- DT::renderDataTable({
+    df <-
+      data.frame(
+        tcc$group,
+        tcc$norm.factors,
+        colSums(tcc$count),
+        tcc$norm.factors * colSums(tcc$count)
+      )
+    colnames(df) <-
+      c("Group", "Normalization factor", "Total count", "Library size")
+    DT::datatable(df,
+                  option = list(dom = "t"),
+                  caption = 'Summary of Normalization.') %>% formatRound(
+                    columns = c("Normalization factor",
+                                "Library size"),
+                    digits = c(3, 0)
+                  ) %>% formatStyle(
+                    "Normalization factor",
+                    background = styleColorBar(range(0, df[, "Normalization factor"]), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  )
+  })
   # Render a table of different gene count under specific FDR cutoff condition.----
   
   output$fdrCutoffTableInTCC <- DT::renderDataTable({
