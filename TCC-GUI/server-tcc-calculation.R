@@ -96,6 +96,8 @@ observeEvent(input$TCC, {
     title = "Rendering tables",
     value = 93
   )
+  
+  # Render TCC result table on the right top ----
   output$resultTable <- DT::renderDataTable({
     if (nrow(variables$result) == 0) {
       DT::datatable(variables$result)
@@ -118,11 +120,7 @@ observeEvent(input$TCC, {
     }
   })
   
-  # ====================================
-  # This function render a table of different gene count under specific FDR cutoff
-  # condition.
-  # Position: In Computation tab, under right.
-  # ====================================
+  # Render a table of different gene count under specific FDR cutoff condition.----
   
   output$fdrCutoffTableInTCC <- DT::renderDataTable({
     # Create Table
@@ -151,47 +149,47 @@ observeEvent(input$TCC, {
 
   # Render a plotly of different gene count under specific FDR cutoff condition. ----
   
-  output$fdrCutoffPlotInTCC <- renderPlotly({
-    # Create table
-    df <- make_summary_for_tcc_result(variables$result)
-    
-    # Render Plotly
-    plot_ly(
-      data = df,
-      x = ~ Cutoff,
-      y = ~ Between_Count,
-      type = "bar",
-      hoverinfo = "text",
-      text = ~ paste(
-        "</br>FDR Cutoff: ",
-        Cutoff,
-        "</br>DEGs Count: ",
-        Between_Count
-      )
-    ) %>%
-      add_trace(
-        y = ~ Under_Count,
-        yaxis = "y2",
-        type = "scatter",
-        mode = "lines+markers",
-        hoverinfo = "text",
-        text = ~ paste(
-          "</br>FDR Cutoff: ",
-          Cutoff,
-          "</br>Cumulative curve: ",
-          Percentage
-        )
-      ) %>%
-      layout(
-        xaxis = list(title = "FDR Cutoff" #,
-                     #tickvals = 1:22,
-                     #ticktext = Cutoff
-                     ),
-        yaxis = list(title = "DEGs Count"),
-        yaxis2 = list(overlaying = "y", side = "right"),
-        showlegend = FALSE
-      )
-  })
+  # output$fdrCutoffPlotInTCC <- renderPlotly({
+  #   # Create table
+  #   df <- make_summary_for_tcc_result(variables$result)
+  #   
+  #   # Render Plotly
+  #   plot_ly(
+  #     data = df,
+  #     x = ~ Cutoff,
+  #     y = ~ Between_Count,
+  #     type = "bar",
+  #     hoverinfo = "text",
+  #     text = ~ paste(
+  #       "</br>FDR Cutoff: ",
+  #       Cutoff,
+  #       "</br>DEGs Count: ",
+  #       Between_Count
+  #     )
+  #   ) %>%
+  #     add_trace(
+  #       y = ~ Under_Count,
+  #       yaxis = "y2",
+  #       type = "scatter",
+  #       mode = "lines+markers",
+  #       hoverinfo = "text",
+  #       text = ~ paste(
+  #         "</br>FDR Cutoff: ",
+  #         Cutoff,
+  #         "</br>Cumulative curve: ",
+  #         Percentage
+  #       )
+  #     ) %>%
+  #     layout(
+  #       xaxis = list(title = "FDR Cutoff" #,
+  #                    #tickvals = 1:22,
+  #                    #ticktext = Cutoff
+  #                    ),
+  #       yaxis = list(title = "DEGs Count"),
+  #       yaxis2 = list(overlaying = "y", side = "right"),
+  #       showlegend = FALSE
+  #     )
+  # })
   
   # Download TCC Result Table function ----
   output$downLoadResultTable <- downloadHandler(
@@ -277,7 +275,8 @@ observeEvent(input$TCC, {
       x = cpm_stack[, 2],
       y = cpm_stack[, 4],
       type = "box",
-      split = cpm_stack$group
+      split = cpm_stack$group,
+      color = cpm_stack$group
     ) %>%
       layout(
         title = "Normalized Count",
@@ -295,13 +294,19 @@ observeEvent(input$TCC, {
   # Render a density plot of normalized sample distribution ----
   
   withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
+    
     cpm <- log2(variables$norData/1000000)
     densityTable <-lapply(data.frame(cpm), density)
     p <- plot_ly(type = "scatter", mode = "lines")
+    
     for(i in 1:length(densityTable)){
+      # Color group definition
+      group <- sapply(variables$groupList, function(x) {names(densityTable[i]) %in% x})
+      
       p <- add_trace(p, x = densityTable[[i]][[1]],
                      y = densityTable[[i]][[2]],
                      # fill = "tozeroy",
+                     color = names(group[group]),
                      name = names(densityTable[i]))
     }
     p %>%

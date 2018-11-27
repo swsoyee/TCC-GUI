@@ -240,7 +240,8 @@ observeEvent(input$confirmedGroupList, {
         x =  ~ ind,
         y =  ~ values,
         type = "box",
-        split =  ~ group
+        split = ~group,
+        color = ~group
       )
       withBars(output$sampleDistribution <- renderPlotly({
         xform$title <- input$sampleDistributionXlab
@@ -297,6 +298,7 @@ observeEvent(input$confirmedGroupList, {
         p <- add_trace(p, x = densityTable[[i]][[1]],
                        y = densityTable[[i]][[2]],
                        # fill = "tozeroy",
+                       color = group[V1 == names(densityTable[i]), V2],
                        name = names(densityTable[i]))
       }
       

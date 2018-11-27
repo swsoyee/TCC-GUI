@@ -14,7 +14,7 @@ dashboardPage(
                                  from = "Source Code",
                                  message = "Available on Github",
                                  icon = icon("github"),
-                                 time = "Update at 2018-10-09",
+                                 time = "Update at 2018-11-27",
                                  href = "https://github.com/swsoyee/TCC-GUI"
                                ),
                                messageItem(
@@ -64,7 +64,7 @@ dashboardPage(
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
     ),
-    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.26", 
+    helpText("Copyright (c)2018 Bioinformation Engineering Lab, The University of Tokyo, All Rights Reserved. v2018.11.27", 
              style="padding-left:1em; padding-right:1em;position:absolute; bottom:1em; ")
   ),
   dashboardBody(
