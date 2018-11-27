@@ -3,7 +3,7 @@
 fluidPage(useSweetAlert(), fluidRow(column(
   3,
   box(
-    title = "TCC Computation Parameters",
+    title = tagList(icon("cogs"), "TCC Computation Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
@@ -67,7 +67,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
     )
   ),
   box(
-    title = "TCC Calculation Code",
+    title = tagList(icon("code"), "TCC Calculation Code"),
     status = "danger",
     solidHeader = TRUE,
     width = NULL,
@@ -79,7 +79,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
 column(
   9,
   box(
-    title = "Result Table",
+    title = tagList(icon("table"), "Result Table"),
     width = NULL,
     solidHeader = TRUE,
     status = "info",
@@ -89,7 +89,7 @@ column(
     title = "Sample Distribution",
     id = "sampleDistributionInTCC",
     width = NULL,
-    tabPanel(title = "Box Plot",
+    tabPanel(title = tagList(icon("bar-chart"), "Box Plot"),
              fluidRow(
                column(6,
                       withBarsUI(plotlyOutput(
@@ -101,7 +101,7 @@ column(
                         plotlyOutput("NormalizedSampleDistribution")
                       ))
              )),
-    tabPanel(title = "Density Plot",
+    tabPanel(title = tagList(icon("area-chart"), "Density Plot"),
              fluidRow(
                column(6,
                       withBarsUI(

@@ -22,7 +22,7 @@ observeEvent(input$sider, {
       ),
       sliderInput(
         "maFDR",
-        "FDR:",
+        "FDR",
         min = 0,
         max = 1,
         value = input$fdr

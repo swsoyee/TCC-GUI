@@ -135,7 +135,7 @@ observeEvent(input$simulationRun, {
     
     output$simulationGroupInfo <- renderUI({
       box(
-        title = "Group info",
+        title = tagList(icon("info-circle"), "Group information"),
         status = "info",
         solidHeader = TRUE,
         width = NULL,

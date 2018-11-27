@@ -2,7 +2,7 @@
 fluidPage(fluidRow(column(
   3,
   box(
-    title = "Volcano Plot Parameters",
+    title = tagList(icon("cogs"), "Volcano Plot Parameters"),
     solidHeader = TRUE,
     status = "primary",
     width = NULL,
@@ -12,12 +12,12 @@ fluidPage(fluidRow(column(
     title = "FDR vs DEGs",
     width = NULL,
     tabPanel(
-      title = "Table",
+      title = tagList(icon("table"), "Table"),
       tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       DT::dataTableOutput("fdrCutoffTableInVolcano")
     ),
     tabPanel(
-      title = "Plot",
+      title = tagList(icon("bar-chart"), "Plot"),
       tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       withBarsUI(plotlyOutput("fdrCutoffPlotInVolcano"))
     )
@@ -27,16 +27,16 @@ fluidPage(fluidRow(column(
 column(
   6,
   box(
-    title = "Volcano Plot",
+    title = tagList(icon("line-chart"), "Volcano Plot"),
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     width = NULL,
     withBarsUI(plotlyOutput("volcanoPloty"))
   ),
   box(
-    title = "Result Table",
+    title = tagList(icon("table"), "Result Table"),
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     width = NULL,
     DT::dataTableOutput('resultTableInVolcanalPlot')
   )
@@ -45,13 +45,13 @@ column(
 column(
   3,
   box(
-    title = "Expression Level",
+    title = tagList(icon("bar-chart"), "Expression Level"),
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     width = NULL,
     withBarsUI(plotlyOutput("geneBarPlotInVolcano"))
   ),
-  box(title = "Volcano Plot Code",
+  box(title = tagList(icon("code"), "Volcano Plot Code"),
       solidHeader = TRUE,
       status = "danger",
       collapsible = TRUE,

@@ -3,14 +3,14 @@
 fluidPage(column(
   3,
   box(
-    title = "Heatmap Parameters",
+    title = tagList(icon("cogs"), "Heatmap Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
     uiOutput("heatmapParameter")
   ),
   box(
-    title = "Heatmap R Code",
+    title = tagList(icon("code"), "Heatmap R Code"),
     width = NULL,
     status = "danger",
     solidHeader = TRUE,
@@ -22,7 +22,7 @@ fluidPage(column(
 column(
   9,
   box(
-    title = "Heatmap",
+    title = tagList(icon("th"), "Heatmap"),
     width = NULL,
     solidHeader = TRUE,
     status = "info", 
@@ -30,7 +30,7 @@ column(
     uiOutput("heatmapPlot")
   ),
   box(
-    title = "Gene List Table",
+    title = tagList(icon("table"), "Listed Gene Information Table"),
     width = TRUE,
     solidHeader = TRUE,
     status = "info",

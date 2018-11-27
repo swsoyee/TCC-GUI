@@ -3,23 +3,23 @@
 fluidPage(column(
   3,
   box(
-    title = "Expression Level Parameters",
+    title = tagList(icon("cogs"), "Expression Level Parameters"),
     solidHeader = TRUE,
     width = NULL,
     status = "primary",
     uiOutput("expressionParameters")
   ),
   box(
-    title = "Expression Level R Code",
+    title = tagList(icon("code"), "Expression Level R Code"),
     solidHeader = TRUE,
     width = NULL,
     status = "danger",
     collapsible = TRUE,
     collapsed = TRUE,
     tabsetPanel(
-      tabPanel(title = "Barplot",
+      tabPanel(title = tagList(icon("bar-chart"), "Barplot"),
                verbatimTextOutput("expressionLevelCodeText")),
-      tabPanel(title = "Boxplot",
+      tabPanel(title = tagList(icon("line-chart"), "Boxplot"),
                verbatimTextOutput("expressionLevelBoxCodeText"))
     )
   )
@@ -29,17 +29,17 @@ column(
   tabBox(
     title = "Expression Level",
     width = NULL,
-    tabPanel(title = "Barplot",
+    tabPanel(title = tagList(icon("bar-chart"), "Barplot"),
              plotlyOutput("geneBarPlotExpression")),
-    tabPanel(title = "Boxplot",
+    tabPanel(title = tagList(icon("line-chart"), "Boxplot"),
              plotlyOutput("geneBoxPlotExpression"))
   ),
   tabBox(
     title = "Table of Expression Level",
     width = NULL,
-    tabPanel(title = "Expression Table",
+    tabPanel(title = tagList(icon("table"), "Expression Table"),
              DT::dataTableOutput("geneTable")),
-    tabPanel(title = "Result Table",
+    tabPanel(title = tagList(icon("columns"), "Result Table"),
              DT::dataTableOutput("geneTableCal"))
   )
 ))

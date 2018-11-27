@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = "Report Parameters",
+    title = tagList(icon("cogs"), "Report Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",

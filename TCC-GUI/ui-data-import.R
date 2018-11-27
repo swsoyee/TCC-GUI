@@ -3,11 +3,11 @@
 fluidPage(fluidRow(column(
   3,
   tabBox(
-    title = "Data Source",
+    title = "Source",
     id = "datasource",
     width = NULL,
     tabPanel(
-      "Sample",
+      tagList(icon("folder-open"), "Sample"),
       selectInput(
         "SampleDatabase",
         "Select Sample Data",
@@ -28,7 +28,7 @@ fluidPage(fluidRow(column(
       ))
     ),
     tabPanel(
-      "Upload",
+      tagList(icon("cloud-upload"), "Upload"),
       fileInput(
         "uploadCountData",
         "Upload Count Data",
@@ -43,7 +43,7 @@ fluidPage(fluidRow(column(
   )
   ,
   box(
-    title = "Group Selection",
+    title = tagList(icon("sitemap"), "Group Selection"),
     solidHeader = TRUE,
     status = "primary",
     width = NULL,
@@ -71,7 +71,7 @@ fluidPage(fluidRow(column(
     )
   ),
   box(
-    title = "Summary of Data",
+    title = tagList(icon("info-circle"), "Summary of Data"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
@@ -83,14 +83,14 @@ fluidPage(fluidRow(column(
 column(
   9,
   box(
-    title = "Read Count Table",
+    title = tagList(icon("table"), "Read Count Table"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
     uiOutput("emptyTable")
   ),
   box(
-    title = "Count Distribution per sample (box plot)",
+    title = tagList(icon("bar-chart"), "Count Distribution per sample (box plot)"),
     solidHeader = TRUE,
     status = "info",
     fluidRow(column(
@@ -140,7 +140,7 @@ column(
     withBarsUI(plotlyOutput("sampleDistribution"))
   ),
   box(
-    title = "Count Distribution per sample (density)",
+    title = tagList(icon("area-chart"), "Count Distribution per sample (density)"),
     solidHeader = TRUE,
     status = "info",
     fluidRow(column(

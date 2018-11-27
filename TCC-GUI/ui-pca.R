@@ -3,13 +3,13 @@
 fluidPage(column(
   3,
   box(
-    title = "PCA Parameters",
+    title = tagList(icon("cogs"), "PCA Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
     uiOutput("pcaParameter")
   ),
-  box(title = "PCA Code",
+  box(title = tagList(icon("code"), "PCA Code"),
       solidHeader = TRUE,
       status = "danger",
       collapsible = TRUE,
@@ -23,21 +23,21 @@ column(
   tabBox(
     title = "PCA Plot",
     width = NULL,
-    tabPanel("Scree Plot",
+    tabPanel(tagList(icon("bar-chart"), "Scree Plot"),
              plotlyOutput("pcaVariances")),
-    tabPanel("PCA Plot (3D)",
+    tabPanel(tagList(icon("cube"), "PCA Plot (3D)"),
              plotlyOutput("pcabiplot3d")),
-    tabPanel("PCA Plot (2D)",
+    tabPanel(tagList(icon("square-o"), "PCA Plot (2D)"),
              plotlyOutput("pcabiplot"))#,
     # tabPanel("Cluster",
     #          plotOutput("pcacluster")),
     # )
   ),
   box(
-    title = "Summary of PCA",
+    title = tagList(icon("info-circle"), "Summary of PCA"),
     width = NULL,
     solidHeader = TRUE,
-    status = "primary",
+    status = "info",
     DT::dataTableOutput("summaryPCA")
   )
 ))

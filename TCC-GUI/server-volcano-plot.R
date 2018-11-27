@@ -19,7 +19,7 @@ observeEvent(input$sider, {
           value = c(-1, 1),
           step = 0.5
         ),
-        textInput("Cutpvalue", "P-value Cut-off:", value = 0.05),
+        textInput("Cutpvalue", "P-value Cut-off", value = 0.05),
         sliderInput(
           "pointSize",
           "Point Size",
@@ -61,7 +61,7 @@ observeEvent(input$sider, {
         do.call(actionBttn, c(
           list(
             inputId = "makeVolcanoPlot",
-            label = "Generate Plot",
+            label = "Generate Volcano Plot",
             icon = icon("play")
           ),
           actionBttnParams
