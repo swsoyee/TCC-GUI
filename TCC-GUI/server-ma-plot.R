@@ -22,7 +22,7 @@ observeEvent(input$sider, {
       ),
       sliderInput(
         "maFDR",
-        "FDR",
+        "FDR Cut-off",
         min = 0,
         max = 1,
         value = input$fdr
@@ -186,7 +186,7 @@ withBars(output$geneBarPlot <- renderPlotly({
   eventdata <- event_data("plotly_hover", source = "ma")
   validate(need(
     !is.null(eventdata),
-    "Hover over the point to show expression plot"
+    "Hover over the point to show gene's expression level of interest."
   ))
   # Get point number
   gene_id <- eventdata$key
@@ -262,6 +262,10 @@ output$resultTableInVolcanalPlot <-
                     "p.value",
                     "q.value"),
         digits = 3
+      ) %>% formatStyle(
+        "estimatedDEG",
+        target = 'row',
+        backgroundColor = styleEqual(1, "lightblue")
       )
     }
   })

@@ -90,7 +90,7 @@ column(
     uiOutput("emptyTable")
   ),
   box(
-    title = tagList(icon("bar-chart"), "Count Distribution per sample (box plot)"),
+    title = tagList(icon("bar-chart"), "Count Distribution (Box Plot)"),
     solidHeader = TRUE,
     status = "info",
     fluidRow(column(
@@ -140,7 +140,7 @@ column(
     withBarsUI(plotlyOutput("sampleDistribution"))
   ),
   box(
-    title = tagList(icon("area-chart"), "Count Distribution per sample (density)"),
+    title = tagList(icon("area-chart"), "Count Distribution (Density Plot)"),
     solidHeader = TRUE,
     status = "info",
     fluidRow(column(

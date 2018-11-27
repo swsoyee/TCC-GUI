@@ -215,7 +215,7 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
   eventdata <- event_data("plotly_hover", source = "volcano")
   validate(need(
     !is.null(eventdata),
-    "Hover over the point to show original expression plot"
+    "Hover over the point to show gene's expression level of interest."
   ))
   # Get point number
   gene_id <- eventdata$key

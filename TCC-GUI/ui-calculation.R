@@ -35,14 +35,14 @@ fluidPage(useSweetAlert(), fluidRow(column(
       ),
       sliderInput(
         "iteration",
-        "Iteration",
+        "Number of Iteration",
         min = 1,
         max = 50,
         value = 3
       ),
       sliderInput(
         "fdr",
-        "FDR",
+        "FDR Cut-off",
         min = 0,
         max = 1,
         value = 0.1,
@@ -86,7 +86,7 @@ column(
     uiOutput("mainResultTable")
   ),
   tabBox(
-    title = "Sample Distribution",
+    title = "Count Distribution",
     id = "sampleDistributionInTCC",
     width = NULL,
     tabPanel(title = tagList(icon("bar-chart"), "Box Plot"),

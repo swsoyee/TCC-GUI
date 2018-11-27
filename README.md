@@ -93,7 +93,7 @@ Run the following command to launch `TCC-GUI` in your local environment, then it
 #### Method 1
 
 ```R
-shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI")
+shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI", launch.browser = TRUE)
 ```
 
 This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it. 
@@ -107,7 +107,7 @@ This method always download the source code from github before launching, so may
 3. Run the code of launching ( according to your structure of working directory it may be different ). 
 
    ```R
-   shiny::runApp("TCC-GUI-master//TCC-GUI")
+   shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
    ```
 4. Enjoy your analysis on `TCC-GUI`!
 

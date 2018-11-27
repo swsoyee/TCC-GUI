@@ -11,7 +11,7 @@ observeEvent(input$sider, {
       tagList(
         radioGroupButtons(
           inputId = "heatmapGeneSelectType",
-          label = "Select Gene",
+          label = "Select Genes",
           choices = c("By List" = "By list",
                       # "By name",
                       "By FDR" = "By FDR"),
@@ -129,7 +129,7 @@ observeEvent(input$sider, {
 observeEvent(input$heatmapFDR, {
   gene_count <- nrow(resultTable()[resultTable()$q.value <= input$heatmapFDR, ])
   output$heatmapGeneCountPreview <- renderText({
-    paste0("Gene count: ", gene_count, " | Generation time: ~", round(gene_count/30,2), "s")
+    paste0("DEGs(#): ", gene_count, " | Generation time: ~", round(gene_count/30,2), "s")
   })
 })
 
@@ -556,6 +556,10 @@ observeEvent(input$heatmapRun, {
           colnames(data)
         ),
         digits = 3
+      ) %>% formatStyle(
+        "estimatedDEG",
+        target = 'row',
+        backgroundColor = styleEqual(1, "lightblue")
       )
     })
     

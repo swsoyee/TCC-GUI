@@ -7,11 +7,12 @@ observeEvent(input$sider, {
       tagList(
         if (input$testMethod != 'wad') {
           sliderInput("pcFDR",
-                      "FDR",
+                      "FDR Cut-off",
                       min = 0.01,
                       max = 1,
                       value = 0.05)
         },
+        textOutput("pcaGeneCountPreview"),
         materialSwitch(inputId = "pcCenter", label = "Center", value = TRUE, right = TRUE, status = "primary"),
         materialSwitch(inputId = "pcScale", label = "Scale", value = TRUE, right = TRUE, status = "primary"),
         materialSwitch(inputId = "pcTransform", label = "Log transform", value = TRUE, right = TRUE, status = "primary"),
@@ -48,6 +49,15 @@ observeEvent(input$sider, {
       )
     })
   }
+})
+
+
+# Preview gene count -----
+observeEvent(input$pcFDR, {
+  gene_count <- nrow(resultTable()[resultTable()$q.value <= input$pcFDR, ])
+  output$pcaGeneCountPreview <- renderText({
+    paste0("Gene count: ", gene_count)
+  })
 })
 
 # ====================================
@@ -102,7 +112,8 @@ observeEvent(input$pcRun, {
                 mode = "lines+markers",
                 name = "Cumulative Proportion") %>%
       layout(xaxis = list(title = "Principal Components"),
-             yaxis = list(title = "Proportion"),
+             yaxis = list(title = "Proportion of Variance", 
+                          tickformat = "%"),
              title = "Scree Plot",
              legend = list(
                orientation = 'h',

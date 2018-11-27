@@ -1,5 +1,6 @@
 # server-simulation.R
 
+# Render input widget in group parameters ----
 observeEvent(input$simulationGroupNum, {
   lapply(1:input$simulationGroupNum, function(x) {
     output[[paste0("Group", x)]] <- renderUI({
@@ -7,8 +8,9 @@ observeEvent(input$simulationGroupNum, {
         4,
         numericInput(
           inputId = paste0("DEGAssign", x),
-          label = paste0("Proportion of DEGs up-regulated"),
+          label = paste0("Proportion of assigned DEGs (ingroup)"),
           value = 0.5,
+          step = 0.01,
           min = 0,
           max = 1
         )
@@ -30,7 +32,9 @@ observeEvent(input$simulationGroupNum, {
           value = 3,
           min = 0
         )
-      ))
+      ),
+      textOutput(paste0("ingroupDEGsNum", x))
+      )
     })
   })
   
@@ -40,6 +44,45 @@ observeEvent(input$simulationGroupNum, {
          })
 })
 
+
+# According to group number, update proportion ingroup DEGs ----
+observeEvent(input$simulationGroupNum, {
+  lapply(1:input$simulationGroupNum, function(x) {
+    updateNumericInput(session, paste0("DEGAssign", x), value = round(1 / input$simulationGroupNum, 2))
+  })
+})
+
+# According all params, preview ingroup DEGs ----
+observeEvent({
+  input$simulationGeneNum
+  input$simulationPDEG
+  input$simulationGroupNum
+}, {
+  lapply(1:input$simulationGroupNum, function(x) {
+    output[[paste0("ingroupDEGsNum", x)]] <- renderText({
+      paste0(
+        "This dataset contains (",
+        input$simulationGeneNum,
+        " × ",
+        input$simulationPDEG,
+        " × ",
+        input[[paste0("DEGAssign", x)]],
+        ") = ",
+        input$simulationGeneNum * input$simulationPDEG * input[[paste0("DEGAssign", x)]],
+        " DEGs up-regulated in this group."
+      )
+    })
+  })
+})
+
+# Render Text of DEGs number preview ----
+observeEvent(input$simulationPDEG, {
+  output$expectedDEGsText <- renderText({
+    paste0("Total Number of DEGs: ", floor(input$simulationPDEG * input$simulationGeneNum))
+  })
+})
+
+# Render a series tab in group parameters ----
 output$simulationGroup <- renderUI({
   if (input$simulationGroupNum != 0) {
     
@@ -51,6 +94,7 @@ output$simulationGroup <- renderUI({
   }
 })
 
+# Excute simulation data ----
 observeEvent(input$simulationRun, {
   GroupNum <- input$simulationGroupNum
   
@@ -65,6 +109,14 @@ observeEvent(input$simulationRun, {
       type = "error"
     )
   } else {
+    progressSweetAlert(
+      session = session,
+      id = "simulationProgress",
+      title = "Loading parameters...",
+      display_pct = TRUE,
+      value = 0
+    )
+    
     DEG.assign <- sapply(1:GroupNum, function(i) {
       input[[paste0("DEGAssign", i)]]
     })
@@ -74,11 +126,11 @@ observeEvent(input$simulationRun, {
     replicates <- sapply(1:GroupNum, function(i) {
       input[[paste0("replicates", i)]]
     })
-    sendSweetAlert(
+    updateProgressBar(
       session = session,
-      title = "RUNING...",
-      text = "Generating simulation data, please wait for a moment...",
-      type = "info"
+      id = "simulationProgress",
+      title = "Start generating...",
+      value = 20
     )
     simulatedData <-
       simulateReadCounts(
@@ -88,6 +140,12 @@ observeEvent(input$simulationRun, {
         DEG.foldchange = DEG.foldchange,
         replicates = replicates
       )
+    updateProgressBar(
+      session = session,
+      id = "simulationProgress",
+      title = "Finish generating...",
+      value = 80
+    )
     output$simulatedData <- DT::renderDataTable({
       DT::datatable(
         simulatedData$count,
@@ -100,7 +158,7 @@ observeEvent(input$simulationRun, {
       )
     })
     
-    # Download Simulation Data function
+    # Download Simulation Data function ----
     output$downloadSimuData <- downloadHandler(
       filename = function() {
         paste(
@@ -114,11 +172,11 @@ observeEvent(input$simulationRun, {
       }
     )
     
-    # Render Simulation Data Table and Download Button
+    # Render Simulation Data Table and Download Button ----
     output$simuDataTableAndDownload <- renderUI({
       tagList(
         downloadButton("downloadSimuData", "Download Simulation Data"),
-        tags$p("Download this dataset and copy the group infomations, and you can upload it in [Data import (Step1)] tab for analysis"),
+        tags$p("Download this dataset and copy the group infomation, and you can upload them in [Data Import (Step1)] tab for analysis"),
         DT::dataTableOutput("simulatedData")
       )
     })
@@ -142,9 +200,23 @@ observeEvent(input$simulationRun, {
         verbatimTextOutput("simulationGroupInfoText")
       )
     })
+    
+    updateProgressBar(
+      session = session,
+      id = "simulationProgress",
+      title = "All done.",
+      value = 100
+    )
+    
+    closeSweetAlert(session = session)
+    sendSweetAlert(session = session,
+                   title = "Simulation completed!",
+                   type = "success")
   }
 })
 
+
+# Render Text of simulation parameters summary preview ----
 output$simuParams <- renderText({
   GroupNum <- input$simulationGroupNum
   DEG.assign <- sapply(1:GroupNum, function(i) {

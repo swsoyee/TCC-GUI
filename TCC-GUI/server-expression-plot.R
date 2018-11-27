@@ -314,6 +314,10 @@ observeEvent(input$runExpression, {
                                   "p.value",
                                   "q.value"),
                       digits = 3
+                    ) %>% formatStyle(
+                      "estimatedDEG",
+                      target = 'row',
+                      backgroundColor = styleEqual(1, "lightblue")
                     )
     })
 

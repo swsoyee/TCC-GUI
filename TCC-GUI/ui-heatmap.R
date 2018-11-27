@@ -26,7 +26,7 @@ column(
     width = NULL,
     solidHeader = TRUE,
     status = "info", 
-    footer = "It will be very time consuming if the number of gene is over hundred. Reduce the number by cutoff or wait patiently.",
+    footer = "It will be very time consuming if the number of genes is over hundred. Reduce the number by cutoff or wait patiently.",
     uiOutput("heatmapPlot")
   ),
   box(

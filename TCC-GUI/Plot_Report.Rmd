@@ -13,6 +13,9 @@ params:
   norSampleDistributionDensity: NA
   MAPlotObject: NA
   VolcanoPlotObject: NA
+  pcTransform: NA
+  pcCenter: NA
+  pcScale: NA
   screePlot: NA
   pca3d: NA
   pca2d: NA
@@ -38,12 +41,17 @@ library(DT)
 
 # Session infomation
 
-Generated at: `r Sys.time()`  
+This report is generated at: 
+`r Sys.time()`  
+> If "Not available" is shown in the report, it means you haven't generate the plot in TCC-GUI. Only the plot was shown in TCC-GUI at least one time, it can be output to the report.  
 
-Size of original dataset: `r nrow(params$CountData)` rows / `r ncol(params$CountData)` columns
+Size of original dataset: 
+`r nrow(params$CountData)` rows  
+`r ncol(params$CountData)` columns
 
-Number of group: `r length(params$groupList)`  
-Detail (Used columns):  
+Number of group: 
+`r length(params$groupList)`  
+Detail of group information (Used columns):  
 ```{r groupList}
 for(i in 1:length(params$groupList)){
   group_name <- names(params$groupList)[i]
@@ -54,11 +62,13 @@ for(i in 1:length(params$groupList)){
 }
 ```
 
-Number of gene which expression level equal to zero in all sample: `r params$zeroValue`
+Number of gene which expression level equal to zero in all sample: 
+`r params$zeroValue`  
 
 # TCC Computation
 
-Parameters is shown as below. 
+This part is about TCC Computation processing.  
+TCC Parameters is shown as below. 
 ```{r tcc parameters}
 tccPara <- rbind(
   c("params$CountData", "Count data", class(params$CountData)),
@@ -78,12 +88,14 @@ kable(tccPara, caption = "Paramters used in TCC computation.")
 kable(head(params$CountData, 10), caption = "First 10 row of original dataset.")
 ```
 
-List of group infomation:
+List of group infomation is shown as below:  
 ```{r groupListConvert, results='markup'}
 params$groupListConvert
 ```
 
-Computation code is shown as below.
+Computation code is shown as below.  
+
+(If you want to run this piece of code directly, loading data into your own R environment is necessary. Using `data <- data.table::fread(YOUR_FILE_PATH)` to replace `data <- params$CountData` is a highly efficiency way of reading row count text file. Next create a variable `data.cl` to save group information list.)  
 ```{r tcc computation, echo=TRUE, eval=FALSE}
 library(TCC)
 # Dataset
@@ -113,6 +125,7 @@ result <- getResult(tcc, sort = FALSE)
 norData <- tcc$getNormalizedData()
 ```
 
+Here is a preview of your TCC results.  
 ```{r tcc result}
 kable(head(params$result, 10), caption = "First 10 row of TCC result table")
 kable(head(params$norData, 10), caption = "First 10 row of normalized data")
@@ -174,7 +187,30 @@ if(params$VolcanoPlotObject != ""){
 }
 ```
 
-## PCA  
+## Principal Components Analysis  
+
+PCA parameters is shown as below:
+
+```{r pca para}
+pcaPara <- rbind(
+  c("data", "Data source", "data.frame"),
+  c("input$pcTransform", "Log(x+1) transform", params$pcTransform),
+  c("input$pcCenter", "Center", params$pcCenter),
+  c("input$pcScale", "Scale", params$pcScale)
+  )
+  colnames(pcaPara) <-
+  c("Parameter", "Explanation", "Value / Class")
+  kable(pcaPara, caption = "Paramters used in PCA.")
+```
+
+Computation code is shown as below.  
+Reload `result` and `norData` from the previous TCC computation part.
+
+```{r pca computation, echo=TRUE, eval=FALSE}
+# Get final result of TCC
+# result <- getResult(tcc, sort = FALSE)
+# norData <- tcc$getNormalizedData()
+```
 
 ### Scree plot  
 ```{r}

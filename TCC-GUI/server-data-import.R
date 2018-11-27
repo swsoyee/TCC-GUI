@@ -357,7 +357,7 @@ observeEvent(input$confirmedGroupList, {
             dim(variables$CountData)[2],
             ")"
           ),
-          subtitle = "Row and column count number in the dataset",
+          subtitle = "Row and column numbers in the dataset",
           width = NULL,
           icon = icon("list"),
           fill = TRUE,
@@ -371,7 +371,7 @@ observeEvent(input$confirmedGroupList, {
       output$groupCount <- renderUI({
         groupText <- sapply(variables$groupList, length)
         infoBox(
-          title = "Group Count", 
+          title = "Group Number", 
           value = length(groupText), 
           subtitle = paste0(names(groupText), ": ",groupText, collapse = "\n"),
           width = NULL,
@@ -392,12 +392,12 @@ observeEvent(input$confirmedGroupList, {
                                       round(zeroValue / nrow(variables$CountData) * 100, 2), 
                                       "%)")
         infoBox(
-          title = "zero value",
+          title = "NON-EXPRESSED",
           # value = paste0(zeroValue, " (", round(
           #   zeroValue / nrow(variables$CountData) * 100, 2
           # ), "%)"),
           value = variables$zeroValue,
-          subtitle = "Number of gene which expression level equal to zero in all sample",
+          subtitle = "Number of genes with zero counts across samples",
           width = NULL,
           icon = icon("exclamation-circle"),
           fill = TRUE,
