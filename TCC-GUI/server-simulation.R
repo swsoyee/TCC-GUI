@@ -47,8 +47,14 @@ observeEvent(input$simulationGroupNum, {
 
 # According to group number, update proportion ingroup DEGs ----
 observeEvent(input$simulationGroupNum, {
-  lapply(1:input$simulationGroupNum, function(x) {
-    updateNumericInput(session, paste0("DEGAssign", x), value = round(1 / input$simulationGroupNum, 5))
+  numberLength <- nchar(as.character(input$simulationGeneNum))
+  defaultDEG <- round(1 / input$simulationGroupNum, numberLength - 1)
+  
+  firstDefault <- 1 - (defaultDEG * (input$simulationGroupNum - 1))
+  updateNumericInput(session, "DEGAssign1", value = firstDefault)
+  
+  lapply(2:input$simulationGroupNum, function(x) {
+    updateNumericInput(session, paste0("DEGAssign", x), value = defaultDEG)
   })
 })
 
@@ -68,7 +74,7 @@ observeEvent({
         " × ",
         input[[paste0("DEGAssign", x)]],
         ") = ",
-        input$simulationGeneNum * input$simulationPDEG * input[[paste0("DEGAssign", x)]],
+        round(input$simulationGeneNum * input$simulationPDEG * input[[paste0("DEGAssign", x)]], 0),
         " DEGs up-regulated in this group."
       )
     })
