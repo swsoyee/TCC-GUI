@@ -77,7 +77,8 @@ fluidPage(fluidRow(column(
     width = NULL,
     uiOutput("rowOfCountData"),
     uiOutput("groupCount"),
-    uiOutput("zeroValue")
+    uiOutput("zeroValue"),
+    uiOutput("silhouette")
   )
 ),
 column(

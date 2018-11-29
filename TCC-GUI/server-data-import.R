@@ -393,9 +393,6 @@ observeEvent(input$confirmedGroupList, {
                                       "%)")
         infoBox(
           title = "NON-EXPRESSED",
-          # value = paste0(zeroValue, " (", round(
-          #   zeroValue / nrow(variables$CountData) * 100, 2
-          # ), "%)"),
           value = variables$zeroValue,
           subtitle = "Number of genes with zero counts across samples",
           width = NULL,
@@ -403,6 +400,32 @@ observeEvent(input$confirmedGroupList, {
           fill = TRUE,
           color = "olive"
         )
+      })
+      
+      # Infobox of Silhouette Score ----
+      output$silhouette <- renderUI({
+        data <- variables$CountData
+        data.cl <- variables$groupListConvert
+        
+        data.cl <- data.cl[data.cl != 0]
+        data <- data[data.cl != 0]
+        
+        # Filtering
+        obj <- as.logical(rowSums(data) > 0)
+        data <- unique(data[obj,])
+        
+        # AS calculation
+        d <- as.dist(1 - cor(data, method="spearman"))
+        AS <-  mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
+
+        infoBox(title = "average Silhouette",
+                value = round(AS, 3),
+                subtitle = "Degrees of separation between different groups",
+                width = NULL,
+                icon = icon("chain"),
+                fill = TRUE,
+                href = "https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8",
+                color = "purple")
       })
       
       closeSweetAlert(session = session)

@@ -1,28 +1,3 @@
-# ====================================
-# This function load multiple packages at once.
-# From: https://stackoverflow.com/questions/8175912/load-multiple-packages-at-once
-# ====================================
-mLoad <- function(...) {
-  sapply(sapply(match.call(), as.character)[-1],
-         require,
-         character.only = TRUE)
-}
-
-# mLoad(
-#   shinydashboard,
-#   plotly,
-#   dplyr,
-#   TCC,
-#   DT,
-#   heatmaply,
-#   data.table,
-#   RColorBrewer,
-#   markdown,
-#   plotlyBars,
-#   utils,
-#   shinyWidgets
-# )
-
 library(shinydashboard)
 library(plotly)
 library(dplyr)
@@ -36,7 +11,7 @@ library(plotlyBars)
 library(utils)
 library(shinyWidgets)
 library(tidyr)
-
+library(cluster)
 
 # ====================================
 # This function convert the input of group information to
