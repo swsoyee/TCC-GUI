@@ -1,5 +1,5 @@
 ---
-title: "TCC GUI Analysis Report"
+title: "TCC-GUI Analysis Report"
 output: html_document
 params:
   CountData: NA

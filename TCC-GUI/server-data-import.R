@@ -12,8 +12,8 @@ observeEvent(input$CountDataSample, {
   
   sendSweetAlert(
     session = session,
-    title = "SUCCESS",
-    text = "Count data sample loaded.",
+    title = "DONE",
+    text = "Count data are successfully loaded.",
     type = "success"
   )
   
@@ -267,21 +267,21 @@ observeEvent(input$confirmedGroupList, {
         value = 60
       )
       # The same plot used in Calculation tab.
-      withBars(output$sampleDistributionTCC <- renderPlotly({
-        xform$title <- input$sampleDistributionXlab
-        psd %>%
-          layout(
-            title = input$sampleDistributionTitle,
-            xaxis = xform,
-            yaxis = list(title = input$sampleDistributionYlab),
-            legend = list(
-              orientation = 'h',
-              xanchor = "center",
-              x = 0.5,
-              y = input$sampleDistributionLegendY
-            )
-          )
-      }))
+      # withBars(output$sampleDistributionTCC <- renderPlotly({
+      #   xform$title <- input$sampleDistributionXlab
+      #   psd %>%
+      #     layout(
+      #       title = input$sampleDistributionTitle,
+      #       xaxis = xform,
+      #       yaxis = list(title = input$sampleDistributionYlab),
+      #       legend = list(
+      #         orientation = 'h',
+      #         xanchor = "center",
+      #         x = 0.5,
+      #         y = input$sampleDistributionLegendY
+      #       )
+      #     )
+      # }))
 
       # This function render a density plot of sample distribution ----
 
@@ -407,7 +407,8 @@ observeEvent(input$confirmedGroupList, {
       
       closeSweetAlert(session = session)
       sendSweetAlert(session = session,
-                     title = "Import completed!",
+                     title = "DONE",
+                     text = "Group labels are successfully assigned.",
                      type = "success")
     },
     error = function(e) {

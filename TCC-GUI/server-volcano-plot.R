@@ -1,6 +1,5 @@
 # server-volcano-plot.R
 
-
 # This function render a series UI of Volcano Plot parameters ----
 
 observeEvent(input$sider, {
@@ -13,51 +12,74 @@ observeEvent(input$sider, {
       tagList(
         sliderInput(
           "CutFC",
-          "Fold Change Cut-off",
-          min = -10,
-          max = 10,
+          "Fold Change (X-axis) Cut-off",
+          min = ceiling(min(resultTable()$m.value)),
+          max = floor(max(resultTable()$m.value)),
           value = c(-1, 1),
           step = 0.5
         ),
-        textInput("Cutpvalue", "P-value Cut-off", value = 0.05),
+        textInput("xlabs", "X-axis Label", value = "log<sub>2</sub>(Fold Change)"),
+        # radioGroupButtons(inputId = "volcanoYcolumn", 
+        #                   label = "Y-axis Value", 
+        #                   choices = c("P-value" = "p.value",
+        #                               "Q-value" = "q.value"),
+        #                   status = "primary",
+        #                   justified = TRUE),
         sliderInput(
-          "pointSize",
+          inputId = "Cutpvalue",
+          label = "P-value Cut-off",
+          min = 0.01,
+          value = 0.05,
+          max = 1,
+          step = 0.01
+        ),
+        textInput("ylabs", "Y-axis Label", value = "-log<sub>10</sub>(P-value)"),
+        sliderInput(
+          "volcanoPointSize",
           "Point Size",
           min = 1,
           max = 5,
           value = 3,
           step = 0.2
         ),
-        textInput("xlabs", "X-axis (Fold Change) Label", value = "log2(Fold Change)"),
-        textInput("ylabs", "Y-axis (P-value) Label", value = "-log10(P-value)"),
         textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
-        
-        column(6,
         spectrumInput(
           inputId = "downColor",
-          label = "Down-regulate",
+          label = tagList("Down-regulate", htmlOutput("downPreview")),
           choices = list(
-            list("green", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
+            list(
+              "green",
+              'black',
+              'white',
+              'blanchedalmond',
+              'steelblue',
+              'forestgreen'
+            ),
             as.list(brewer.pal(n = 9, name = "Blues")),
             as.list(brewer.pal(n = 9, name = "Greens")),
-            as.list(brewer.pal(n = 11, name = "Spectral")),
-            as.list(brewer.pal(n = 8, name = "Dark2"))
+            as.list(brewer.pal(n = 11, name = "Spectral"))
           ),
           options = list(`toggle-palette-more-text` = "Show more")
-        )),
-        column(6,
+          
+        ),
         spectrumInput(
           inputId = "upColor",
-          label = "Up-regulate",
+          label = tagList("Up-regulate", htmlOutput("upPreview")),
           choices = list(
-            list("red", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
-            as.list(brewer.pal(n = 9, name = "Blues")),
-            as.list(brewer.pal(n = 9, name = "Greens")),
-            as.list(brewer.pal(n = 11, name = "Spectral")),
-            as.list(brewer.pal(n = 8, name = "Dark2"))
+            list(
+              "red",
+              'black',
+              'white',
+              'blanchedalmond',
+              'steelblue',
+              'forestgreen'
+            ),
+            as.list(brewer.pal(n = 9, name = "Oranges")),
+            as.list(brewer.pal(n = 9, name = "Reds")),
+            as.list(brewer.pal(n = 11, name = "Spectral"))
           ),
           options = list(`toggle-palette-more-text` = "Show more")
-        )),
+        ), 
         do.call(actionBttn, c(
           list(
             inputId = "makeVolcanoPlot",
@@ -79,33 +101,83 @@ observeEvent(input$sider, {
   }}
 })
 
+observeEvent({
+  input$CutFC
+  input$Cutpvalue
+}, {
+  dt <- resultTable()
+  downCut <- input$CutFC[1]
+  upCut <- input$CutFC[2]
+  pvalueCut <- input$Cutpvalue
+  
+  downCount <-
+    nrow(dt[dt$m.value <= downCut & dt[["p.value"]] <= pvalueCut, ])
+  upCount <-
+    nrow(dt[dt$m.value >= upCut & dt[["p.value"]] <= pvalueCut, ])
+  
+  output$downPreview <- renderText({
+    paste0("<font color=\"",
+           input$downColor,
+           "\"><b>",
+           downCount,
+           " genes</b></font>")
+  })
+  output$upPreview <- renderText({
+    paste0("<font color=\"",
+           input$upColor,
+           "\"><b>",
+           upCount,
+           " genes</b></font>")
+  })
+})
+
+# Select y axis column ----
+# observeEvent(input$volcanoYcolumn, {
+#   if (input$volcanoYcolumn == "p.value") {
+#     label <- "P-value Cut-off"
+#     value <- "-log<sub>10</sub>(P-value)"
+#     updateSliderInput(session = session, inputId = "Cutpvalue", label = label)
+#     updateTextInput(session = session, inputId = "ylabs", value = value)
+#   } else {
+#     label <- "Q-value (Adjusted P-value) Cut-off"
+#     value <- "-log<sub>10</sub>(Q-value)"
+#     updateSliderInput(session = session, inputId = "Cutpvalue", label = label)
+#     updateTextInput(session = session, inputId = "ylabs", value = value)
+#   }
+# })
+
 # Check the `Generate` button, if the botton has been clicked, generate volcano plot ----
 
 observeEvent(input$makeVolcanoPlot, {
+  # yaxis <- isolate(input$volcanoYcolumn)
+  yaxis <- "p.value"
   withBars(output$volcanoPloty <- renderPlotly({
-    validate(need(resultTable()$p.value != "", "No p-values for ploting."))
+    validate(need(resultTable()[[yaxis]] != "", "No p-values for ploting."))
     if(length(variables$groupList) > 2) {
       sendSweetAlert(
         session = session,
-        title = "Plot error!",
+        title = "ERROR",
         text = "Volcano Plot is unavailable for multiple comparison now.",
         type = "info"
       )
     }
+    
     req(input$makeVolcanoPlot)
     isolate({
       dt <- resultTable()
       
       downCut <- input$CutFC[1]
       upCut <- input$CutFC[2]
-      pCut <- log2(as.numeric(input$Cutpvalue))
       
-      dt$color <- ""
-      dt[dt$m.value <= downCut, ]$color <- "Down"
-      dt[dt$m.value >= upCut, ]$color <- "Up"
-      dt[dt$p.value > as.numeric(input$Cutpvalue), ]$color <- "None"
-      dt[dt$m.value <= upCut &
-           dt$m.value >= downCut, ]$color <- "None"
+      dt$color <- "None"
+      tryCatch({
+        dt[dt$m.value <= downCut, ]$color <- "Down"
+        dt[dt$m.value >= upCut, ]$color <- "Up"
+        dt[dt[[yaxis]] > as.numeric(input$Cutpvalue), ]$color <-
+          "None"
+      }, error = function(e) {
+        sendSweetAlert(title = "ERROR", text = "No data was satisfied to your cut-off!")
+      })
       
       x <- factor(dt$color)
       levels(x) <- list("Down" = 0,
@@ -122,7 +194,7 @@ observeEvent(input$makeVolcanoPlot, {
         
         annotation <- list(
           x = markerSelect$m.value,
-          y = -log10(markerSelect$p.value),
+          y = -log10(markerSelect[[yaxis]]),
           text = markerSelect$gene_id,
           xref = "x",
           yref = "y",
@@ -136,12 +208,12 @@ observeEvent(input$makeVolcanoPlot, {
       p <- plot_ly(
         data = dt,
         x = ~ m.value,
-        y = ~ -log10(p.value),
+        y = ~ -log10(dt[[yaxis]]),
         type = "scatter",
         mode = "markers",
         color = ~ x,
         colors = c(input$downColor, "black", input$upColor),
-        marker = list(size = 3),
+        marker = list(size = input$volcanoPointSize),
         hoverinfo = "text",
         text = ~ paste(
           "</br>Gene:",
@@ -164,20 +236,26 @@ observeEvent(input$makeVolcanoPlot, {
           xaxis = list(title = input$xlabs),
           yaxis = list(title = input$ylabs),
           title = input$graphicTitle,
+          legend = list(
+            orientation = 'h',
+            xanchor = "center",
+            x = 0.5,
+            y = 1.05
+          ),
           annotations = annotation,
           shapes = list(
             list(
               type = 'line',
-              y0 =  ~ min(-log10(p.value)),
-              y1 =  ~ max(-log10(p.value)),
+              y0 =  ~ min(-log10(dt[[yaxis]])),
+              y1 =  ~ max(-log10(dt[[yaxis]])),
               x0 = upCut,
               x1 = upCut,
               line = list(dash = 'dot', width = 2)
             ),
             list(
               type = 'line',
-              y0 =  ~ min(-log10(p.value)),
-              y1 =  ~ max(-log10(p.value)),
+              y0 =  ~ min(-log10(dt[[yaxis]])),
+              y1 =  ~ max(-log10(dt[[yaxis]])),
               x0 = downCut,
               x1 = downCut,
               line = list(dash = 'dot', width = 2)

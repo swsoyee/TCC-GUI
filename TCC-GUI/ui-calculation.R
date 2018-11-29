@@ -29,10 +29,11 @@ fluidPage(useSweetAlert(), fluidRow(column(
       ),
       numericInput(
         "filterLowCount",
-        "Filtering Threshold for Low Count Genes",
-        value = 0,
-        min = 0
+        tagList("Filtering Threshold for Low Count Genes", helpText("(Give -1 to use all genes)")),
+        value = -1,
+        min = -1
       ),
+      textOutput("lowCountFilterText"),
       sliderInput(
         "iteration",
         "Number of Iteration",
@@ -86,22 +87,21 @@ column(
     uiOutput("mainResultTable")
   ),
   tabBox(
-    title = "Count Distribution",
+    title = "Summary of TCC normalization",
     id = "sampleDistributionInTCC",
     width = NULL,
-    tabPanel(title = tagList(icon("bar-chart"), "Box Plot"),
+    tabPanel(title = tagList(icon("table"), "Summary Table"),
              fluidRow(
-               column(6,
-                      withBarsUI(plotlyOutput(
-                        "sampleDistributionTCC"
-                      )))
-               ,
-               column(6,
+               # column(6,
+               #        withBarsUI(plotlyOutput(
+               #          "sampleDistributionTCC"
+               #        )))
+               # ,
+               column(12,
                       # withBarsUI(
-                        # plotlyOutput("NormalizedSampleDistribution")
+                      # plotlyOutput("NormalizedSampleDistribution")
                       # ))
-                      DT::dataTableOutput("tccSummation")
-                      )
+                      uiOutput("tccSummationUI"))
              )),
     tabPanel(title = tagList(icon("area-chart"), "Density Plot"),
              fluidRow(

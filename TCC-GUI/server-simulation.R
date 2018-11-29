@@ -4,37 +4,40 @@
 observeEvent(input$simulationGroupNum, {
   lapply(1:input$simulationGroupNum, function(x) {
     output[[paste0("Group", x)]] <- renderUI({
-      tagList(column(
-        4,
-        numericInput(
-          inputId = paste0("DEGAssign", x),
-          label = paste0("Proportion of assigned DEGs (in this group)"),
-          value = 0.5,
-          step = 0.01,
-          min = 0,
-          max = 1
+      tagList(fluidRow(
+        column(
+          4,
+          numericInput(
+            inputId = paste0("DEGAssign", x),
+            label = paste0("Proportion of assigned DEGs (this group)"),
+            value = 0.5,
+            step = 0.01,
+            min = 0,
+            max = 1
+          )
+        ),
+        column(
+          4,
+          numericInput(
+            inputId = paste0("DEGFoldchange", x),
+            label = paste0("Degree of Fold-change"),
+            value = 4,
+            min = 0
+          )
+        ),
+        column(
+          4,
+          numericInput(
+            inputId = paste0("replicates", x),
+            label = paste0("Number of Replicates"),
+            value = 3,
+            min = 0
+          )
         )
       ),
-      column(
-        4,
-        numericInput(
-          inputId = paste0("DEGFoldchange", x),
-          label = paste0("Degree of Fold-change"),
-          value = 4,
-          min = 0
-        )
-      ),
-      column(
-        4,
-        numericInput(
-          inputId = paste0("replicates", x),
-          label = paste0("Number of Replicates"),
-          value = 3,
-          min = 0
-        )
-      ),
-      textOutput(paste0("ingroupDEGsNum", x))
-      )
+      fluidRow(column(12, textOutput(paste0(
+        "ingroupDEGsNum", x
+      )))))
     })
   })
   
@@ -110,7 +113,7 @@ observeEvent(input$simulationRun, {
   if (checkAssign != 1) {
     sendSweetAlert(
       session = session,
-      title = "VALUE ERROR",
+      title = "ERROR",
       text = "Summation of proportion of DEGs assignment (DEG.assign) in all group must be 1",
       type = "error"
     )
@@ -182,7 +185,7 @@ observeEvent(input$simulationRun, {
     output$simuDataTableAndDownload <- renderUI({
       tagList(
         downloadButton("downloadSimuData", "Download Simulation Data"),
-        tags$p("Download this dataset and copy the group infomation, and you can upload them in [Data Import (Step1)] tab for analysis"),
+        tags$p("Download this dataset and copy the group information, and you can upload them in [Data Import (Step1)] tab for analysis."),
         DT::dataTableOutput("simulatedData")
       )
     })

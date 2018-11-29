@@ -1,12 +1,6 @@
 # server-ma-plot.R
 
-# ====================================
-# This function render a series UI of MA Plot parameters.
-# Position: In [MA Plot tab], upper left.
-# ====================================
-# Input: sider (Click the tab in the left siderbar)
-# Output: A series UI object (html tags)
-# ====================================
+# This function render a series UI of MA Plot parameters. ----
 
 observeEvent(input$sider, {
   if(input$sider == "maplotTab") {
@@ -123,9 +117,15 @@ observeEvent(input$makeMAPlot, {
           source = "ma"
         ) %>%
           layout(
-            xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
-            yaxis = list(title = "M = log2(G2)-log2(G1)"),
-            title = paste("MA Plot with FDR <", input$maFDR),
+            xaxis = list(title = "A = (log<sub>2</sub>(G2)+log<sub>2</sub>(G1))/2"),
+            yaxis = list(title = "M = log<sub>2</sub>(G2)-log<sub>2</sub>(G1)"),
+            title = paste0(
+              "MA Plot with q-value < ",
+              input$maFDR,
+              " (",
+              input$maFDR * 100,
+              "% FDR)"
+            ),
             annotations = annotation
           )
         variables$MAPlotObject <- p
@@ -266,7 +266,12 @@ output$resultTableInVolcanalPlot <-
         "estimatedDEG",
         target = 'row',
         backgroundColor = styleEqual(1, "lightblue")
-      )
+      ) 
+      # %>% formatStyle(
+      #   "p.value", target = "row",
+      #   color = styleInterval(c(3.4, 3.8), c('white', 'blue', 'red')),
+      #   backgroundColor = styleInterval(3.4, c('gray', 'yellow'))
+      # )
     }
   })
 

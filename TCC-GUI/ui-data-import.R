@@ -21,8 +21,8 @@ fluidPage(fluidRow(column(
       do.call(actionBttn, c(
         list(
           inputId = "CountDataSample",
-          label = "Import Data",
-          icon = icon("plus-square")
+          label = "1. Import Count Data",
+          icon = icon("play")
         ),
         actionBttnParams
       ))
@@ -43,7 +43,7 @@ fluidPage(fluidRow(column(
   )
   ,
   box(
-    title = tagList(icon("sitemap"), "Group Selection"),
+    title = tagList(icon("sitemap"), "Group Assignment"),
     solidHeader = TRUE,
     status = "primary",
     width = NULL,
@@ -64,8 +64,8 @@ fluidPage(fluidRow(column(
     do.call(actionBttn, c(
       list(
         inputId = "confirmedGroupList",
-        label = "Confirm",
-        icon = icon("check-square")),
+        label = "2. Assign Group Label",
+        icon = icon("play")),
         actionBttnParams
       )
     )
@@ -100,7 +100,7 @@ column(
         textInput(
           inputId = "sampleDistributionTitle",
           label = "Title",
-          value = "Original Raw Count",
+          value = "",
           placeholder = "Original Raw Count"
         ),
         numericInput(
@@ -150,7 +150,7 @@ column(
         textInput(
           inputId = "sampleDistributionDenstityTitle",
           label = "Title",
-          value = "Original Raw Count",
+          value = "",
           placeholder = "Original Raw Count"
         ),
         numericInput(

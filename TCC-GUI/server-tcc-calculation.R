@@ -33,8 +33,15 @@ observeEvent(input$TCC, {
   # Create TCC Object
   tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
   # Filter low count genes before calculation
-  tcc <-
-    filterLowCountGenes(tcc, low.count = input$filterLowCount)
+  if(input$filterLowCount != -1){
+    tcc <-
+      filterLowCountGenes(tcc, low.count = input$filterLowCount)
+  }
+  # Filtered number preview ----
+  output$lowCountFilterText <- renderText({
+    filtered <- nrow(data) - nrow(tcc$count)
+    paste0(filtered, " genes (", 100 * (filtered / nrow(data)) ,"%) have been filtered.")
+  })
   
   updateProgressBar(
     session = session,
@@ -135,12 +142,19 @@ observeEvent(input$TCC, {
         tcc$norm.factors * colSums(tcc$count)
       )
     colnames(df) <-
-      c("Group", "Normalization factor", "Total count", "Library size")
+      c(
+        "Group",
+        "Normalization factor",
+        "Library Size<sup>*1</sup>",
+        "Effective Library Size<sup>*2</sup>"
+      )
     DT::datatable(df,
-                  option = list(dom = "t"),
-                  caption = 'Summary of Normalization.') %>% formatRound(
-                    columns = c("Normalization factor",
-                                "Library size"),
+                  escape = FALSE,
+                  option = list(dom = "t")) %>% formatRound(
+                    columns = c(
+                      "Normalization factor",
+                      "Effective Library Size<sup>*2</sup>"
+                    ),
                     digits = c(3, 0)
                   ) %>% formatStyle(
                     "Normalization factor",
@@ -149,6 +163,21 @@ observeEvent(input$TCC, {
                     backgroundRepeat = 'no-repeat',
                     backgroundPosition = 'center'
                   )
+  })
+  
+  output$tccSummationUI <- renderUI({
+    tagList(
+      DT::dataTableOutput("tccSummation"),
+      tagList(
+        "Library Size",
+        tags$sup("*1"),
+        "= Sum of Raw Count.",
+        tags$br(),
+        "Effective Library Size",
+        tags$sup("*2"),
+        " = Library Size × Normalization Factor."
+      )
+    )
   })
   # Render a table of different gene count under specific FDR cutoff condition.----
   
@@ -359,7 +388,8 @@ observeEvent(input$TCC, {
   
   closeSweetAlert(session = session)
   sendSweetAlert(session = session,
-                 title = "Calculation completed!",
+                 title = "DONE",
+                 text = "TCC was successfully performed.",
                  type = "success")
 })
 
