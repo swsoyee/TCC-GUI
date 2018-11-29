@@ -40,7 +40,7 @@ observeEvent(input$TCC, {
   # Filtered number preview ----
   output$lowCountFilterText <- renderText({
     filtered <- nrow(data) - nrow(tcc$count)
-    paste0(filtered, " genes (", 100 * (filtered / nrow(data)) ,"%) have been filtered.")
+    paste0(filtered, " genes (", 100 * (filtered / nrow(data)) ,"%) have been filtered out.")
   })
   
   updateProgressBar(
