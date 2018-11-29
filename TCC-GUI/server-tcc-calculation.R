@@ -154,12 +154,25 @@ observeEvent(input$TCC, {
                   option = list(dom = "t")) %>% formatRound(
                     columns = c(
                       "Normalization factor",
+                      "Library Size<sup>*1</sup>",
                       "Effective Library Size<sup>*2</sup>"
                     ),
-                    digits = c(3, 0)
+                    digits = c(3, 0, 0)
                   ) %>% formatStyle(
                     "Normalization factor",
                     background = styleColorBar(range(0, df[, "Normalization factor"]), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  ) %>% formatStyle(
+                    "Library Size<sup>*1</sup>",
+                    background = styleColorBar(range(0, df[, "Library Size<sup>*1</sup>"]), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  ) %>% formatStyle(
+                    "Effective Library Size<sup>*2</sup>",
+                    background = styleColorBar(range(0, df[, "Effective Library Size<sup>*2</sup>"]), 'lightblue'),
                     backgroundSize = '98% 88%',
                     backgroundRepeat = 'no-repeat',
                     backgroundPosition = 'center'
@@ -398,11 +411,8 @@ resultTable <- reactive({
   variables$result
 })
 
-# ====================================
-# This function check the `Show R code` button, if the botton is clicked,
-# show the TCC running code.
-# Position: In Computation tab, upper right, in TCC Parameters panel.
-# ====================================
+
+# This function check the `Show R code` button, if the botton is clicked. ----
 
 observeEvent(input$TCC, {
   output$showTCCCode <- renderText({

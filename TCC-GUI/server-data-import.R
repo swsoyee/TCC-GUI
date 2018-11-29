@@ -421,7 +421,7 @@ observeEvent(input$confirmedGroupList, {
 
         infoBox(title = "average Silhouette",
                 value = round(AS, 3),
-                subtitle = "Degrees of separation between different groups",
+                subtitle = "Degree of separation between different groups",
                 width = NULL,
                 icon = icon("chain"),
                 fill = TRUE,
