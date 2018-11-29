@@ -68,7 +68,8 @@ fluidPage(fluidRow(column(
         icon = icon("play")),
         actionBttnParams
       )
-    )
+    ),
+    footer = "TCC-GUI expect first label should be Group1 (G1) and the next label be Group2 (G2) and so on."
   ),
   box(
     title = tagList(icon("info-circle"), "Summary of Data"),
@@ -113,13 +114,13 @@ column(
           inputId = "sampleDistributionXlab",
           label = "X label",
           value = "Sample",
-          placeholder = "log2(CPM)"
+          placeholder = "Sample"
         ),
         textInput(
           inputId = "sampleDistributionYlab",
           label = "Y label",
-          value = "log2(CPM)",
-          placeholder = "Density"
+          value = "log<sub>2</sub>(Count + 1)",
+          placeholder = "log<sub>2</sub>(Count + 1)"
         ),
         status = "primary",
         icon = icon("gear"),
@@ -162,8 +163,8 @@ column(
         textInput(
           inputId = "sampleDistributionDensityXlab",
           label = "X label",
-          value = "log2(CPM)",
-          placeholder = "log2(CPM)"
+          value = "log<sub>2</sub>(Count + 1)",
+          placeholder = "log<sub>2</sub>(Count + 1)"
         ),
         textInput(
           inputId = "sampleDistributionDensityYlab",

@@ -23,10 +23,10 @@ observeEvent(input$sider, {
       ),
       spectrumInput(
         inputId = "fdrColor",
-        label = "DEGs Color",
+        label = tagList("DEGs Color", htmlOutput("maFDRpreview")),
         choices = list(
           list("#B22222", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
-          as.list(brewer.pal(n = 9, name = "Blues")),
+          as.list(brewer.pal(n = 9, name = "Reds")),
           as.list(brewer.pal(n = 9, name = "Greens")),
           as.list(brewer.pal(n = 11, name = "Spectral")),
           as.list(brewer.pal(n = 8, name = "Dark2"))
@@ -166,6 +166,14 @@ observeEvent(input$makeMAPlot, {
   }))
 })
 
+output$maFDRpreview <- renderText({
+  count <- nrow(resultTable()[resultTable()$q.value <= input$maFDR, ])
+  paste0("<font color=\"",
+         input$fdrColor,
+         "\"><b>",
+         count,
+         " genes</b></font>")
+})
 
 # This function render a button of R code of making MA plot. ----
 
@@ -241,7 +249,6 @@ withBars(output$geneBarPlot <- renderPlotly({
 
 
 # This function render a table of Result table. ----
-# Position: In [MA plot tab] and In [Volcano plot tab], under middle.
 
 # output$resultTableInVolcanalPlot <-
   output$resultTableInPlot <- DT::renderDataTable({
@@ -270,9 +277,9 @@ withBars(output$geneBarPlot <- renderPlotly({
                     "q.value"),
         digits = 3
       ) %>% formatStyle(
+        "gene_id",
         "estimatedDEG",
-        target = 'row',
-        backgroundColor = styleEqual(1, "lightblue")
+        color = styleEqual(1, "red")
       ) %>% formatStyle("gene_id",
                        "q.value",
                        fontWeight = styleInterval(fdrCut, c("bold", "normal")))
@@ -343,8 +350,8 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
     ) %>%
     layout(
       xaxis = list(title = "FDR Cut-off", 
-                   tickvals = c(2, 4, 6), 
-                   ticktext = c("0.01", "0.10", "0.20")),
+                   tickvals = c(1, 3, 5), 
+                   ticktext = c("0", "0.10", "0.20")),
       yaxis = list(title = "DEGs (#) between cut-offs", 
                    rangemode = "nonnegative",
                    titlefont = list(color = "#1F77B4")),

@@ -38,7 +38,7 @@ make_summary_for_tcc_result <- function(df){
   }
   
   # Set different cut-off
-  span <- c(0, 0.01, seq(0.05, 1, 0.05))
+  span <- c(0, seq(0.05, 1, 0.05))
   # Calculate gene count under specific cut-off
   deg_in_cutoff <- sapply(span, sum_gene, df)
   # Calculate total gene count
@@ -53,8 +53,6 @@ make_summary_for_tcc_result <- function(df){
   df <-
     tbl_df(df) %>% mutate(Between_Count = Under_Count - lag(Under_Count)) %>%
     mutate(Count = paste0(Under_Count, "(+", Between_Count, ")"))
-  
-  # colnames(df) <- c("Cut-off", "DEGs(#)", "DEGs(%)")
   return(df)
 }
 

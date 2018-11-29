@@ -13,7 +13,7 @@ observeEvent(input$CountDataSample, {
   sendSweetAlert(
     session = session,
     title = "DONE",
-    text = "Count data are successfully loaded.",
+    text = "Count data were successfully loaded.",
     type = "success"
   )
   
@@ -210,7 +210,8 @@ observeEvent(input$confirmedGroupList, {
       # This function render a boxplot of sample distribution ----
       
       data <- variables$CountData[variables$groupListConvert != 0]
-      cpm <- log2(data / 1000000)
+      # cpm <- log2(data / 1000000)
+      cpm <- log2(data + 1)
       cpm_stack <- stack(cpm)
       # Add a group column in case of bugs.
       cpm_stack$group <- 0
@@ -292,7 +293,7 @@ observeEvent(input$confirmedGroupList, {
         value = 80
       )
       
-      densityTable <-lapply(cpm, density)
+      densityTable <-lapply(cpm, function(x) {density(x)})
       p <- plot_ly(type = "scatter", mode = "lines")
       for(i in 1:length(densityTable)){
         p <- add_trace(p, x = densityTable[[i]][[1]],
@@ -454,7 +455,3 @@ observeEvent(input$confirmedGroupList, {
     }
   )
 })
-
-
-
-

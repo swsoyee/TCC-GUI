@@ -237,7 +237,7 @@ output$simuParams <- renderText({
   replicates <- sapply(1:GroupNum, function(i) {
     input[[paste0("replicates", i)]]
   })
-  str1 <- paste0("Genes sizes: ", input$simulationGeneNum)
+  str1 <- paste0("Gene number: ", input$simulationGeneNum)
   str2 <- paste0("PDEG: ", input$simulationPDEG)
   str3 <- paste0("DEG.assign: c(", paste(DEG.assign, collapse = ","), ")")
   str4 <- paste0("DEG.Foldchange: c(", paste(DEG.foldchange, collapse = ","), ")")

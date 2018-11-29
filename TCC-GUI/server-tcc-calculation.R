@@ -124,9 +124,10 @@ observeEvent(input$TCC, {
                     "q.value"),
         digits = 3
       ) %>% formatStyle(
+        "gene_id",
         "estimatedDEG",
-        target = 'row',
-        backgroundColor = styleEqual(1, "lightblue")
+        color = styleEqual(1, "red"),
+        fontWeight = styleEqual(c(0, 1), c("normal", "bold"))
       )
     }
   })
@@ -307,55 +308,55 @@ observeEvent(input$TCC, {
 
   # Render a boxplot of normalized sample distribution ----
   
-  withBars(output$NormalizedSampleDistribution <- renderPlotly({
-    validate(need(
-      colnames(variables$norData) %in% colnames(variables$CountData),
-      "Please rerun the TCC."
-    ))
-    cpm_stack <-
-      data.frame(stack(log2(variables$norData / 1000000)))
-    # Add a group column in case of bugs.
-    cpm_stack$group <- 0
-    # Add Group info
-    for (i in 1:length(variables$groupList)) {
-      cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]),]$group <- names(variables$groupList[i])
-    }
-    cpm_stack_order <-
-      unique(cpm_stack[order(cpm_stack$group),]$col)
-    xform <- list(
-      categoryorder = "array",
-      categoryarray = cpm_stack_order,
-      title = input$sampleDistributionXlab
-    )
-    
-    showNotification("Ploting normalized sample distribution", type = "message")
-
-    plot_ly(
-      x = cpm_stack[, 2],
-      y = cpm_stack[, 4],
-      type = "box",
-      split = cpm_stack$group,
-      color = cpm_stack$group
-    ) %>%
-      layout(
-        title = "Normalized Count",
-        xaxis = xform,
-        yaxis = list(title = "log2(CPM)"),
-        legend = list(
-          orientation = 'h',
-          xanchor = "center",
-          x = 0.5,
-          y = input$sampleDistributionLegendY
-        )
-      )
-  }))
+  # withBars(output$NormalizedSampleDistribution <- renderPlotly({
+  #   validate(need(
+  #     colnames(variables$norData) %in% colnames(variables$CountData),
+  #     "Please rerun the TCC."
+  #   ))
+  #   cpm_stack <-
+  #     data.frame(stack(log2(variables$norData)))
+  #   # Add a group column in case of bugs.
+  #   cpm_stack$group <- 0
+  #   # Add Group info
+  #   for (i in 1:length(variables$groupList)) {
+  #     cpm_stack[is.element(cpm_stack$col, variables$groupList[[i]]),]$group <- names(variables$groupList[i])
+  #   }
+  #   cpm_stack_order <-
+  #     unique(cpm_stack[order(cpm_stack$group),]$col)
+  #   xform <- list(
+  #     categoryorder = "array",
+  #     categoryarray = cpm_stack_order,
+  #     title = input$sampleDistributionXlab
+  #   )
+  #   
+  #   showNotification("Ploting normalized sample distribution", type = "message")
+  # 
+  #   plot_ly(
+  #     x = cpm_stack[, 2],
+  #     y = cpm_stack[, 4],
+  #     type = "box",
+  #     split = cpm_stack$group,
+  #     color = cpm_stack$group
+  #   ) %>%
+  #     layout(
+  #       title = "Normalized Count",
+  #       xaxis = xform,
+  #       yaxis = list(title = "log2(Count)"),
+  #       legend = list(
+  #         orientation = 'h',
+  #         xanchor = "center",
+  #         x = 0.5,
+  #         y = input$sampleDistributionLegendY
+  #       )
+  #     )
+  # }))
   
   # Render a density plot of normalized sample distribution ----
   
   withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
     
-    cpm <- log2(variables$norData/1000000)
-    densityTable <-lapply(data.frame(cpm), density)
+    cpm <- log2(variables$norData + 1)
+    densityTable <-lapply(data.frame(cpm),  function(x) {density(x)})
     p <- plot_ly(type = "scatter", mode = "lines")
     
     for(i in 1:length(densityTable)){
@@ -370,7 +371,7 @@ observeEvent(input$TCC, {
     }
     p %>%
       layout(title = "Normalized Count",
-             xaxis = list(title = "log2(CPM)"),
+             xaxis = list(title = "log<sub>2</sub>(Count + 1)"),
              yaxis = list(title = "Density"),
              legend = list(
                orientation = 'h',

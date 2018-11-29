@@ -45,7 +45,7 @@ observeEvent(input$sider, {
           textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
           spectrumInput(
             inputId = "downColor",
-            label = tagList("Down-regulate", htmlOutput("downPreview")),
+            label = tagList("Down-regulate in G2", htmlOutput("downPreview")),
             choices = list(
               list(
                 "green",
@@ -64,7 +64,7 @@ observeEvent(input$sider, {
           ),
           spectrumInput(
             inputId = "upColor",
-            label = tagList("Up-regulate", htmlOutput("upPreview")),
+            label = tagList("Up-regulate in G2", htmlOutput("upPreview")),
             choices = list(
               list(
                 "red",
@@ -426,8 +426,8 @@ withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
     layout(
       xaxis = list(
         title = "FDR Cut-off",
-        tickvals = c(2, 4, 6),
-        ticktext = c("0.01", "0.10", "0.20")
+        tickvals = c(1, 3, 5),
+        ticktext = c("0", "0.10", "0.20")
       ),
       yaxis = list(
         title = "DEGs (#) between cut-offs",
