@@ -21,7 +21,7 @@ fluidPage(column(
 column(
   9,
   tabBox(
-    title = "PCA Plot",
+    title = "",
     width = NULL,
     tabPanel(tagList(icon("bar-chart"), "Scree Plot"),
              plotlyOutput("pcaVariances")),

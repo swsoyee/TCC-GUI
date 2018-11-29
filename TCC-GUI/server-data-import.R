@@ -132,9 +132,14 @@ output$table <- DT::renderDataTable({
   
   DT::datatable(
     df,
+    colnames = c("Gene Name" = 1),
+    extensions = c("Scroller","RowReorder"),
     option = list(
+      rowReorder = TRUE,
+      deferRender = TRUE,
+      scrollY = 400,
+      scroller = TRUE,
       scrollX = TRUE,
-      pageLength = 10,
       searchHighlight = TRUE,
       orderClasses = TRUE
     )
@@ -267,22 +272,6 @@ observeEvent(input$confirmedGroupList, {
         title = "Ploting Sample Distribution",
         value = 60
       )
-      # The same plot used in Calculation tab.
-      # withBars(output$sampleDistributionTCC <- renderPlotly({
-      #   xform$title <- input$sampleDistributionXlab
-      #   psd %>%
-      #     layout(
-      #       title = input$sampleDistributionTitle,
-      #       xaxis = xform,
-      #       yaxis = list(title = input$sampleDistributionYlab),
-      #       legend = list(
-      #         orientation = 'h',
-      #         xanchor = "center",
-      #         x = 0.5,
-      #         y = input$sampleDistributionLegendY
-      #       )
-      #     )
-      # }))
 
       # This function render a density plot of sample distribution ----
 

@@ -12,12 +12,12 @@ fluidPage(fluidRow(column(
         "SampleDatabase",
         "Select Sample Data",
         choices = c(
-          "hypodata" = "sample_data/data_hypodata_3vs3.txt" #,
+          "hypodata (example dataset)" = "sample_data/data_hypodata_3vs3.txt" #,
           # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
           # "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
-      tags$p("Quick start with sample data."),
+      helpText("Quick start with sample data."),
       do.call(actionBttn, c(
         list(
           inputId = "CountDataSample",
@@ -38,7 +38,7 @@ fluidPage(fluidRow(column(
         buttonLabel = "Upload...",
         placeholder = "No file has been uploaded."
       ),
-      tags$p("Text file in tab-delimited format, and the first column is genes' name.")
+      helpText("Text file in tab-delimited format, and the first column is genes' name.")
     )
   )
   ,
@@ -49,7 +49,7 @@ fluidPage(fluidRow(column(
     width = NULL,
     textAreaInput(
       "groupSelectViaText",
-      "Input your group info:",
+      "Input your group info",
       rows = 6,
       placeholder = paste(
         "G1_rep1,Group1",
@@ -69,7 +69,7 @@ fluidPage(fluidRow(column(
         actionBttnParams
       )
     ),
-    footer = "TCC-GUI expect first label should be Group1 (G1) and the next label be Group2 (G2) and so on."
+    footer = helpText("TCC-GUI expect first label should be Group1 (G1) and the next label be Group2 (G2), and so on.")
   ),
   box(
     title = tagList(icon("info-circle"), "Summary of Data"),

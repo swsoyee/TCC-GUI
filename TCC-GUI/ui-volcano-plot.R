@@ -7,21 +7,8 @@ fluidPage(fluidRow(column(
     status = "primary",
     width = NULL,
     uiOutput("valcanoParameter")
-  ),
-  tabBox(
-    title = "FDR vs DEGs",
-    width = NULL,
-    tabPanel(
-      title = tagList(icon("table"), "Table"),
-      DT::dataTableOutput("fdrCutoffTableInVolcano")
-    ),
-    tabPanel(
-      title = tagList(icon("bar-chart"), "Plot"),
-      withBarsUI(plotlyOutput("fdrCutoffPlotInVolcano"))
-    )
   )
 ),
-#column
 column(
   6,
   box(
@@ -39,7 +26,6 @@ column(
     DT::dataTableOutput('resultTableInVolcanalPlot')
   )
 ),
-#column
 column(
   3,
   box(
@@ -49,12 +35,13 @@ column(
     width = NULL,
     withBarsUI(plotlyOutput("geneBarPlotInVolcano"))
   ),
-  box(title = tagList(icon("code"), "Volcano Plot Code"),
-      solidHeader = TRUE,
-      status = "danger",
-      collapsible = TRUE,
-      collapsed = TRUE,
-      width = NULL,
-      verbatimTextOutput("runVolcanoPlot")
+  box(
+    title = tagList(icon("code"), "Volcano Plot Code"),
+    solidHeader = TRUE,
+    status = "danger",
+    collapsible = TRUE,
+    collapsed = TRUE,
+    width = NULL,
+    verbatimTextOutput("runVolcanoPlot")
   )
 )))

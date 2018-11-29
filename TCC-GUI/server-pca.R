@@ -7,7 +7,7 @@ observeEvent(input$sider, {
       tagList(
         if (input$testMethod != 'wad') {
           sliderInput("pcFDR",
-                      "FDR Cut-off",
+                      tagList("FDR Cut-off", helpText("(Set 1 for Exploratory Analysis with all genes)")),
                       min = 0.01,
                       max = 1,
                       value = 0.05)
@@ -56,7 +56,7 @@ observeEvent(input$sider, {
 observeEvent(input$pcFDR, {
   gene_count <- nrow(resultTable()[resultTable()$q.value <= input$pcFDR, ])
   output$pcaGeneCountPreview <- renderText({
-    paste0("Gene count: ", gene_count)
+    paste0("Gene number: ", gene_count)
   })
 })
 

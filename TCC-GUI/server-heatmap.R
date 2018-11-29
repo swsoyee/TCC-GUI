@@ -129,7 +129,7 @@ observeEvent(input$sider, {
 observeEvent(input$heatmapFDR, {
   gene_count <- nrow(resultTable()[resultTable()$q.value <= input$heatmapFDR, ])
   output$heatmapGeneCountPreview <- renderText({
-    paste0("DEGs(#): ", gene_count, " | Generation time: ~", round(gene_count/30,2), "s")
+    paste0("Gene number: ", gene_count, " | Generation time: ~", round(gene_count/30,2), "s")
   })
 })
 
@@ -314,7 +314,7 @@ output$heatmapSelectGene <- renderUI({
         tagList(
           sliderInput(
             "heatmapFDR",
-            "FDR",
+            "FDR Cut-off",
             min = 0.01,
             max = 1,
             value = 0.01

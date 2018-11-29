@@ -77,7 +77,8 @@ observeEvent(input$TCC, {
     value = 80
   )
   # Get final result of TCC
-  variables$result <- getResult(tcc, sort = FALSE)
+  variables$result <- getResult(tcc, sort = FALSE) %>% mutate_if(is.factor, as.character)
+  
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
@@ -111,11 +112,49 @@ observeEvent(input$TCC, {
     } else {
       DT::datatable(
         variables$result,
+        filter = "bottom",
+        colnames = c("Gene Name",
+                     "A Value",
+                     "M Value",
+                     "P Value",
+                     "Q Value (FDR)",
+                     "Rank",
+                     "estimated DEG"),
+        caption = tags$caption(
+          tags$li(
+            tags$b("Copy"),
+            ", ",
+            tags$b("Print"),
+            " and ",
+            tags$b("Download"),
+            " buttons only deal with loaded part of the whole table (max to 99 rows)."
+          ),
+          tags$li(
+            HTML("<font color=\"#B22222\"><b>Gene Name</b></font> is colored according to FDR cut-off.")
+          )
+        ),
+        extensions = c("Scroller", "RowReorder", "Buttons"),
         option = list(
-          dom = "tpi",
-          pageLength = 10,
+          dom = 'Bfrtip',
+          buttons =
+            list(
+              'copy',
+              'print',
+              list(
+                extend = 'collection',
+                buttons = c('csv', 'excel', 'pdf'),
+                text = 'Download'
+              )
+            ),
+          rowReorder = TRUE,
+          deferRender = TRUE,
+          scrollY = 400,
+          scroller = TRUE,
           searchHighlight = TRUE,
-          orderClasses = TRUE
+          orderClasses = TRUE,
+          columnDefs = list(
+            list(visible = FALSE, targets = -1)
+          )
         )
       ) %>% formatRound(
         columns = c("a.value",
@@ -126,7 +165,7 @@ observeEvent(input$TCC, {
       ) %>% formatStyle(
         "gene_id",
         "estimatedDEG",
-        color = styleEqual(1, "red"),
+        color = styleEqual(1, "#B22222"),
         fontWeight = styleEqual(c(0, 1), c("normal", "bold"))
       )
     }
@@ -145,52 +184,72 @@ observeEvent(input$TCC, {
     colnames(df) <-
       c(
         "Group",
-        "Normalization factor",
+        "Normalization Factor",
         "Library Size<sup>*1</sup>",
         "Effective Library Size<sup>*2</sup>"
       )
     DT::datatable(df,
                   escape = FALSE,
-                  option = list(dom = "t")) %>% formatRound(
-                    columns = c(
-                      "Normalization factor",
-                      "Library Size<sup>*1</sup>",
-                      "Effective Library Size<sup>*2</sup>"
-                    ),
-                    digits = c(3, 0, 0)
-                  ) %>% formatStyle(
-                    "Normalization factor",
-                    background = styleColorBar(range(0, df[, "Normalization factor"]), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  ) %>% formatStyle(
-                    "Library Size<sup>*1</sup>",
-                    background = styleColorBar(range(0, df[, "Library Size<sup>*1</sup>"]), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  ) %>% formatStyle(
-                    "Effective Library Size<sup>*2</sup>",
-                    background = styleColorBar(range(0, df[, "Effective Library Size<sup>*2</sup>"]), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  )
+                  extensions = "Buttons",
+                  caption = tags$caption(
+                    tags$li("Library Size",
+                            tags$sup("*1"),
+                            "= Sum of Raw Count."),
+                    tags$li(
+                      "Effective Library Size",
+                      tags$sup("*2"),
+                      " = Library Size × Normalization Factor."
+                    )
+                  ), 
+                  option = list(dom = "Bt",
+                                buttons = list(
+                                  'copy',
+                                  'print',
+                                  list(
+                                    extend = 'collection',
+                                    buttons = c('csv', 'excel', 'pdf'),
+                                    text = 'Download'
+                                  )
+                                ))) %>% formatRound(
+                                  columns = c(
+                                    "Normalization Factor",
+                                    "Library Size<sup>*1</sup>",
+                                    "Effective Library Size<sup>*2</sup>"
+                                  ),
+                                  digits = c(3, 0, 0)
+                                ) %>% formatStyle(
+                                  "Normalization Factor",
+                                  background = styleColorBar(range(0, df[, "Normalization Factor"]), 'lightblue'),
+                                  backgroundSize = '98% 88%',
+                                  backgroundRepeat = 'no-repeat',
+                                  backgroundPosition = 'center'
+                                ) %>% formatStyle(
+                                  "Library Size<sup>*1</sup>",
+                                  background = styleColorBar(range(0, df[, "Library Size<sup>*1</sup>"]), 'lightblue'),
+                                  backgroundSize = '98% 88%',
+                                  backgroundRepeat = 'no-repeat',
+                                  backgroundPosition = 'center'
+                                ) %>% formatStyle(
+                                  "Effective Library Size<sup>*2</sup>",
+                                  background = styleColorBar(range(0, df[, "Effective Library Size<sup>*2</sup>"]), 'lightblue'),
+                                  backgroundSize = '98% 88%',
+                                  backgroundRepeat = 'no-repeat',
+                                  backgroundPosition = 'center'
+                                )
   })
   
   output$tccSummationUI <- renderUI({
     tagList(
-      DT::dataTableOutput("tccSummation"),
-      tagList(
-        "Library Size",
-        tags$sup("*1"),
-        "= Sum of Raw Count.",
-        tags$br(),
-        "Effective Library Size",
-        tags$sup("*2"),
-        " = Library Size × Normalization Factor."
-      )
+      DT::dataTableOutput("tccSummation")#,
+      # tagList(
+      #   "Library Size",
+      #   tags$sup("*1"),
+      #   "= Sum of Raw Count.",
+      #   tags$br(),
+      #   "Effective Library Size",
+      #   tags$sup("*2"),
+      #   " = Library Size × Normalization Factor."
+      # )
     )
   })
   # Render a table of different gene count under specific FDR cutoff condition.----
@@ -219,50 +278,6 @@ observeEvent(input$TCC, {
     title = "Rendering plots",
     value = 97
   )
-
-  # Render a plotly of different gene count under specific FDR cutoff condition. ----
-  
-  # output$fdrCutoffPlotInTCC <- renderPlotly({
-  #   # Create table
-  #   df <- make_summary_for_tcc_result(variables$result)
-  #   
-  #   # Render Plotly
-  #   plot_ly(
-  #     data = df,
-  #     x = ~ Cutoff,
-  #     y = ~ Between_Count,
-  #     type = "bar",
-  #     hoverinfo = "text",
-  #     text = ~ paste(
-  #       "</br>FDR Cutoff: ",
-  #       Cutoff,
-  #       "</br>DEGs Count: ",
-  #       Between_Count
-  #     )
-  #   ) %>%
-  #     add_trace(
-  #       y = ~ Under_Count,
-  #       yaxis = "y2",
-  #       type = "scatter",
-  #       mode = "lines+markers",
-  #       hoverinfo = "text",
-  #       text = ~ paste(
-  #         "</br>FDR Cutoff: ",
-  #         Cutoff,
-  #         "</br>Cumulative curve: ",
-  #         Percentage
-  #       )
-  #     ) %>%
-  #     layout(
-  #       xaxis = list(title = "FDR Cutoff" #,
-  #                    #tickvals = 1:22,
-  #                    #ticktext = Cutoff
-  #                    ),
-  #       yaxis = list(title = "DEGs Count"),
-  #       yaxis2 = list(overlaying = "y", side = "right"),
-  #       showlegend = FALSE
-  #     )
-  # })
   
   # Download TCC Result Table function ----
   output$downLoadResultTable <- downloadHandler(
@@ -308,14 +323,14 @@ observeEvent(input$TCC, {
 
   output$mainResultTable <- renderUI({
     tagList(fluidRow(column(
-      3,
-      downloadButton("downLoadResultTable", "Download TCC Result")
-    ),
-    column(
-      3,
-      downloadButton("downLoadNormalized", "Download Normalized Data")
+      12,
+      downloadButton("downLoadResultTable", "Download All Result (CSV)"),
+      downloadButton("downLoadNormalized", "Download Normalized Data (CSV)")
     )),
-    DT::dataTableOutput('resultTable'))
+    tags$br(),
+    fluidRow(column(
+      12, DT::dataTableOutput('resultTable')
+    )))
   })
   
 
@@ -383,7 +398,7 @@ observeEvent(input$TCC, {
                      name = names(densityTable[i]))
     }
     p %>%
-      layout(title = "Normalized Count",
+      layout(title = "",
              xaxis = list(title = "log<sub>2</sub>(Count + 1)"),
              yaxis = list(title = "Density"),
              legend = list(

@@ -258,17 +258,46 @@ withBars(output$geneBarPlot <- renderPlotly({
       
       if(length(input$maFDR) > 0 ){
         fdrCut <- input$maFDR
+        fdrColor <- input$fdrColor
       } else {
         fdrCut <- 0
+        fdrColor <- "#B22222"
       }
       
       DT::datatable(
         resultTable(),
+        colnames = c("Gene Name",
+                     "A Value",
+                     "M Value",
+                     "P Value",
+                     "Q Value (FDR)",
+                     "Rank",
+                     "estimated DEG"),
+        filter = "bottom",
+        caption = tags$caption(
+          tags$li(
+            "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
+          ),
+          tags$li("Gene Name was colored according to FDR cut-off.")
+        ),
+        extensions = c("Scroller", "Buttons"),
         option = list(
-          pageLength = 10,
+          dom = 'Bfrtip',
+          buttons =
+            list('copy', 'print', list(
+              extend = 'collection',
+              buttons = c('csv', 'excel', 'pdf'),
+              text = 'Download'
+            )),
+          deferRender = TRUE,
+          scrollY = 400,
+          scroller = TRUE,
           searchHighlight = TRUE,
           orderClasses = TRUE,
-          scrollX = TRUE
+          scrollX = TRUE,
+          columnDefs = list(
+            list(visible = FALSE, targets = -1)
+          )
         )
       ) %>% formatRound(
         columns = c("a.value",
@@ -276,13 +305,9 @@ withBars(output$geneBarPlot <- renderPlotly({
                     "p.value",
                     "q.value"),
         digits = 3
-      ) %>% formatStyle(
-        "gene_id",
-        "estimatedDEG",
-        color = styleEqual(1, "red")
       ) %>% formatStyle("gene_id",
                        "q.value",
-                       fontWeight = styleInterval(fdrCut, c("bold", "normal")))
+                       color = styleInterval(fdrCut, c(fdrColor, "")))
     }
   })
 

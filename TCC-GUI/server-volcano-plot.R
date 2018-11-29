@@ -45,7 +45,7 @@ observeEvent(input$sider, {
           textInput("graphicTitle", "Graphic Title", value = "Volcano Plot"),
           spectrumInput(
             inputId = "downColor",
-            label = tagList("Down-regulate in G2", htmlOutput("downPreview")),
+            label = tagList("Down-regulated in G2", htmlOutput("downPreview")),
             choices = list(
               list(
                 "green",
@@ -64,7 +64,7 @@ observeEvent(input$sider, {
           ),
           spectrumInput(
             inputId = "upColor",
-            label = tagList("Up-regulate in G2", htmlOutput("upPreview")),
+            label = tagList("Up-regulated in G2", htmlOutput("upPreview")),
             choices = list(
               list(
                 "red",
@@ -277,9 +277,7 @@ observeEvent(input$makeVolcanoPlot, {
   }))
 })
 
-# Render table under volcano plot
-
-
+# Render table under volcano plot ----
 
 output$resultTableInVolcanalPlot <- DT::renderDataTable({
   if (nrow(resultTable()) == 0) {
@@ -287,33 +285,55 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
   } else {
     if (length(input$Cutpvalue) > 0) {
       fdrCut <- input$Cutpvalue
+      
     } else {
       fdrCut <- 0
     }
-    
+
     DT::datatable(
       resultTable(),
+      colnames = c("Gene Name",
+                   "A Value",
+                   "M Value",
+                   "P Value",
+                   "Q Value (FDR)",
+                   "Rank",
+                   "estimated DEG"),
+      filter = "bottom",
+      caption = tags$caption(
+        tags$li(
+          "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
+        ),
+        tags$li("Gene Name was colored and set bold according to Fold Change and P-value cut-off respectively.")
+      ),
+      extensions = c("Scroller", "Buttons"),
       option = list(
-        pageLength = 10,
+        dom = 'Bfrtip',
+        buttons =
+          list('copy', 'print', list(
+            extend = 'collection',
+            buttons = c('csv', 'excel', 'pdf'),
+            text = 'Download'
+          )),
+        deferRender = TRUE,
+        scrollY = 400,
+        scroller = TRUE,
         searchHighlight = TRUE,
         orderClasses = TRUE,
-        scrollX = TRUE
+        scrollX = TRUE,
+        columnDefs = list(
+          list(visible = FALSE, targets = -1)
+        )
       )
-    ) %>% formatRound(
-      columns = c("a.value",
-                  "m.value",
-                  "p.value",
-                  "q.value"),
-      digits = 3
-    ) %>% formatStyle("estimatedDEG",
-                      target = 'row',
-                      backgroundColor = styleEqual(1, "lightblue")) %>% formatStyle("gene_id", "m.value",
-                                                                                    color = styleInterval(input$CutFC,
-                                                                                                          c(
-                                                                                                            input$downColor, "black", input$upColor
-                                                                                                          ))) %>% formatStyle("gene_id",
-                                                                                                                              "p.value",
-                                                                                                                              fontWeight = styleInterval(fdrCut, c("bold", "normal")))
+    ) %>% formatRound(columns = c("a.value",
+                                  "m.value",
+                                  "p.value",
+                                  "q.value"),
+                      digits = 3)  %>% formatStyle("gene_id", "m.value",
+                                                   color = styleInterval(input$CutFC,
+                                                                         c(input$downColor, "black", input$upColor))) %>% formatStyle("gene_id",
+                                                                                                                                      "p.value",
+                                                                                                                                      fontWeight = styleInterval(fdrCut, c("bold", "normal")))
   }
 })
 
@@ -390,58 +410,58 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
 
 # Render a plotly of different gene count under specific FDR cutoff condition.----
 
-withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
-  # Create table
-  df <- make_summary_for_tcc_result(resultTable())
-  
-  # Render Plotly
-  plot_ly(
-    data = df,
-    x = ~ as.numeric(Cutoff),
-    y = ~ Between_Count,
-    type = "bar",
-    hoverinfo = "text",
-    text = ~ paste(
-      "</br>FDR Cut-off: ",
-      Cutoff,
-      "</br>DEGs between Cut-off: ",
-      Between_Count,
-      "</br>Total DEGs under Cuf-off: ",
-      Under_Count
-    )
-  ) %>%
-    add_trace(
-      y = ~ Under_Count,
-      yaxis = "y2",
-      type = "scatter",
-      mode = "lines+markers",
-      hoverinfo = "text",
-      text = ~ paste(
-        "</br>FDR Cut-off: ",
-        Cutoff,
-        "</br>Cumulative curve: ",
-        Percentage
-      )
-    ) %>%
-    layout(
-      xaxis = list(
-        title = "FDR Cut-off",
-        tickvals = c(1, 3, 5),
-        ticktext = c("0", "0.10", "0.20")
-      ),
-      yaxis = list(
-        title = "DEGs (#) between cut-offs",
-        rangemode = "nonnegative",
-        titlefont = list(color = "#1F77B4")
-      ),
-      yaxis2 = list(
-        title = "Cumulative number of DEGs",
-        titlefont = list(color = "#FF7F0E"),
-        rangemode = "nonnegative",
-        overlaying = "y",
-        side = "right"
-      ),
-      showlegend = FALSE,
-      margin = list(r = 50)
-    )
-}))
+# withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
+#   # Create table
+#   df <- make_summary_for_tcc_result(resultTable())
+#   
+#   # Render Plotly
+#   plot_ly(
+#     data = df,
+#     x = ~ as.numeric(Cutoff),
+#     y = ~ Between_Count,
+#     type = "bar",
+#     hoverinfo = "text",
+#     text = ~ paste(
+#       "</br>FDR Cut-off: ",
+#       Cutoff,
+#       "</br>DEGs between Cut-off: ",
+#       Between_Count,
+#       "</br>Total DEGs under Cuf-off: ",
+#       Under_Count
+#     )
+#   ) %>%
+#     add_trace(
+#       y = ~ Under_Count,
+#       yaxis = "y2",
+#       type = "scatter",
+#       mode = "lines+markers",
+#       hoverinfo = "text",
+#       text = ~ paste(
+#         "</br>FDR Cut-off: ",
+#         Cutoff,
+#         "</br>Cumulative curve: ",
+#         Percentage
+#       )
+#     ) %>%
+#     layout(
+#       xaxis = list(
+#         title = "FDR Cut-off",
+#         tickvals = c(1, 3, 5),
+#         ticktext = c("0", "0.10", "0.20")
+#       ),
+#       yaxis = list(
+#         title = "DEGs (#) between cut-offs",
+#         rangemode = "nonnegative",
+#         titlefont = list(color = "#1F77B4")
+#       ),
+#       yaxis2 = list(
+#         title = "Cumulative number of DEGs",
+#         titlefont = list(color = "#FF7F0E"),
+#         rangemode = "nonnegative",
+#         overlaying = "y",
+#         side = "right"
+#       ),
+#       showlegend = FALSE,
+#       margin = list(r = 50)
+#     )
+# }))
