@@ -243,11 +243,18 @@ withBars(output$geneBarPlot <- renderPlotly({
 # This function render a table of Result table. ----
 # Position: In [MA plot tab] and In [Volcano plot tab], under middle.
 
-output$resultTableInVolcanalPlot <-
+# output$resultTableInVolcanalPlot <-
   output$resultTableInPlot <- DT::renderDataTable({
     if (nrow(resultTable()) == 0) {
       DT::datatable(resultTable())
     } else {
+      
+      if(length(input$maFDR) > 0 ){
+        fdrCut <- input$maFDR
+      } else {
+        fdrCut <- 0
+      }
+      
       DT::datatable(
         resultTable(),
         option = list(
@@ -266,12 +273,9 @@ output$resultTableInVolcanalPlot <-
         "estimatedDEG",
         target = 'row',
         backgroundColor = styleEqual(1, "lightblue")
-      ) 
-      # %>% formatStyle(
-      #   "p.value", target = "row",
-      #   color = styleInterval(c(3.4, 3.8), c('white', 'blue', 'red')),
-      #   backgroundColor = styleInterval(3.4, c('gray', 'yellow'))
-      # )
+      ) %>% formatStyle("gene_id",
+                       "q.value",
+                       fontWeight = styleInterval(fdrCut, c("bold", "normal")))
     }
   })
 
