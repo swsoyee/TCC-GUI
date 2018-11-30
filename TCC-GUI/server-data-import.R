@@ -288,7 +288,7 @@ observeEvent(input$confirmedGroupList, {
         p <- add_trace(p, x = densityTable[[i]][[1]],
                        y = densityTable[[i]][[2]],
                        # fill = "tozeroy",
-                       color = group[V1 == names(densityTable[i]), V2],
+                       color = factor(group[V1 == names(densityTable[i]), V2]),
                        name = names(densityTable[i]))
       }
       

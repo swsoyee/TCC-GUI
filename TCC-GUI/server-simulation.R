@@ -206,7 +206,7 @@ observeEvent(input$simulationRun, {
         )
       },
       content = function(file) {
-        write.csv(simulatedData$count, file, row.names = FALSE)
+        write.csv(simulatedData$count, file, row.names = TRUE)
       }
     )
     
