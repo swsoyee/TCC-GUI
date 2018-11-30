@@ -240,16 +240,7 @@ observeEvent(input$TCC, {
   
   output$tccSummationUI <- renderUI({
     tagList(
-      DT::dataTableOutput("tccSummation")#,
-      # tagList(
-      #   "Library Size",
-      #   tags$sup("*1"),
-      #   "= Sum of Raw Count.",
-      #   tags$br(),
-      #   "Effective Library Size",
-      #   tags$sup("*2"),
-      #   " = Library Size × Normalization Factor."
-      # )
+      DT::dataTableOutput("tccSummation")
     )
   })
   # Render a table of different gene count under specific FDR cutoff condition.----

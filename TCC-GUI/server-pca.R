@@ -119,7 +119,7 @@ observeEvent(input$pcRun, {
                orientation = 'h',
                xanchor = "center",
                x = 0.5,
-               y = 1
+               y = 1.05
              ))
     variables$screePlot <- p 
     p 
@@ -182,10 +182,37 @@ observeEvent(input$pcRun, {
   # Summary Table
   output$summaryPCA <- DT::renderDataTable({
     row.names(summaryTable)[1] <- "Standard Deviation"
-    DT::datatable(summaryTable, options = list(dom = "t")) %>% 
-      formatRound(
-        columns = colnames(summaryTable),
-      digits = 3)
+    summaryTable <- t(summaryTable)
+    DT::datatable(summaryTable, options = list(dom = "Bt",
+                                               buttons = list(
+                                                 'copy',
+                                                 'print',
+                                                 list(
+                                                   extend = 'collection',
+                                                   buttons = c('csv', 'excel', 'pdf'),
+                                                   text = 'Download'
+                                                 )
+                                               ))) %>%
+      formatRound(columns = colnames(summaryTable),
+                  digits = 3) %>% formatStyle(
+                    "Proportion of Variance",
+                    background = styleColorBar(range(0, 1), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  ) %>% formatStyle(
+                    "Standard Deviation",
+                    background = styleColorBar(range(0, summaryTable[ ,1]), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  ) %>% formatStyle(
+                    "Cumulative Proportion",
+                    background = styleColorBar(range(0, 1), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  )
   })
   
   output$runPCACode <- renderText({

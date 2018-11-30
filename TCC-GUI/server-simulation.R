@@ -158,11 +158,40 @@ observeEvent(input$simulationRun, {
     output$simulatedData <- DT::renderDataTable({
       DT::datatable(
         simulatedData$count,
+        colnames = c("Gene Name" = 1),
+        caption = tags$caption(
+          tags$li(
+            tags$b("Copy"),
+            ", ",
+            tags$b("Print"),
+            " and ",
+            tags$b("Download"),
+            " buttons only deal with loaded part of the whole table (max to 99 rows)."
+          ),
+          tags$li(
+            "Download this dataset and copy the group information, and you can upload them in [Data Import (Step1)] tab for analysis."
+          )
+        ),
+        extensions = c("Scroller", "RowReorder", "Buttons"),
         option = list(
+          dom = 'Bfrtip',
+          buttons =
+            list(
+              'copy',
+              'print',
+              list(
+                extend = 'collection',
+                buttons = c('csv', 'excel', 'pdf'),
+                text = 'Download'
+              )
+            ),
+          rowReorder = TRUE,
+          deferRender = TRUE,
           scrollX = TRUE,
-          pageLength = 10,
+          scrollY = 400,
           searchHighlight = TRUE,
-          orderClasses = TRUE
+          orderClasses = TRUE,
+          scroller = TRUE
         )
       )
     })
@@ -183,11 +212,14 @@ observeEvent(input$simulationRun, {
     
     # Render Simulation Data Table and Download Button ----
     output$simuDataTableAndDownload <- renderUI({
-      tagList(
-        downloadButton("downloadSimuData", "Download Simulation Data"),
-        tags$p("Download this dataset and copy the group information, and you can upload them in [Data Import (Step1)] tab for analysis."),
-        DT::dataTableOutput("simulatedData")
-      )
+      tagList(fluidRow(column(
+        12,
+        downloadButton("downloadSimuData", "Download All Simulation Data (CSV)")
+      )),
+      tags$br(),
+      fluidRow(column(
+        12, DT::dataTableOutput("simulatedData")
+      )))
     })
     
     # Store simulation data 
