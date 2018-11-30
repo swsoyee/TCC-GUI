@@ -7,10 +7,31 @@ fluidPage(column(
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
-    numericInput(inputId = "simulationGeneNum", label = "Number of Genes", value = 10000),
-    sliderInput(inputId = "simulationPDEG", label = "Proportion of DEGs (total)", min = 0, max = 1, value = 0.2),
+    numericInput(
+      inputId = "simulationSeed",
+      label = tagList("Set Random Seed", helpText("Set -1 to switch off random seed")),
+      value = -1,
+      min = -1,
+      step = 1
+  ), 
+    numericInput(inputId = "simulationGeneNum",
+                 label = HTML("Number of Genes (N<sub>gene</sub>)"),
+                 value = 10000),
+    sliderInput(
+      inputId = "simulationPDEG",
+      label = HTML("Proportion of DEGs (P<sub>DEG</sub>)"),
+      min = 0,
+      max = 1,
+      value = 0.2
+    ),
     textOutput("expectedDEGsText"),
-    sliderInput(inputId = "simulationGroupNum", label = "Number of Groups", min = 2, value = 2, max = 10),
+    sliderInput(
+      inputId = "simulationGroupNum",
+      label = HTML("Number of Groups (N<sub>group</sub>)"),
+      min = 2,
+      value = 2,
+      max = 10
+    ),
     do.call(actionBttn, c(
       list(
         inputId = "simulationRun",
@@ -26,9 +47,8 @@ fluidPage(column(
     solidHeader = TRUE,
     status = "info",
     width = NULL,
-    verbatimTextOutput("simuParams")
-  ),
-  uiOutput("simulationGroupInfo")
+    htmlOutput("simuParams")
+  )
 ),
 column(
   9,

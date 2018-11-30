@@ -177,7 +177,7 @@ observeEvent(input$makeVolcanoPlot, {
         dt[dt[[yaxis]] > input$Cutpvalue,]$color <-
           "None"
       }, error = function(e) {
-        sendSweetAlert(title = "ERROR", text = "No data was satisfied to your cut-off!")
+        sendSweetAlert(session = session, title = "ERROR", text = "No data was satisfied to your cut-off!")
       })
       
       x <- factor(dt$color)
@@ -289,51 +289,69 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
     } else {
       fdrCut <- 0
     }
-
-    DT::datatable(
+    
+    t <- DT::datatable(
       resultTable(),
-      colnames = c("Gene Name",
-                   "A Value",
-                   "M Value",
-                   "P Value",
-                   "Q Value (FDR)",
-                   "Rank",
-                   "estimated DEG"),
+      colnames = c(
+        "Gene Name",
+        "A Value",
+        "M Value",
+        "P Value",
+        "Q Value (FDR)",
+        "Rank",
+        "estimated DEG"
+      ),
       filter = "bottom",
       caption = tags$caption(
         tags$li(
           "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
         ),
-        tags$li("Gene Name was colored and set bold according to Fold Change and P-value cut-off respectively.")
+        tags$li(
+          "Gene Name was colored and set bold according to Fold Change and P-value cut-off respectively."
+        )
       ),
       extensions = c("Scroller", "Buttons"),
       option = list(
         dom = 'Bfrtip',
         buttons =
-          list('copy', 'print', list(
-            extend = 'collection',
-            buttons = c('csv', 'excel', 'pdf'),
-            text = 'Download'
-          )),
+          list(
+            'copy',
+            'print',
+            list(
+              extend = 'collection',
+              buttons = c('csv', 'excel', 'pdf'),
+              text = 'Download'
+            )
+          ),
         deferRender = TRUE,
         scrollY = 400,
         scroller = TRUE,
         searchHighlight = TRUE,
         orderClasses = TRUE,
         scrollX = TRUE,
-        columnDefs = list(
-          list(visible = FALSE, targets = -1)
-        )
+        columnDefs = list(list(
+          visible = FALSE, targets = -1
+        ))
       )
-    ) %>% formatRound(columns = c("a.value",
-                                  "m.value",
-                                  "p.value",
-                                  "q.value"),
-                      digits = 3)  %>% formatStyle("gene_id", "m.value",
-                                                   color = styleInterval(input$CutFC,
-                                                                         c(input$downColor, "black", input$upColor))) %>% formatStyle("gene_id",
-                                                                                                                                      "p.value",
-                                                                                                                                      fontWeight = styleInterval(fdrCut, c("bold", "normal")))
+    ) %>% formatRound(
+      columns = c("a.value",
+                  "m.value",
+                  "p.value",
+                  "q.value"),
+      digits = 3
+    )
+    
+    if (!is.na(sum(resultTable()$m.value))) {
+      t   %>% formatStyle("gene_id", "m.value",
+                          color = styleInterval(input$CutFC,
+                                                c(
+                                                  input$downColor, "black", input$upColor
+                                                ))) %>% formatStyle("gene_id",
+                                                                    "p.value",
+                                                                    fontWeight = styleInterval(fdrCut, c("bold", "normal")))
+    } else {
+      t
+    }
   }
 })
 

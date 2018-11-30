@@ -9,9 +9,9 @@ source(file = "global.R",
 shinyServer(function(input, output, session) {
   variables = reactiveValues(
     simulationData = "",
-    CountData = data.frame("Load your data first." = character(0)),
-    groupList = "",
-    groupListConvert = "",
+    CountData = data.frame(),
+    groupList = NULL,
+    groupListConvert = NULL,
     result = data.frame("Results will show here." = character(0)),
     zeroValue = "",
     norData = "",

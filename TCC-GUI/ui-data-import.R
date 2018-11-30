@@ -3,7 +3,7 @@
 fluidPage(fluidRow(column(
   3,
   tabBox(
-    title = "Source",
+    title = "",
     id = "datasource",
     width = NULL,
     tabPanel(
@@ -12,12 +12,12 @@ fluidPage(fluidRow(column(
         "SampleDatabase",
         "Select Sample Data",
         choices = c(
-          "hypodata (example dataset)" = "sample_data/data_hypodata_3vs3.txt" #,
+          "hypodata (sample dataset)" = "sample_data/data_hypodata_3vs3.txt" #,
           # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
           # "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
-      helpText("Quick start with sample data."),
+      helpText("Quick start with sample dataset."),
       do.call(actionBttn, c(
         list(
           inputId = "CountDataSample",
@@ -38,7 +38,7 @@ fluidPage(fluidRow(column(
         buttonLabel = "Upload...",
         placeholder = "No file has been uploaded."
       ),
-      helpText("Text file in tab-delimited format, and the first column is genes' name.")
+      helpText("Text file in .tsv/.csv format, and the first column should be genes' name.")
     )
   )
   ,
@@ -52,6 +52,8 @@ fluidPage(fluidRow(column(
       "Input your group info",
       rows = 6,
       placeholder = paste(
+        "Please input group information at here. Here is a example format:",
+        "-----",
         "G1_rep1,Group1",
         "G1_rep2,Group1",
         "G1_rep3,Group1",
@@ -69,17 +71,18 @@ fluidPage(fluidRow(column(
         actionBttnParams
       )
     ),
-    footer = helpText("TCC-GUI expect first label should be Group1 (G1) and the next label be Group2 (G2), and so on.")
+    footer = helpText("TCC-GUI expect first label should be Group1 (G1) and the next be Group2 (G2), and so on.")
   ),
   box(
     title = tagList(icon("info-circle"), "Summary of Data"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
-    uiOutput("rowOfCountData"),
-    uiOutput("groupCount"),
-    uiOutput("zeroValue"),
-    uiOutput("silhouette")
+    # uiOutput("rowOfCountData"),
+    # uiOutput("groupCount"),
+    # uiOutput("zeroValue"),
+    # uiOutput("silhouette")
+    uiOutput("importDataSummary")
   )
 ),
 column(

@@ -125,10 +125,6 @@ output$table <- DT::renderDataTable({
     quantile(df %>% select_if(is.numeric),
              probs = seq(.05, .95, .05),
              na.rm = TRUE)
-  clrs <- round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
-  {
-    paste0("rgb(255,", ., ",", ., ")")
-  }
   
   DT::datatable(
     df,
@@ -144,7 +140,7 @@ output$table <- DT::renderDataTable({
       orderClasses = TRUE
     )
   ) %>%
-    formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, clrs))
+    formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, head(Blues(40), n = length(brks) + 1)))
 })
 
 
@@ -442,5 +438,53 @@ observeEvent(input$confirmedGroupList, {
       )
       return()
     }
+  )
+})
+
+output$importDataSummary <- renderUI({
+  dt<- datasetInput()
+  
+  rowCount <- nrow(dt)
+  groupCount <- length(variables$groupList)
+  groupText <- sapply(variables$groupList, length)
+  if(length(groupText) > 0){
+    gText <- paste0(names(groupText), ": ",groupText, collapse = "\n")
+  } else {
+    gText <- NULL
+  }
+  
+  # AS Part
+  data <- variables$CountData
+  data.cl <- variables$groupListConvert
+  cName <- unlist(variables$groupList)
+  
+  if(all(cName %in% colnames(data)) & nrow(data) > 0 & length(data.cl) > 0){
+    data.cl <- data.cl[data.cl != 0]
+    data <- data[data.cl != 0]
+    
+    # Filtering
+    obj <- as.logical(rowSums(data) > 0)
+    data <- unique(data[obj,])
+    
+    # AS calculation
+    d <- as.dist(1 - cor(data, method="spearman"))
+    AS <-  mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
+    AS <- tagList(
+      tags$p(tags$b("Average Silhouettes (AS):"), round(AS, 3)),
+      HTML(
+        'A higher AS value <font color="blue">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).
+        '
+      )
+      )
+  } else {
+    AS <- NULL
+  }
+  
+  tagList(
+    tags$p(tags$b("Number of Genes:"), rowCount),
+    tags$p(tags$b("Number of Groups:"), groupCount),
+    tags$p(tags$b("Number of Replicates:")),
+    tags$p(" "," ", gText),
+    AS
   )
 })

@@ -12,6 +12,7 @@ library(utils)
 library(shinyWidgets)
 library(tidyr)
 library(cluster)
+library(shinycssloaders)
 
 # ====================================
 # This function convert the input of group information to
