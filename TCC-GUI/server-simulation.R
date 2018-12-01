@@ -103,12 +103,12 @@ output$simulationGroup <- renderUI({
   }
 })
 
-v <- reactiveValues(simulationRunValue = FALSE)
+simuRun <- reactiveValues(simulationRunValue = FALSE)
 
 # Excute simulation data ----
 observeEvent(input$simulationRun, {
   
-  v$simulationRunValue <- input$simulationRun
+  simuRun$simulationRunValue <- input$simulationRun
   
   GroupNum <- input$simulationGroupNum
   
@@ -262,7 +262,7 @@ observeEvent(input$simulationRun, {
 
 # Render Simulation Data Table and Download Button ----
 output$simuDataTableAndDownload <- renderUI({
-  if (!v$simulationRunValue) {
+  if (!simuRun$simulationRunValue) {
     tagList(
       tags$p(
         'You haven\'t generated any simulation data. Please click "Generate Simulation Data".'
