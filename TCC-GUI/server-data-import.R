@@ -295,7 +295,7 @@ observeEvent(input$confirmedGroupList, {
       })
       
       # The same plot used in Calculation tab.
-      withBars(output$sampleDistributionDensityTCC <- renderPlotly({
+      output$sampleDistributionDensityTCC <- renderPlotly({
         p %>%
           layout(
             title = input$sampleDistributionDenstityTitle,
@@ -308,7 +308,7 @@ observeEvent(input$confirmedGroupList, {
               y = input$sampleDistributionDensityLegendY
             )
           )
-      }))
+      })
 
       updateProgressBar(
         session = session,
