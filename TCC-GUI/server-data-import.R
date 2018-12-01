@@ -148,7 +148,7 @@ output$table <- DT::renderDataTable({
 
 output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
-    return("No data to show. Click [Import Data] or [Upload] your own dataset.")
+    helpText("No data to show. Click [Import Data] or [Upload] your own dataset.")
   } else {
     DT::dataTableOutput('table')
   }
@@ -426,7 +426,7 @@ output$sampleDistributionDensityPanel <- renderUI({
       )
     ))
   } else {
-    "No data for ploting. Please import dataset and assign group information first."
+    helpText("No data for ploting. Please import dataset and assign group information first.")
   }
 })
 
@@ -458,6 +458,6 @@ output$sampleDistributionBoxPanel <- renderUI({
              plotlyOutput("sampleDistribution") %>% withSpinner())
     ))
   } else {
-    "No data for ploting. Please import dataset and assign group information first."
+    helpText("No data for ploting. Please import dataset and assign group information first.")
   }
 })

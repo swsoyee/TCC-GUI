@@ -1,8 +1,67 @@
 # server-tcc-calculation.R
 
+observeEvent(input$sider, {
+  if (input$sider == "calculationTab") {
+    data <- variables$CountData
+    data.cl <- unlist(variables$groupList)
+    tryCatch({
+      output$lowCountFilterByCutoff <- renderPlotly({
+        
+        cData <- data[, data.cl %in% colnames(data)]
+        lowCount <- sapply(0:input$lowCountSlide, function(x){sum(rowSums(cData) <= x)})
+        
+        lowCountdt <- data.frame(
+          "Cutoff" = 0:input$lowCountSlide,
+          "Filtered" = lowCount,
+          "Remain" = nrow(cData) - lowCount
+        )
+        
+        plot_ly(
+          lowCountdt,
+          name = "Filtered",
+          x =  ~ Cutoff,
+          y =  ~ Filtered,
+          hoverinfo = "text+name",
+          hovertext = ~ paste0(
+            "Cut off: ",
+            Cutoff,
+            "<br>Filtered number: ",
+            Filtered,
+            "<br>Remain number: ",
+            Remain,
+            "(",
+            round(Remain / nrow(data) * 100, 2),
+            "%)"
+          ),
+          type = "bar"
+        ) %>% add_trace(
+          name = "Remain",
+          y =  ~ Remain,
+          yaxis = "y2",
+          type = "scatter",
+          mode = "lines"
+        )  %>% layout(
+          title = "Filtering Threshold for Low Count Genes",
+          xaxis = list(title = "Filtering Low Count Cut off"),
+          yaxis = list(title = "Filtered number", 
+                       titlefont = list(color = "#1F77B4"),
+                       autorange = FALSE,
+                       range = c(0, 2*max(lowCountdt$Filtered))
+                       ),
+          yaxis2 = list(title = "Remain number",
+                        titlefont = list(color = "#FF7F0E"),
+                        overlaying = "y", 
+                        rangemode = "tozero",
+                        side = "right")
+        )
+      })
+    })
+  }
+})
 
 # If the run TCC botton has been clicked, execute TCC calculation ---------
 
+tccRun <- reactiveValues(tccRunValue = FALSE)
 
 observeEvent(input$TCC, {
   progressSweetAlert(
@@ -18,8 +77,6 @@ observeEvent(input$TCC, {
     title = "TCC computation",
     value = 10
   )
-  # Set time start
-  start_time <- Sys.time()
   
   data <- variables$CountData
   data.cl <- variables$groupListConvert
@@ -94,9 +151,7 @@ observeEvent(input$TCC, {
   )
   
   # Show computation time notification
-  # Set time end
-  end_time <- Sys.time()
-  runtime <- round(difftime(end_time, start_time, units = "secs"), 2)
+  runtime <- round(tcc$DEGES$execution.time[3], 2)
   
   updateProgressBar(
     session = session,
@@ -238,31 +293,6 @@ observeEvent(input$TCC, {
                                 )
   })
   
-  output$tccSummationUI <- renderUI({
-    tagList(
-      DT::dataTableOutput("tccSummation")
-    )
-  })
-  # Render a table of different gene count under specific FDR cutoff condition.----
-  
-  output$fdrCutoffTableInTCC <- DT::renderDataTable({
-    # Create Table
-    df <- make_summary_for_tcc_result(variables$result)
-    
-    # Render Table
-    DT::datatable(
-      df[, c("Cutoff", "Count", "Percentage")],
-      option = list(
-        pageLength = 10,
-        columnDefs = list(list(
-          className = 'dt-right', targets = "_all"
-        )),
-        dom = "tp"
-      ),
-      rownames = FALSE
-    )
-  })
-  
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
@@ -307,23 +337,6 @@ observeEvent(input$TCC, {
       write.csv(variables$norData, file)
     }
   )
-  
-  
-
-  # This function render a series UI of Result table. ----
-
-  output$mainResultTable <- renderUI({
-    tagList(fluidRow(column(
-      12,
-      downloadButton("downLoadResultTable", "Download All Result (CSV)"),
-      downloadButton("downLoadNormalized", "Download Normalized Data (CSV)")
-    )),
-    tags$br(),
-    fluidRow(column(
-      12, DT::dataTableOutput('resultTable')
-    )))
-  })
-  
 
   # Render a boxplot of normalized sample distribution ----
   
@@ -372,7 +385,7 @@ observeEvent(input$TCC, {
   
   # Render a density plot of normalized sample distribution ----
   
-  withBars(output$NormalizedSampleDistributionDensity <- renderPlotly({
+  output$NormalizedSampleDistributionDensity <- renderPlotly({
     
     cpm <- log2(variables$norData + 1)
     densityTable <-lapply(data.frame(cpm),  function(x) {density(x)})
@@ -384,21 +397,15 @@ observeEvent(input$TCC, {
       
       p <- add_trace(p, x = densityTable[[i]][[1]],
                      y = densityTable[[i]][[2]],
-                     # fill = "tozeroy",
                      color = names(group[group]),
                      name = names(densityTable[i]))
     }
     p %>%
-      layout(title = "",
-             xaxis = list(title = "log<sub>2</sub>(Count + 1)"),
-             yaxis = list(title = "Density"),
-             legend = list(
-               orientation = 'h',
-               xanchor = "center",
-               x = 0.5,
-               y = input$sampleDistributionDensityLegendY
-             ))
-  }))
+      layout(title = input$norDistributionDenstityTitle,
+             xaxis = list(title = input$norDistributionDensityXlab),
+             yaxis = list(title = input$norDistributionDensityYlab))
+  })
+  
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
@@ -411,6 +418,8 @@ observeEvent(input$TCC, {
                  title = "DONE",
                  text = "TCC was successfully performed.",
                  type = "success")
+  
+  tccRun$tccRunValue <- input$TCC
 })
 
 resultTable <- reactive({
@@ -424,4 +433,65 @@ observeEvent(input$TCC, {
   output$showTCCCode <- renderText({
     variables$runTCCCode
   })
+})
+
+# This function render a series UI of Result table. ----
+
+output$mainResultTable <- renderUI({
+  if(tccRun$tccRunValue){
+  tagList(fluidRow(column(
+    12,
+    downloadButton("downLoadResultTable", "Download All Result (CSV)"),
+    downloadButton("downLoadNormalized", "Download Normalized Data (CSV)")
+  )),
+  tags$br(),
+  fluidRow(column(
+    12, DT::dataTableOutput('resultTable')
+  )))} else {
+    helpText("Click [Run TCC Calculation] to execute TCC computation first.")
+  }
+})
+
+# Runder tcc summary table ----
+output$tccSummationUI <- renderUI({
+  if(tccRun$tccRunValue){
+  tagList(
+    DT::dataTableOutput("tccSummation")
+  )} else {
+    helpText("Summarization of TCC normalization will be shown after TCC computation.")
+  }
+})
+
+output$norDistributionDensityPanel <- renderUI({
+  if (tccRun$tccRunValue) {
+    tagList(fluidRow(
+      column(
+        2,
+        textInput(
+          inputId = "norDistributionDenstityTitle",
+          label = "Title",
+          value = "Normalized Count",
+          placeholder = "Normalized Count"
+        ),
+        textInput(
+          inputId = "norDistributionDensityXlab",
+          label = "X label",
+          value = "log<sub>2</sub>(Count<sub>nor</sub> + 1)",
+          placeholder = "log<sub>2</sub>(Count<sub>nor</sub> + 1)"
+        ),
+        textInput(
+          inputId = "norDistributionDensityYlab",
+          label = "Y label",
+          value = "Density",
+          placeholder = "Density"
+        )
+      ),
+      column(
+        10,
+        plotlyOutput("NormalizedSampleDistributionDensity") %>% withSpinner()
+      )
+    ))
+  } else {
+    helpText("Click [Run TCC Calculation] to execute TCC computation first.")
+  }
 })

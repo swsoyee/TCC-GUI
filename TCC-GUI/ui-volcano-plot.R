@@ -7,33 +7,6 @@ fluidPage(fluidRow(column(
     status = "primary",
     width = NULL,
     uiOutput("valcanoParameter")
-  )
-),
-column(
-  6,
-  box(
-    title = tagList(icon("line-chart"), "Volcano Plot"),
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    withBarsUI(plotlyOutput("volcanoPloty"))
-  ),
-  box(
-    title = tagList(icon("table"), "Result Table"),
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    DT::dataTableOutput('resultTableInVolcanalPlot')
-  )
-),
-column(
-  3,
-  box(
-    title = tagList(icon("bar-chart"), "Expression Level"),
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    withBarsUI(plotlyOutput("geneBarPlotInVolcano"))
   ),
   box(
     title = tagList(icon("code"), "Volcano Plot Code"),
@@ -43,5 +16,22 @@ column(
     collapsed = TRUE,
     width = NULL,
     verbatimTextOutput("runVolcanoPlot")
+  )
+),
+column(
+  9,
+  box(
+    title = tagList(icon("line-chart"), "Volcano Plot"),
+    solidHeader = TRUE,
+    status = "info",
+    width = NULL,
+    uiOutput("volcanoUI")
+  ),
+  box(
+    title = tagList(icon("table"), "Result Table"),
+    solidHeader = TRUE,
+    status = "info",
+    width = NULL,
+    DT::dataTableOutput('resultTableInVolcanalPlot')
   )
 )))

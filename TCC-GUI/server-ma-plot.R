@@ -1,61 +1,64 @@
 # server-ma-plot.R
 
+runMA <- reactiveValues(runMAValues = FALSE)
 # This function render a series UI of MA Plot parameters. ----
 
 observeEvent(input$sider, {
-  if(input$sider == "maplotTab") {
-  output$MAPlotParameter <- renderUI({
-    tagList(
-      sliderInput(
-        "pointSize",
-        "Point Size",
-        min = 1,
-        max = 5,
-        value = 3,
-        step = 0.2
-      ),
-      sliderInput(
-        "maFDR",
-        "FDR Cut-off",
-        min = 0,
-        max = 1,
-        value = input$fdr
-      ),
-      spectrumInput(
-        inputId = "fdrColor",
-        label = tagList("DEGs Color", htmlOutput("maFDRpreview")),
-        choices = list(
-          list("#B22222", 'black', 'white', 'blanchedalmond', 'steelblue', 'forestgreen'),
-          as.list(brewer.pal(n = 9, name = "Reds")),
-          as.list(brewer.pal(n = 9, name = "Greens")),
-          as.list(brewer.pal(n = 11, name = "Spectral")),
-          as.list(brewer.pal(n = 8, name = "Dark2"))
+  if (input$sider == "maplotTab") {
+    output$MAPlotParameter <- renderUI({
+      tagList(
+        sliderInput(
+          "pointSize",
+          "Point Size",
+          min = 1,
+          max = 5,
+          value = 3,
+          step = 0.2
         ),
-        options = list(`toggle-palette-more-text` = "Show more")
-      ),
-      do.call(actionBttn, c(
-        list(
-          inputId = "makeMAPlot",
-          label = "Generate MA Plot",
-          icon = icon("play")
+        sliderInput(
+          "maFDR",
+          "FDR Cut-off",
+          min = 0.01,
+          max = 1,
+          value = input$fdr,
+          step = 0.01
         ),
-        actionBttnParams
-      ))
-    )
-  })}
+        spectrumInput(
+          inputId = "fdrColor",
+          label = tagList("DEGs Color", htmlOutput("maFDRpreview")),
+          choices = list(
+            list(
+              "#B22222",
+              'black',
+              'white',
+              'blanchedalmond',
+              'steelblue',
+              'forestgreen'
+            ),
+            as.list(brewer.pal(n = 9, name = "Reds")),
+            as.list(brewer.pal(n = 9, name = "Greens")),
+            as.list(brewer.pal(n = 11, name = "Spectral")),
+            as.list(brewer.pal(n = 8, name = "Dark2"))
+          ),
+          options = list(`toggle-palette-more-text` = "Show more")
+        ),
+        do.call(actionBttn, c(
+          list(
+            inputId = "makeMAPlot",
+            label = "Generate MA Plot",
+            icon = icon("play")
+          ),
+          actionBttnParams
+        ))
+      )
+    })
+  }
 })
 
-# ====================================
-# This function check the `Generate` button, if the botton has been clicked,
-# Generate MA Plot.
-# Position: In [MA Plot tab], upper middle.
-# ====================================
-# Input: makeMAPlot (Botton)
-# Output: Plotly object (Plot)
-# ====================================
+# Check the `Generate` button, if the botton has been clicked, generate MA Plot. ----
 
 observeEvent(input$makeMAPlot, {
-  withBars(output$maploty <- renderPlotly({
+  output$maploty <- renderPlotly({
     validate(need(resultTable()$a.value != "", "No MA values for ploting."))
     
     req(input$makeMAPlot)
@@ -67,7 +70,7 @@ observeEvent(input$makeMAPlot, {
         annotation <- list()
       } else {
         markerSelect <-
-          resultTable()[input$resultTableInPlot_rows_selected,]
+          resultTable()[input$resultTableInPlot_rows_selected, ]
         
         annotation <- list(
           x = markerSelect$a.value,
@@ -101,8 +104,8 @@ observeEvent(input$makeMAPlot, {
           mode = "markers",
           color = ~ x,
           colors = c(input$fdrColor, "#000000"),
-          marker = list(size = 3),
-          hoverinfo = "text",
+          marker = list(size = input$pointSize),
+          hoverinfo = "text+name",
           text = ~ paste(
             "</br>Gene:",
             resultTable()$gene_id,
@@ -126,7 +129,13 @@ observeEvent(input$makeMAPlot, {
               input$maFDR * 100,
               "% FDR)"
             ),
-            annotations = annotation
+            annotations = annotation,
+            legend = list(
+              orientation = 'h',
+              xanchor = "center",
+              x = 0.5,
+              y = 1.05
+            )
           )
         variables$MAPlotObject <- p
         p
@@ -138,7 +147,7 @@ observeEvent(input$makeMAPlot, {
           type = "scatter",
           mode = "markers",
           colors = c("#000000"),
-          marker = list(size = 3),
+          marker = list(size = input$pointSize),
           hoverinfo = "text",
           text = ~ paste(
             "</br>Gene:",
@@ -154,20 +163,28 @@ observeEvent(input$makeMAPlot, {
           source = "ma"
         ) %>%
           layout(
-            xaxis = list(title = "A = (log2(G2)+log2(G1))/2"),
-            yaxis = list(title = "M = log2(G2)-log2(G1)"),
+            xaxis = list(title = "A = (log<sub>2</sub>(G2)+log<sub>2</sub>(G1))/2"),
+            yaxis = list(title = "M = log<sub>2</sub>(G2)-log<sub>2</sub>(G1)"),
             title = "MA Plot",
-            annotations = annotation
+            annotations = annotation,
+            legend = list(
+              orientation = 'h',
+              xanchor = "center",
+              x = 0.5,
+              y = 1.05
+            )
           )
         variables$MAPlotObject <- p
         p
       }
     })
-  }))
+  })
+  runMA$runMAValues <- input$makeMAPlot
 })
 
+# Under FDR cutoff, preview the gene number ----
 output$maFDRpreview <- renderText({
-  count <- nrow(resultTable()[resultTable()$q.value <= input$maFDR, ])
+  count <- nrow(resultTable()[resultTable()$q.value <= input$maFDR,])
   paste0("<font color=\"",
          input$fdrColor,
          "\"><b>",
@@ -175,11 +192,23 @@ output$maFDRpreview <- renderText({
          " genes</b></font>")
 })
 
+# Render MAPlotUI ----
+output$MAPlotUI <- renderUI({
+  if (runMA$runMAValues) {
+    tagList(fluidRow(
+      column(8, plotlyOutput("maploty") %>% withSpinner()),
+      column(4, plotlyOutput("geneBarPlot") %>% withSpinner())
+    ))
+  } else {
+    helpText("Please click [Generate MA Plot] first.")
+  }
+})
+
 # This function render a button of R code of making MA plot. ----
 
 observeEvent(input$makeMAPlot, {
   output$runMAPlot <- renderText({
-    if(resultTable()$a.value == "") {
+    if (resultTable()$a.value == "") {
       "No MA values for plotting."
     }
     variables$runMAPlot
@@ -189,7 +218,7 @@ observeEvent(input$makeMAPlot, {
 
 # When hover on the point, show a expresion plot of specific gene. ----
 
-withBars(output$geneBarPlot <- renderPlotly({
+output$geneBarPlot <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "ma")
   validate(need(
@@ -200,10 +229,10 @@ withBars(output$geneBarPlot <- renderPlotly({
   gene_id <- eventdata$key
   # Get expression level (Original)
   expression <-
-    variables$CountData[row.names(variables$CountData) == gene_id,]
+    variables$CountData[row.names(variables$CountData) == gene_id, ]
   # Get expression level (Normalized)
   expressionNor <-
-    t(t(variables$norData[row.names(variables$norData) == gene_id,]))
+    t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
   
   data <- variables$CountData
   data.cl <- variables$groupListConvert
@@ -211,8 +240,9 @@ withBars(output$geneBarPlot <- renderPlotly({
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
   
-  xOrder <- data.frame("name" = row.names(expression), "group" = data.cl)
-  xOrderVector <- unique(xOrder[order(xOrder$group), ]$name)
+  xOrder <-
+    data.frame("name" = row.names(expression), "group" = data.cl)
+  xOrderVector <- unique(xOrder[order(xOrder$group),]$name)
   xform <- list(categoryorder = "array",
                 categoryarray = xOrderVector,
                 title = "")
@@ -222,130 +252,129 @@ withBars(output$geneBarPlot <- renderPlotly({
     y = ~ expression[, 1],
     color = as.factor(data.cl),
     text = expression[, 1],
-    textposition = 'auto',
+    textposition = "outside",
+    showlegend = FALSE,
     type = "bar",
-    name = "Original"
+    name = "Raw"
   ) %>%
-    add_trace(
-      y = ~ expressionNor[, 1],
-      text = round(expressionNor[, 1], 2),
-      textposition = 'auto',
-      name = "Normalized",
-      type = "scatter",
-      mode = "lines+markers",
-      marker = list(
-        size = 10,
-        line = list(color = 'rgba(0, 0, 0, 0)',
-                    width = 2)
-      )
-    ) %>%
+    # add_trace(
+    #   y = ~ expressionNor[, 1],
+    #   text = round(expressionNor[, 1], 2),
+    #   name = "Normalized",
+    #   type = "scatter",
+    #   mode = "markers",
+    #   showlegend = FALSE,
+    #   marker = list(
+    #     size = 5,
+    #     # line = list(color = "grey",
+    #     #             width = 2),
+    #     symbol = 4
+    #   )
+    # ) %>%
     layout(
       xaxis = xform,
-      yaxis = list(title = "Count"),
-      title = colnames(expression),
-      legend = list(orientation = 'h')
+      yaxis = list(title = "Raw Count"),
+      title = colnames(expression)
     )
-}))
+})
 
 
 # This function render a table of Result table. ----
 
-# output$resultTableInVolcanalPlot <-
-  output$resultTableInPlot <- DT::renderDataTable({
-    if (nrow(resultTable()) == 0) {
-      DT::datatable(resultTable())
+output$resultTableInPlot <- DT::renderDataTable({
+  if (nrow(resultTable()) == 0) {
+    DT::datatable(resultTable())
+  } else {
+    if (length(input$maFDR) > 0) {
+      fdrCut <- input$maFDR
+      fdrColor <- input$fdrColor
     } else {
-      
-      if(length(input$maFDR) > 0 ){
-        fdrCut <- input$maFDR
-        fdrColor <- input$fdrColor
-      } else {
-        fdrCut <- 0
-        fdrColor <- "#B22222"
-      }
-      
-      DT::datatable(
-        resultTable(),
-        colnames = c("Gene Name",
-                     "A Value",
-                     "M Value",
-                     "P Value",
-                     "Q Value (FDR)",
-                     "Rank",
-                     "estimated DEG"),
-        filter = "bottom",
-        caption = tags$caption(
-          tags$li(
-            "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
-          ),
-          tags$li("Gene Name was colored according to FDR cut-off.")
+      fdrCut <- 0
+      fdrColor <- "#B22222"
+    }
+    
+    DT::datatable(
+      resultTable(),
+      colnames = c(
+        "Gene Name",
+        "A Value",
+        "M Value",
+        "P Value",
+        "Q Value (FDR)",
+        "Rank",
+        "estimated DEG"
+      ),
+      filter = "bottom",
+      caption = tags$caption(
+        tags$li(
+          "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
         ),
-        extensions = c("Scroller", "Buttons"),
-        option = list(
-          dom = 'Bfrtip',
-          buttons =
-            list('copy', 'print', list(
+        tags$li("Gene Name was colored according to FDR cut-off.")
+      ),
+      extensions = c("Scroller", "Buttons"),
+      option = list(
+        dom = 'Bfrtip',
+        buttons =
+          list(
+            'copy',
+            'print',
+            list(
               extend = 'collection',
               buttons = c('csv', 'excel', 'pdf'),
               text = 'Download'
-            )),
-          deferRender = TRUE,
-          scrollY = 400,
-          scroller = TRUE,
-          searchHighlight = TRUE,
-          orderClasses = TRUE,
-          scrollX = TRUE,
-          columnDefs = list(
-            list(visible = FALSE, targets = -1)
-          )
-        )
-      ) %>% formatRound(
-        columns = c("a.value",
-                    "m.value",
-                    "p.value",
-                    "q.value"),
-        digits = 3
-      ) %>% formatStyle("gene_id",
-                       "q.value",
-                       color = styleInterval(fdrCut, c(fdrColor, "")))
-    }
-  })
+            )
+          ),
+        deferRender = TRUE,
+        scrollY = 400,
+        scroller = TRUE,
+        searchHighlight = TRUE,
+        orderClasses = TRUE,
+        scrollX = TRUE,
+        columnDefs = list(list(
+          visible = FALSE, targets = -1
+        ))
+      )
+    ) %>% formatRound(
+      columns = c("a.value",
+                  "m.value",
+                  "p.value",
+                  "q.value"),
+      digits = 3
+    ) %>% formatStyle("gene_id",
+                      "q.value",
+                      color = styleInterval(fdrCut, c(fdrColor, "")))
+  }
+})
 
 
 # Render a table of different gene count under specific FDR cutoff condition. ----
 
-output$fdrCutoffTableInVolcano <-
-  output$fdrCutoffTableInMAPage <- DT::renderDataTable({
-    # Create Table
-    df <- make_summary_for_tcc_result(resultTable())
-    
-    df <- df[, c("Cutoff", "Count", "Percentage")]
-    colnames(df) <- c("Cut-off", "DEGs(#)", "DEGs(%)")
-    
-    # Render Table
-    DT::datatable(
-      df,
-      caption = "Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off.",
-      option = list(
-        pageLength = 10,
-        columnDefs = list(list(
-          className = 'dt-right', targets = "_all"
-        )),
-        dom = "tp"
-      ),
-      rownames = FALSE
-    )
-  })
+output$fdrCutoffTableInMAPage <- DT::renderDataTable({
+  # Create Table
+  df <- make_summary_for_tcc_result(resultTable())
+  
+  df <- df[, c("Cutoff", "Count", "Percentage")]
+  colnames(df) <- c("Cut-off", "DEGs(#)", "DEGs(%)")
+  
+  # Render Table
+  DT::datatable(
+    df,
+    caption = "Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off.",
+    option = list(
+      pageLength = 10,
+      columnDefs = list(list(
+        className = 'dt-right', targets = "_all"
+      )),
+      dom = "tp"
+    ),
+    rownames = FALSE
+  )
+})
 
-# ====================================
-# This function render a plotly of different gene count under specific FDR cutoff
-# condition.
-# Position: In [MA plot tab], under left.
-# ====================================
-# Input: None
-# Output: Plotly object (Plot)
-# ====================================
-withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
+
+# Render a plotly of different gene count under specific FDR cutoff ----
+
+output$fdrCutoffPlotInMAPage <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
   
@@ -356,9 +385,14 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
     y = ~ Between_Count,
     type = "bar",
     hoverinfo = "text",
-    text = ~ paste("</br>FDR Cut-off: ", Cutoff,
-                   "</br>DEGs between Cut-off: ", Between_Count,
-                   "</br>Total DEGs under Cuf-off: ", Under_Count)
+    text = ~ paste(
+      "</br>FDR Cut-off: ",
+      Cutoff,
+      "</br>DEGs between Cut-off: ",
+      Between_Count,
+      "</br>Total DEGs under Cuf-off: ",
+      Under_Count
+    )
   ) %>%
     add_trace(
       y = ~ Under_Count,
@@ -374,18 +408,24 @@ withBars(output$fdrCutoffPlotInMAPage <- renderPlotly({
       )
     ) %>%
     layout(
-      xaxis = list(title = "FDR Cut-off", 
-                   tickvals = c(1, 3, 5), 
-                   ticktext = c("0", "0.10", "0.20")),
-      yaxis = list(title = "DEGs (#) between cut-offs", 
-                   rangemode = "nonnegative",
-                   titlefont = list(color = "#1F77B4")),
-      yaxis2 = list(title = "Cumulative number of DEGs", 
-                    titlefont = list(color = "#FF7F0E"),
-                    rangemode = "nonnegative",
-                    overlaying = "y", 
-                    side = "right"),
+      xaxis = list(
+        title = "FDR Cut-off",
+        tickvals = c(1, 3, 5),
+        ticktext = c("0", "0.10", "0.20")
+      ),
+      yaxis = list(
+        title = "DEGs (#) between cut-offs",
+        rangemode = "nonnegative",
+        titlefont = list(color = "#1F77B4")
+      ),
+      yaxis2 = list(
+        title = "Cumulative number of DEGs",
+        titlefont = list(color = "#FF7F0E"),
+        rangemode = "nonnegative",
+        overlaying = "y",
+        side = "right"
+      ),
       showlegend = FALSE,
       margin = list(r = 50)
     )
-}))
+})

@@ -1,5 +1,7 @@
 # server-volcano-plot.R
 
+runVolcano <- reactiveValues(runVolcanoValue = FALSE)
+
 # This function render a series UI of Volcano Plot parameters ----
 
 observeEvent(input$sider, {
@@ -102,6 +104,7 @@ observeEvent(input$sider, {
   }
 })
 
+# Preview up and down regulated genes under Color selection ----
 observeEvent({
   input$CutFC
   input$Cutpvalue
@@ -152,7 +155,7 @@ observeEvent({
 observeEvent(input$makeVolcanoPlot, {
   # yaxis <- isolate(input$volcanoYcolumn)
   yaxis <- "p.value"
-  withBars(output$volcanoPloty <- renderPlotly({
+  output$volcanoPloty <- renderPlotly({
     validate(need(resultTable()[[yaxis]] != "", "No p-values for ploting."))
     if (length(variables$groupList) > 2) {
       sendSweetAlert(
@@ -274,7 +277,22 @@ observeEvent(input$makeVolcanoPlot, {
       variables$VolcanoPlotObject <- p
       p
     })
-  }))
+  })
+  runVolcano$runVolcanoValue <- input$makeVolcanoPlot
+})
+
+# Render volcanoUI ----
+output$volcanoUI <- renderUI({
+  if(runVolcano$runVolcanoValue){
+    tagList(
+      fluidRow(
+        column(8, plotlyOutput("volcanoPloty") %>% withSpinner()),
+        column(4, plotlyOutput("geneBarPlotInVolcano") %>% withSpinner())
+      )
+    )
+  } else {
+    helpText("Please click [Generate Volcano Plot] first.")
+  }
 })
 
 # Render table under volcano plot ----
@@ -366,7 +384,7 @@ observeEvent(input$makeVolcanoPlot, {
 
 # This function render a plotly of specific gene expression value in barplot.----
 
-withBars(output$geneBarPlotInVolcano <- renderPlotly({
+output$geneBarPlotInVolcano <- renderPlotly({
   # Read in hover data
   eventdata <- event_data("plotly_hover", source = "volcano")
   validate(need(
@@ -400,86 +418,27 @@ withBars(output$geneBarPlotInVolcano <- renderPlotly({
     y = ~ expression[, 1],
     color = as.factor(data.cl),
     text = expression[, 1],
-    textposition = 'auto',
+    textposition = 'outside',
+    showlegend = FALSE,
     type = "bar",
-    name = "Original"
+    name = "Raw"
   ) %>%
-    add_trace(
-      y = ~ expressionNor[, 1],
-      text = round(expressionNor[, 1], 2),
-      textposition = 'auto',
-      name = "Normalized",
-      type = "scatter",
-      mode = "lines+markers",
-      marker = list(
-        size = 10,
-        line = list(color = 'rgba(0, 0, 0, 0)',
-                    width = 2)
-      )
-    ) %>%
+    # add_trace(
+    #   y = ~ expressionNor[, 1],
+    #   text = round(expressionNor[, 1], 2),
+    #   textposition = 'auto',
+    #   name = "Normalized",
+    #   type = "scatter",
+    #   mode = "lines+markers",
+    #   marker = list(
+    #     size = 10,
+    #     line = list(color = 'rgba(0, 0, 0, 0)',
+    #                 width = 2)
+    #   )
+    # ) %>%
     layout(
       xaxis = xform,
-      yaxis = list(title = "Count"),
-      title = colnames(expression),
-      legend = list(orientation = 'h')
+      yaxis = list(title = "Raw Count"),
+      title = colnames(expression)
     )
-}))
-
-
-# Render a plotly of different gene count under specific FDR cutoff condition.----
-
-# withBars(output$fdrCutoffPlotInVolcano <- renderPlotly({
-#   # Create table
-#   df <- make_summary_for_tcc_result(resultTable())
-#   
-#   # Render Plotly
-#   plot_ly(
-#     data = df,
-#     x = ~ as.numeric(Cutoff),
-#     y = ~ Between_Count,
-#     type = "bar",
-#     hoverinfo = "text",
-#     text = ~ paste(
-#       "</br>FDR Cut-off: ",
-#       Cutoff,
-#       "</br>DEGs between Cut-off: ",
-#       Between_Count,
-#       "</br>Total DEGs under Cuf-off: ",
-#       Under_Count
-#     )
-#   ) %>%
-#     add_trace(
-#       y = ~ Under_Count,
-#       yaxis = "y2",
-#       type = "scatter",
-#       mode = "lines+markers",
-#       hoverinfo = "text",
-#       text = ~ paste(
-#         "</br>FDR Cut-off: ",
-#         Cutoff,
-#         "</br>Cumulative curve: ",
-#         Percentage
-#       )
-#     ) %>%
-#     layout(
-#       xaxis = list(
-#         title = "FDR Cut-off",
-#         tickvals = c(1, 3, 5),
-#         ticktext = c("0", "0.10", "0.20")
-#       ),
-#       yaxis = list(
-#         title = "DEGs (#) between cut-offs",
-#         rangemode = "nonnegative",
-#         titlefont = list(color = "#1F77B4")
-#       ),
-#       yaxis2 = list(
-#         title = "Cumulative number of DEGs",
-#         titlefont = list(color = "#FF7F0E"),
-#         rangemode = "nonnegative",
-#         overlaying = "y",
-#         side = "right"
-#       ),
-#       showlegend = FALSE,
-#       margin = list(r = 50)
-#     )
-# }))
+})

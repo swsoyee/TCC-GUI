@@ -264,7 +264,7 @@ observeEvent(input$simulationRun, {
 output$simuDataTableAndDownload <- renderUI({
   if (!simuRun$simulationRunValue) {
     tagList(
-      tags$p(
+      helpText(
         'You haven\'t generated any simulation data. Please click "Generate Simulation Data".'
       )
     )

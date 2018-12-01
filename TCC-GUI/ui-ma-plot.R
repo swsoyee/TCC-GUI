@@ -11,23 +11,13 @@ fluidPage(fluidRow(column(
   )
 ),
 column(
-  6,
+  9,
   box(
     title = tagList(icon("line-chart"), "MA Plot"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
-    withBarsUI(plotlyOutput("maploty"))
-  )
-),
-column(
-  3,
-  box(
-    title = tagList(icon("bar-chart"), "Expression Level"),
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    withBarsUI(plotlyOutput("geneBarPlot"))
+    uiOutput("MAPlotUI")
   )
 )),
 fluidRow(column(
@@ -37,28 +27,13 @@ fluidRow(column(
     width = NULL,
     tabPanel(
       tagList(icon("table"), "Table"),
-      # tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
       DT::dataTableOutput("fdrCutoffTableInMAPage")
     ),
     tabPanel(
       tagList(icon("bar-chart"), "Plot"),
-      # tags$p("Number (#) and Percentage (%) of DEGs satisfying different FDR cut-off."),
-      withBarsUI(plotlyOutput("fdrCutoffPlotInMAPage"))
+      plotlyOutput("fdrCutoffPlotInMAPage") %>% withSpinner()
     )
-  )
-),
-column(
-  6,
-  box(
-    title = tagList(icon("table"), "Result Table"),
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    tagList(DT::dataTableOutput('resultTableInPlot'))
-  )
-),
-column(
-  3,
+  ),
   box(
     title = tagList(icon("code"), "MA Plot Code"),
     solidHeader = TRUE,
@@ -68,4 +43,27 @@ column(
     width = NULL,
     verbatimTextOutput("runMAPlot")
   )
-)))
+),
+column(
+  9,
+  box(
+    title = tagList(icon("table"), "Result Table"),
+    solidHeader = TRUE,
+    status = "info",
+    width = NULL,
+    tagList(DT::dataTableOutput('resultTableInPlot'))
+  )
+)#,
+# column(
+#   3,
+  # box(
+  #   title = tagList(icon("code"), "MA Plot Code"),
+  #   solidHeader = TRUE,
+  #   status = "danger",
+  #   collapsible = TRUE,
+  #   collapsed = TRUE,
+  #   width = NULL,
+  #   verbatimTextOutput("runMAPlot")
+  # )
+))
+#)
