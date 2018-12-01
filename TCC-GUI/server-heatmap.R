@@ -1,6 +1,6 @@
 # server-heatmap.R
 
-
+runHeatmap <- reactiveValues(runHeatmapValue = FALSE, height = 300)
 
 # Generate heatmap parameters panel ---------------------------------------
 
@@ -363,31 +363,36 @@ observeEvent(input$heatmapRun, {
   # Select DEGs (Row)
   tryCatch({
     if (input$heatmapGeneSelectType == "By list") {
-      data <-
-        data[row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]')),]
+      selectedListForHeatmap <-
+        row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]'))
       heatmapTitle <- "Heatmap of specific genes"
     }
     
     if (input$heatmapGeneSelectType == "By FDR") {
       if (input$testMethod == 'wad') {
-        data <-
-          data[row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop, ]$gene_id, ]
+        selectedListForHeatmap <-
+          row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop,]$gene_id
+        
         heatmapTitle <- "Heatmap of specific genes"
       } else {
-        data <-
-          data[row.names(data) %in% resultTable()[resultTable()$q.value <= input$heatmapFDR, ]$gene_id, ]
-        heatmapTitle <- paste0("Heatmap of gene expression (q.value < ",
-                               input$heatmapFDR,
-                               ", ",
-                               dim(data)[1],
-                               "DEGs)")
+        selectedListForHeatmap <-
+          row.names(data) %in% resultTable()[resultTable()$q.value <= input$heatmapFDR,]$gene_id
+        
+        heatmapTitle <-
+          paste0("Heatmap of gene expression (q.value < ",
+                 input$heatmapFDR,
+                 ", ",
+                 sum(selectedListForHeatmap),
+                 "DEGs)")
       }
     }
+    
+    data <- data[selectedListForHeatmap, ]
     
     if (nrow(data) == 0) {
       sendSweetAlert(
         session = session,
-        title = "List contents error!",
+        title = "ERROR",
         text = "Genes list is empty!",
         type = "error"
       )
@@ -408,8 +413,9 @@ observeEvent(input$heatmapRun, {
       value = 30
     )
     # Create Plotly object
-    withBars(output$heatmap <- renderPlotly({
+    output$heatmap <- renderPlotly({
       isolate({
+        runHeatmap$height <- input$heatmapHeight
         # Log transform and normalization
         if (input$heatmapLogTrans == TRUE) {
           dataBackup <-  log1p(dataBackup)
@@ -482,7 +488,7 @@ observeEvent(input$heatmapRun, {
             scale = input$heatmapScale,
             labCol = colnames(dataBackup),
             labRow = row.names(dataBackup)
-          ) %>% layout(height = input$heatmapHeight)
+          )
           
           variables$heatmapObject <- p
           p
@@ -517,13 +523,14 @@ observeEvent(input$heatmapRun, {
             scale = input$heatmapScale,
             labCol = row.names(dataBackup),
             labRow = colnames(dataBackup)
-          ) %>% layout(height = input$heatmapHeight)
+          )
           
           variables$heatmapObject <- p
           p
         }
+
       })
-    }))
+    })
     
     updateProgressBar(
       session = session,
@@ -563,19 +570,15 @@ observeEvent(input$heatmapRun, {
       )
     })
     
-    # Render interactive heatmap plot -----------------------------------------
-    
-    
-    output$heatmapPlot <- renderUI({
-      tagList(withBarsUI(plotlyOutput("heatmap",
-                                      height = "auto")))
-    })
     updateProgressBar(
       session = session,
       id = "heatmapProgress",
       title = "All done",
       value = 100
     )
+    
+    runHeatmap$runHeatmapValue <- input$heatmapRun
+    
     closeSweetAlert(session = session)
     sendSweetAlert(session = session,
                    title = "Completed!",
@@ -600,4 +603,16 @@ observeEvent(input$heatmapRun, {
     return()
   })
   
+})
+
+# Render interactive heatmap plot -----------------------------------------
+
+
+output$heatmapPlot <- renderUI({
+  if (runHeatmap$runHeatmapValue) {
+    plotlyOutput("heatmap", height = runHeatmap$height) %>% withSpinner()
+  }
+  else{
+    helpText("Click [Generate Heatmap] to plot the heatmap first.")
+  }
 })
