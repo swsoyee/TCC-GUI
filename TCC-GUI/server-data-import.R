@@ -156,10 +156,10 @@ output$emptyTable <- renderUI({
 
 observeEvent(input$confirmedGroupList, {
   
-  if (nrow(variables$CountData) == 0) {
+  if (nrow(datasetInput()) == 0) {
     sendSweetAlert(
       session = session,
-      title = "Data error!",
+      title = "ERROR",
       text = "Please input count data table!",
       type = "error"
     )
@@ -168,7 +168,7 @@ observeEvent(input$confirmedGroupList, {
   if (input$groupSelectViaText == "") {
     sendSweetAlert(
       session = session,
-      title = "Group error!",
+      title = "ERROR",
       text = "Please input group information!",
       type = "error"
     )
@@ -184,6 +184,7 @@ observeEvent(input$confirmedGroupList, {
         display_pct = TRUE,
         value = 0
       )
+      
       group <- fread(input$groupSelectViaText, header = FALSE)
       variables$groupList <-
         lapply(unique(group$V2), function(x) {
@@ -221,7 +222,7 @@ observeEvent(input$confirmedGroupList, {
         cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]), ]$group <-
           names(variables$groupList[i])
       }
-      # Reorder X axis, in case of some those dataset which sample name are not 
+      # Reorder X axis, in case of some those dataset which sample name are not
       # in group order
       cpm_stack_order <-
         unique(cpm_stack[order(cpm_stack$group), ]$ind)
@@ -245,23 +246,17 @@ observeEvent(input$confirmedGroupList, {
         split = ~group,
         color = ~group
       )
-      withBars(output$sampleDistribution <- renderPlotly({
+      output$sampleDistribution <- renderPlotly({
         xform$title <- input$sampleDistributionXlab
         p <- psd %>%
           layout(
             title = input$sampleDistributionTitle,
             xaxis = xform,
-            yaxis = list(title = input$sampleDistributionYlab),
-            legend = list(
-              orientation = 'h',
-              xanchor = "center",
-              x = 0.5,
-              y = input$sampleDistributionLegendY
-            )
+            yaxis = list(title = input$sampleDistributionYlab)
           )
         variables$sampleDistributionBar <- p
         p
-      }))
+      })
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
@@ -288,22 +283,16 @@ observeEvent(input$confirmedGroupList, {
                        name = names(densityTable[i]))
       }
       
-      withBars(output$sampleDistributionDensity <- renderPlotly({
+      output$sampleDistributionDensity <- renderPlotly({
         pp <- p %>%
           layout(
             title = input$sampleDistributionDenstityTitle,
             xaxis = list(title = input$sampleDistributionDensityXlab),
-            yaxis = list(title = input$sampleDistributionDensityYlab),
-            legend = list(
-              orientation = 'h',
-              xanchor = "center",
-              x = 0.5,
-              y = input$sampleDistributionDensityLegendY
-            )
+            yaxis = list(title = input$sampleDistributionDensityYlab)
           )
         variables$sampleDistributionDensity <- pp
         pp
-      }))
+      })
       
       # The same plot used in Calculation tab.
       withBars(output$sampleDistributionDensityTCC <- renderPlotly({
@@ -320,8 +309,6 @@ observeEvent(input$confirmedGroupList, {
             )
           )
       }))
-      
-      # This function render a series infoBox of summary of data ----
 
       updateProgressBar(
         session = session,
@@ -329,101 +316,19 @@ observeEvent(input$confirmedGroupList, {
         title = "Summarizing data",
         value = 90
       )
-
-      # Infobox of row and column number in the row count dataset ---------------
-      
-      
-      output$rowOfCountData <- renderUI({
-        infoBox(
-          title = "SHAPE",
-          value = paste0(
-            "c(",
-            dim(variables$CountData)[1],
-            ", ",
-            dim(variables$CountData)[2],
-            ")"
-          ),
-          subtitle = "Row and column numbers in the dataset",
-          width = NULL,
-          icon = icon("list"),
-          fill = TRUE,
-          color = "yellow"
-        )
-      })
-      
-      # Infobox of group informations -------------------------------------------
-      
-      
-      output$groupCount <- renderUI({
-        groupText <- sapply(variables$groupList, length)
-        infoBox(
-          title = "Group Number", 
-          value = length(groupText), 
-          subtitle = paste0(names(groupText), ": ",groupText, collapse = "\n"),
-          width = NULL,
-          icon = icon("users"),
-          fill = TRUE,
-          color = "aqua"
-        )
-      })
-      
-      # Infobox of zero expression in all sample --------------------------------
-      output$zeroValue <- renderUI({
-        zeroValue <-
-          sum((apply(variables$CountData, 1, function(x) {
-            sum(x) == 0
-          })))
-        variables$zeroValue <- paste0(zeroValue, 
-                                      " (", 
-                                      round(zeroValue / nrow(variables$CountData) * 100, 2), 
-                                      "%)")
-        infoBox(
-          title = "NON-EXPRESSED",
-          value = variables$zeroValue,
-          subtitle = "Number of genes with zero counts across samples",
-          width = NULL,
-          icon = icon("exclamation-circle"),
-          fill = TRUE,
-          color = "olive"
-        )
-      })
-      
-      # Infobox of Silhouette Score ----
-      output$silhouette <- renderUI({
-        data <- variables$CountData
-        data.cl <- variables$groupListConvert
-        
-        data.cl <- data.cl[data.cl != 0]
-        data <- data[data.cl != 0]
-        
-        # Filtering
-        obj <- as.logical(rowSums(data) > 0)
-        data <- unique(data[obj,])
-        
-        # AS calculation
-        d <- as.dist(1 - cor(data, method="spearman"))
-        AS <-  mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
-
-        infoBox(title = "average Silhouette",
-                value = round(AS, 3),
-                subtitle = "Degree of separation between different groups",
-                width = NULL,
-                icon = icon("chain"),
-                fill = TRUE,
-                href = "https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8",
-                color = "purple")
-      })
       
       closeSweetAlert(session = session)
       sendSweetAlert(session = session,
                      title = "DONE",
                      text = "Group labels are successfully assigned.",
                      type = "success")
+      
+      v$importActionValue <- input$confirmedGroupList
     },
     error = function(e) {
       sendSweetAlert(
         session = session,
-        title = "Group error!",
+        title = "ERROR",
         text = "Check your group information format!",
         type = "error"
       )
@@ -472,7 +377,7 @@ output$importDataSummary <- renderUI({
     AS <- tagList(
       tags$p(tags$b("Average Silhouettes (AS):"), round(AS, 3)),
       HTML(
-        'A higher AS value <font color="blue">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).
+        'A higher AS value <font color="##00C0EF">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).
         '
       )
       )
@@ -484,7 +389,75 @@ output$importDataSummary <- renderUI({
     tags$p(tags$b("Number of Genes:"), rowCount),
     tags$p(tags$b("Number of Groups:"), groupCount),
     tags$p(tags$b("Number of Replicates:")),
-    tags$p(" "," ", gText),
+    tags$p(gText),
     AS
   )
+})
+
+v <- reactiveValues(importActionValue = FALSE)
+
+output$sampleDistributionDensityPanel <- renderUI({
+  if (v$importActionValue) {
+    tagList(fluidRow(
+      column(
+        2,
+        textInput(
+          inputId = "sampleDistributionDenstityTitle",
+          label = "Title",
+          value = "Original Raw Count",
+          placeholder = "Original Raw Count"
+        ),
+        textInput(
+          inputId = "sampleDistributionDensityXlab",
+          label = "X label",
+          value = "log<sub>2</sub>(Count + 1)",
+          placeholder = "log<sub>2</sub>(Count + 1)"
+        ),
+        textInput(
+          inputId = "sampleDistributionDensityYlab",
+          label = "Y label",
+          value = "Density",
+          placeholder = "Density"
+        )
+      ),
+      column(
+        10,
+        plotlyOutput("sampleDistributionDensity") %>% withSpinner()
+      )
+    ))
+  } else {
+    "No data for ploting. Please import dataset and assign group information first."
+  }
+})
+
+output$sampleDistributionBoxPanel <- renderUI({
+  if (v$importActionValue) {
+    tagList(fluidRow(
+      column(
+        2,
+        textInput(
+          inputId = "sampleDistributionTitle",
+          label = "Title",
+          value = "Original Raw Count",
+          placeholder = "Original Raw Count"
+        ),
+        textInput(
+          inputId = "sampleDistributionXlab",
+          label = "X label",
+          value = "Sample",
+          placeholder = "Sample"
+        ),
+        textInput(
+          inputId = "sampleDistributionYlab",
+          label = "Y label",
+          value = "log<sub>2</sub>(Count + 1)",
+          placeholder = "log<sub>2</sub>(Count + 1)"
+        )
+      ),
+      column(10,
+             plotlyOutput("sampleDistribution") %>% withSpinner())
+    ))
+  } else {
+    "No data for ploting. Please import dataset and assign group information first."
+  }
 })

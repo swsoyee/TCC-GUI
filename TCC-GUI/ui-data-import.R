@@ -74,14 +74,10 @@ fluidPage(fluidRow(column(
     footer = helpText("TCC-GUI expect first label should be Group1 (G1) and the next be Group2 (G2), and so on.")
   ),
   box(
-    title = tagList(icon("info-circle"), "Summary of Data"),
+    title = tagList(icon("info-circle"), "Summary"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
-    # uiOutput("rowOfCountData"),
-    # uiOutput("groupCount"),
-    # uiOutput("zeroValue"),
-    # uiOutput("silhouette")
     uiOutput("importDataSummary")
   )
 ),
@@ -94,104 +90,14 @@ column(
     width = NULL,
     uiOutput("emptyTable")
   ),
-  box(
-    title = tagList(icon("bar-chart"), "Count Distribution (Box Plot)"),
-    solidHeader = TRUE,
-    status = "info",
-    fluidRow(column(
-      1,
-      dropdownButton(
-        tags$h3("Plot options"),
-        textInput(
-          inputId = "sampleDistributionTitle",
-          label = "Title",
-          value = "",
-          placeholder = "Original Raw Count"
-        ),
-        numericInput(
-          inputId = "sampleDistributionLegendY",
-          label = "Legend Y",
-          value = 1
-        ),
-        textInput(
-          inputId = "sampleDistributionXlab",
-          label = "X label",
-          value = "Sample",
-          placeholder = "Sample"
-        ),
-        textInput(
-          inputId = "sampleDistributionYlab",
-          label = "Y label",
-          value = "log<sub>2</sub>(Count + 1)",
-          placeholder = "log<sub>2</sub>(Count + 1)"
-        ),
-        status = "primary",
-        icon = icon("gear"),
-        size = "sm",
-        tooltip = tooltipOptions(title = "Plot options")
-      )
-    ),
-    column(
-      1,
-      dropdownButton(
-        tags$h3("R code"),
-        tags$p("Coming soon"),
-        status = "danger",
-        icon = icon("code"),
-        size = "sm",
-        tooltip = tooltipOptions(title = "Show R code")
-      )
-    )),
-    withBarsUI(plotlyOutput("sampleDistribution"))
+  tabBox(title = "Count Distribution",
+         width = NULL,
+  tabPanel(
+    title = tagList(icon("bar-chart"), "Boxplot"),
+    uiOutput("sampleDistributionBoxPanel")
   ),
-  box(
-    title = tagList(icon("area-chart"), "Count Distribution (Density Plot)"),
-    solidHeader = TRUE,
-    status = "info",
-    fluidRow(column(
-      1,
-      dropdownButton(
-        tags$h3("Plot options"),
-        textInput(
-          inputId = "sampleDistributionDenstityTitle",
-          label = "Title",
-          value = "",
-          placeholder = "Original Raw Count"
-        ),
-        numericInput(
-          inputId = "sampleDistributionDensityLegendY",
-          label = "Legend Y",
-          value = 1.1
-        ),
-        textInput(
-          inputId = "sampleDistributionDensityXlab",
-          label = "X label",
-          value = "log<sub>2</sub>(Count + 1)",
-          placeholder = "log<sub>2</sub>(Count + 1)"
-        ),
-        textInput(
-          inputId = "sampleDistributionDensityYlab",
-          label = "Y label",
-          value = "Density",
-          placeholder = "Density"
-        ),
-        status = "primary",
-        icon = icon("gear"),
-        size = "sm",
-        tooltip = tooltipOptions(title = "Plot options")
-      )
-    ),
-    column(
-      1,
-      dropdownButton(
-        tags$h3("R code"),
-        tags$p("Coming soon"),
-        status = "danger",
-        icon = icon("code"),
-        size = "sm",
-        tooltip = tooltipOptions(title = "Show R code")
-      )
-    )),
-    withBarsUI(plotlyOutput("sampleDistributionDensity"))
-  )
+  tabPanel(
+    title = tagList(icon("area-chart"), "Density Plot"),
+    uiOutput("sampleDistributionDensityPanel")
+  ))
 )))

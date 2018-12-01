@@ -240,7 +240,7 @@ observeEvent(input$simulationRun, {
     output$simulationGroupInfo <- renderUI({
       tagList(
         tags$hr(),
-        tags$p("Group information:"),
+        tags$p(tags$b("Group information:")),
         verbatimTextOutput("simulationGroupInfoText")
       )
     })
@@ -305,12 +305,12 @@ output$simuParams <- renderUI({
 
   tagList(
     tags$div(style = "line-height:100%;",
-    HTML("<p>Number of Genes ( N<sub>gene</sub> ): ", GroupNum, "</p>"),
-    HTML("<p>Proportion of DEGs ( P<sub>DEG</sub> ): ", input$simulationPDEG, "</p>"),
-    HTML("<p>Number of Groups ( N<sub>group</sub> ): ", input$simulationGroupNum, "</p>"),
-    HTML("<p>Assignment of DEGs (", paste0(names(DEG.assign), collapse = ", "), "): ", paste0(DEG.assign, collapse = ", "), "</p>"),
-    HTML("<p>Degree of Fold-change (", paste0(names(DEG.foldchange), collapse = ", "), "): ", paste0(DEG.foldchange, collapse = ", "), "</p>"),
-    HTML("Number of Replicates (", paste0(names(replicates), collapse = ", "), "): ", paste0(replicates, collapse = ", "), "</p>"),
+    HTML("<p><b>Number of Genes ( N<sub>gene</sub> ): </b>", GroupNum, "</p>"),
+    HTML("<p><b>Proportion of DEGs ( P<sub>DEG</sub> ): </b>", input$simulationPDEG, "</p>"),
+    HTML("<p><b>Number of Groups ( N<sub>group</sub> ): </b>", input$simulationGroupNum, "</p>"),
+    HTML("<p><b>Assignment of DEGs (", paste0(names(DEG.assign), collapse = ", "), "): </b>", paste0(DEG.assign, collapse = ", "), "</p>"),
+    HTML("<p><b>Degree of Fold-change (", paste0(names(DEG.foldchange), collapse = ", "), "): </b>", paste0(DEG.foldchange, collapse = ", "), "</p>"),
+    HTML("<b>Number of Replicates (", paste0(names(replicates), collapse = ", "), "): </b>", paste0(replicates, collapse = ", "), "</p>"),
     uiOutput("simulationGroupInfo")
     )
   )
