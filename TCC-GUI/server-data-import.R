@@ -210,77 +210,6 @@ observeEvent(input$confirmedGroupList, {
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
-        title = "Ploting Sample Distribution",
-        value = 20
-      )
-
-      
-      # This function render a boxplot of sample distribution ----
-
-      data <- variables$CountData[variables$groupListConvert != 0]
-      cpm <- log2(data + 1)
-
-      updateProgressBar(
-        session = session,
-        id = "dataImportProgress",
-        title = "Ploting Sample Distribution",
-        value = 40
-      )
-      updateProgressBar(
-        session = session,
-        id = "dataImportProgress",
-        title = "Ploting Sample Distribution",
-        value = 60
-      )
-
-      # This function render a density plot of sample distribution ----
-
-      updateProgressBar(
-        session = session,
-        id = "dataImportProgress",
-        title = "Ploting Sample Distribution Density",
-        value = 80
-      )
-      
-      densityTable <-lapply(cpm, function(x) {density(x)})
-      p <- plot_ly(type = "scatter", mode = "lines")
-      for(i in 1:length(densityTable)){
-        p <- add_trace(p, x = densityTable[[i]][[1]],
-                       y = densityTable[[i]][[2]],
-                       color = factor(group[V1 == names(densityTable[i]), V2]),
-                       name = names(densityTable[i]))
-      }
-      
-      output$sampleDistributionDensity <- renderPlotly({
-        pp <- p %>%
-          layout(
-            title = input$sampleDistributionDenstityTitle,
-            xaxis = list(title = input$sampleDistributionDensityXlab),
-            yaxis = list(title = input$sampleDistributionDensityYlab)
-          )
-        variables$sampleDistributionDensity <- pp
-        pp
-      })
-      
-      # The same plot used in Calculation tab.
-      output$sampleDistributionDensityTCC <- renderPlotly({
-        p %>%
-          layout(
-            title = input$sampleDistributionDenstityTitle,
-            xaxis = list(title = input$sampleDistributionDensityXlab),
-            yaxis = list(title = input$sampleDistributionDensityYlab),
-            legend = list(
-              orientation = 'h',
-              xanchor = "center",
-              x = 0.5,
-              y = input$sampleDistributionDensityLegendY
-            )
-          )
-      })
-
-      updateProgressBar(
-        session = session,
-        id = "dataImportProgress",
         title = "Summarizing data",
         value = 90
       )
@@ -397,12 +326,57 @@ output$sampleDistributionBox <- renderPlotly({
   }
 })
 
+# Render a density plot of sample distribution ----
+output$sampleDistributionDensity <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    if (input$densityFilter > -1) {
+      count <-
+        filterLowCountGenes(tcc, low.count = input$densityFilter)$count
+    } else {
+      count <- tcc$count
+    }
+    data <- log2(count + 1)
+    
+    group <- tcc$group
+    densityTable <- apply(data, 2, function(x) {
+      density(x)
+    })
+    p <- plot_ly(type = "scatter", mode = "lines")
+    for (i in 1:length(densityTable)) {
+      p <- add_trace(
+        p,
+        x = densityTable[[i]][[1]],
+        y = densityTable[[i]][[2]],
+        color = group[rownames(group) == names(densityTable[i]), ],
+        name = names(densityTable[i])
+      )
+    }
+    
+    pp <- p %>%
+      layout(
+        title = input$sampleDistributionDenstityTitle,
+        xaxis = list(title = input$sampleDistributionDensityXlab),
+        yaxis = list(title = input$sampleDistributionDensityYlab)
+      )
+    variables$sampleDistributionDensity <- pp
+    pp
+  } else {
+    return()
+  }
+})
+
 # Sample Distribution Density Plot UI ----
 output$sampleDistributionDensityPanel <- renderUI({
   if (v$importActionValue) {
     tagList(fluidRow(
       column(
         3,
+        sliderInput(inputId = "densityFilter",
+                    label = "Filter genes threshold",
+                    min = -1,
+                    max = 100,
+                    value = -1),
         textInput(
           inputId = "sampleDistributionDenstityTitle",
           label = "Title",

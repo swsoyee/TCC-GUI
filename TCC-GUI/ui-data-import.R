@@ -12,9 +12,9 @@ fluidPage(fluidRow(column(
         "SampleDatabase",
         "Select Sample Data",
         choices = c(
-          "hypodata (sample dataset)" = "sample_data/data_hypodata_3vs3.txt",
-          "katz.mouse" = "sample_data/katzmouse_count_table.txt",
-          "cheung" = "sample_data/cheung_count_table.txt"
+          "hypodata (sample dataset)" = "sample_data/data_hypodata_3vs3.txt"#,
+         # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
+          #"cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
       helpText("Quick start with sample dataset."),

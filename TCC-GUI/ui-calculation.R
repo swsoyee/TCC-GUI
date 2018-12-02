@@ -96,10 +96,10 @@ column(
     tabPanel(
       title = tagList(icon("table"), "Summary of TCC normalization"),
       uiOutput("tccSummationUI")
-    ),
-    tabPanel(
-      title = tagList(icon("area-chart"), "Density Plot (Filtering)"),
-      uiOutput("norDistributionDensityPanel")
-    )
+    )#,
+    # tabPanel(
+    #   title = tagList(icon("area-chart"), "Density Plot (Filtering)"),
+    #   uiOutput("norDistributionDensityPanel")
+    # )
   )
 )))

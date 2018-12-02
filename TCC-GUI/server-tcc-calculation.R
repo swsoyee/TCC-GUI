@@ -278,27 +278,27 @@ observeEvent(input$TCC, {
   
   # Render a density plot of normalized sample distribution ----
   
-  output$NormalizedSampleDistributionDensity <- renderPlotly({
-    
-    cpm <- log2(variables$norData + 1)
-    densityTable <-lapply(data.frame(cpm),  function(x) {density(x)})
-    p <- plot_ly(type = "scatter", mode = "lines")
-    
-    for(i in 1:length(densityTable)){
-      # Color group definition
-      group <- sapply(variables$groupList, function(x) {names(densityTable[i]) %in% x})
-      
-      p <- add_trace(p, x = densityTable[[i]][[1]],
-                     y = densityTable[[i]][[2]],
-                     color = names(group[group]),
-                     name = names(densityTable[i]))
-    }
-    p %>%
-      layout(title = input$norDistributionDenstityTitle,
-             xaxis = list(title = input$norDistributionDensityXlab),
-             yaxis = list(title = input$norDistributionDensityYlab))
-  })
-  
+  # output$NormalizedSampleDistributionDensity <- renderPlotly({
+  #   
+  #   cpm <- log2(variables$norData + 1)
+  #   densityTable <-lapply(data.frame(cpm),  function(x) {density(x)})
+  #   p <- plot_ly(type = "scatter", mode = "lines")
+  #   
+  #   for(i in 1:length(densityTable)){
+  #     # Color group definition
+  #     group <- sapply(variables$groupList, function(x) {names(densityTable[i]) %in% x})
+  #     
+  #     p <- add_trace(p, x = densityTable[[i]][[1]],
+  #                    y = densityTable[[i]][[2]],
+  #                    color = names(group[group]),
+  #                    name = names(densityTable[i]))
+  #   }
+  #   p %>%
+  #     layout(title = input$norDistributionDenstityTitle,
+  #            xaxis = list(title = input$norDistributionDensityXlab),
+  #            yaxis = list(title = input$norDistributionDensityYlab))
+  # })
+  # 
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
@@ -355,39 +355,39 @@ output$tccSummationUI <- renderUI({
   }
 })
 
-output$norDistributionDensityPanel <- renderUI({
-  if (tccRun$tccRunValue) {
-    tagList(fluidRow(
-      column(
-        3,
-        textInput(
-          inputId = "norDistributionDenstityTitle",
-          label = "Title",
-          value = "Normalized Count",
-          placeholder = "Normalized Count"
-        ),
-        textInput(
-          inputId = "norDistributionDensityXlab",
-          label = "X label",
-          value = "log<sub>2</sub>(Count<sub>nor</sub> + 1)",
-          placeholder = "log<sub>2</sub>(Count<sub>nor</sub> + 1)"
-        ),
-        textInput(
-          inputId = "norDistributionDensityYlab",
-          label = "Y label",
-          value = "Density",
-          placeholder = "Density"
-        )
-      ),
-      column(
-        9,
-        plotlyOutput("NormalizedSampleDistributionDensity") %>% withSpinner()
-      )
-    ))
-  } else {
-    helpText("Click [Run TCC Calculation] to execute TCC computation first.")
-  }
-})
+# output$norDistributionDensityPanel <- renderUI({
+#   if (tccRun$tccRunValue) {
+#     tagList(fluidRow(
+#       column(
+#         3,
+#         textInput(
+#           inputId = "norDistributionDenstityTitle",
+#           label = "Title",
+#           value = "Normalized Count",
+#           placeholder = "Normalized Count"
+#         ),
+#         textInput(
+#           inputId = "norDistributionDensityXlab",
+#           label = "X label",
+#           value = "log<sub>2</sub>(Count<sub>nor</sub> + 1)",
+#           placeholder = "log<sub>2</sub>(Count<sub>nor</sub> + 1)"
+#         ),
+#         textInput(
+#           inputId = "norDistributionDensityYlab",
+#           label = "Y label",
+#           value = "Density",
+#           placeholder = "Density"
+#         )
+#       ),
+#       column(
+#         9,
+#         plotlyOutput("NormalizedSampleDistributionDensity") %>% withSpinner()
+#       )
+#     ))
+#   } else {
+#     helpText("Click [Run TCC Calculation] to execute TCC computation first.")
+#   }
+# })
 
 # Filtered number preview ----
 output$lowCountFilterText <- renderText({
