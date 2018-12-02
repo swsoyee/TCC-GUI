@@ -13,6 +13,7 @@ shinyServer(function(input, output, session) {
     groupList = NULL,
     groupListConvert = NULL,
     result = data.frame("Results will show here." = character(0)),
+    tccObject = NULL,
     zeroValue = "",
     norData = "",
     runTCCCode = "",

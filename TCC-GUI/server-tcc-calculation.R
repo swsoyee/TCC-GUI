@@ -1,64 +1,5 @@
 # server-tcc-calculation.R
 
-observeEvent(input$sider, {
-  if (input$sider == "calculationTab") {
-    data <- variables$CountData
-    data.cl <- unlist(variables$groupList)
-    tryCatch({
-      output$lowCountFilterByCutoff <- renderPlotly({
-        
-        cData <- data[, data.cl %in% colnames(data)]
-        lowCount <- sapply(0:input$lowCountSlide, function(x){sum(rowSums(cData) <= x)})
-        
-        lowCountdt <- data.frame(
-          "Cutoff" = 0:input$lowCountSlide,
-          "Filtered" = lowCount,
-          "Remain" = nrow(cData) - lowCount
-        )
-        
-        plot_ly(
-          lowCountdt,
-          name = "Filtered",
-          x =  ~ Cutoff,
-          y =  ~ Filtered,
-          hoverinfo = "text+name",
-          hovertext = ~ paste0(
-            "Cut off: ",
-            Cutoff,
-            "<br>Filtered number: ",
-            Filtered,
-            "<br>Remain number: ",
-            Remain,
-            "(",
-            round(Remain / nrow(data) * 100, 2),
-            "%)"
-          ),
-          type = "bar"
-        ) %>% add_trace(
-          name = "Remain",
-          y =  ~ Remain,
-          yaxis = "y2",
-          type = "scatter",
-          mode = "lines"
-        )  %>% layout(
-          title = "Filtering Threshold for Low Count Genes",
-          xaxis = list(title = "Filtering Low Count Cut off"),
-          yaxis = list(title = "Filtered number", 
-                       titlefont = list(color = "#1F77B4"),
-                       autorange = FALSE,
-                       range = c(0, 2*max(lowCountdt$Filtered))
-                       ),
-          yaxis2 = list(title = "Remain number",
-                        titlefont = list(color = "#FF7F0E"),
-                        overlaying = "y", 
-                        rangemode = "tozero",
-                        side = "right")
-        )
-      })
-    })
-  }
-})
-
 # If the run TCC botton has been clicked, execute TCC calculation ---------
 
 tccRun <- reactiveValues(tccRunValue = FALSE)
@@ -88,17 +29,13 @@ observeEvent(input$TCC, {
     value = 20
   )
   # Create TCC Object
-  tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
+  # tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
+  tcc <- variables$tccObject
   # Filter low count genes before calculation
   if(input$filterLowCount != -1){
     tcc <-
       filterLowCountGenes(tcc, low.count = input$filterLowCount)
   }
-  # Filtered number preview ----
-  output$lowCountFilterText <- renderText({
-    filtered <- nrow(data) - nrow(tcc$count)
-    paste0(filtered, " genes (", 100 * (filtered / nrow(data)) ,"%) have been filtered out.")
-  })
   
   updateProgressBar(
     session = session,
@@ -126,7 +63,8 @@ observeEvent(input$TCC, {
   tcc <- estimateDE(tcc,
                     test.method = input$testMethod,
                     FDR = input$fdr)
-  # incProgress(1, detail = "Done.")
+  variables$tccObject <- tcc
+  
   updateProgressBar(
     session = session,
     id = "tccCalculationProgress",
@@ -407,7 +345,7 @@ output$mainResultTable <- renderUI({
   }
 })
 
-# Runder tcc summary table ----
+# Render tcc summary table ----
 output$tccSummationUI <- renderUI({
   if(tccRun$tccRunValue){
   tagList(
@@ -421,7 +359,7 @@ output$norDistributionDensityPanel <- renderUI({
   if (tccRun$tccRunValue) {
     tagList(fluidRow(
       column(
-        2,
+        3,
         textInput(
           inputId = "norDistributionDenstityTitle",
           label = "Title",
@@ -442,11 +380,28 @@ output$norDistributionDensityPanel <- renderUI({
         )
       ),
       column(
-        10,
+        9,
         plotlyOutput("NormalizedSampleDistributionDensity") %>% withSpinner()
       )
     ))
   } else {
     helpText("Click [Run TCC Calculation] to execute TCC computation first.")
+  }
+})
+
+# Filtered number preview ----
+output$lowCountFilterText <- renderText({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    data <- tcc$count
+    tcc <-
+      filterLowCountGenes(tcc, low.count = input$filterLowCount)
+    filtered <- nrow(data) - nrow(tcc$count)
+    paste0(filtered,
+           " genes (",
+           100 * (filtered / nrow(data)) ,
+           "%) have been filtered out.")
+  } else {
+    return()
   }
 })

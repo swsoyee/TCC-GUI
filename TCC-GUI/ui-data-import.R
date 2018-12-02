@@ -90,14 +90,22 @@ column(
     width = NULL,
     uiOutput("emptyTable")
   ),
-  tabBox(title = "Count Distribution",
-         width = NULL,
-  tabPanel(
-    title = tagList(icon("bar-chart"), "Boxplot"),
-    uiOutput("sampleDistributionBoxPanel")
-  ),
-  tabPanel(
-    title = tagList(icon("area-chart"), "Density Plot"),
-    uiOutput("sampleDistributionDensityPanel")
-  ))
+  tabBox(
+    title = "",
+    width = NULL,
+    tabPanel(
+      title = tagList(icon("bar-chart"), "Boxplot"),
+      uiOutput("sampleDistributionBoxPanel")
+    ),
+    tabPanel(
+      title = tagList(icon("filter"), "Filtering Threshold"),
+      uiOutput("lowCountFilterByCutoffUI")
+    ),
+    tabPanel(title = tagList(icon("object-group"), "MDS Plot"),
+             uiOutput("mdsUI")),
+    tabPanel(
+      title = tagList(icon("area-chart"), "Density Plot"),
+      uiOutput("sampleDistributionDensityPanel")
+    )
+  )
 )))

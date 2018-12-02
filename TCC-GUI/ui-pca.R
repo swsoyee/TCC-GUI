@@ -24,14 +24,11 @@ column(
     title = "",
     width = NULL,
     tabPanel(tagList(icon("bar-chart"), "Scree Plot"),
-             plotlyOutput("pcaVariances") %>% withSpinner()),
+             plotlyOutput("pcaVariances")),
     tabPanel(tagList(icon("cube"), "PCA Plot (3D)"),
-             plotlyOutput("pcabiplot3d") %>% withSpinner()),
+             plotlyOutput("pcabiplot3d")),
     tabPanel(tagList(icon("square-o"), "PCA Plot (2D)"),
-             plotlyOutput("pcabiplot") %>% withSpinner())#,
-    # tabPanel("Cluster",
-    #          plotOutput("pcacluster")),
-    # )
+             plotlyOutput("pcabiplot"))
   ),
   box(
     title = tagList(icon("info-circle"), "Summary of PCA"),

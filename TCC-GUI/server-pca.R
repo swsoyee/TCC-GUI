@@ -60,13 +60,9 @@ observeEvent(input$pcFDR, {
   })
 })
 
-# ====================================
-# If [Run PCA] button has been clicked, then run the whole PCA Analysis.
-# Position: In [PCA Analysis tab], upper left. 
-# ====================================
-# Input: pcRun (Button)
-# Output: All PCA output
-# ====================================
+
+# [Run PCA] button has been clicked, then run the whole PCA Analysis. ----
+
 observeEvent(input$pcRun, {
   # Select Sample (Column)
   # Grouping.

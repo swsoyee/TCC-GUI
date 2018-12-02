@@ -201,6 +201,10 @@ observeEvent(input$confirmedGroupList, {
       # Storage convert group list to local
       variables$groupListConvert <- data.cl
       
+      # Create TCC Object
+      tcc <- new("TCC", variables$CountData[data.cl != 0], data.cl[data.cl != 0])
+      variables$tccObject <- tcc
+      
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
@@ -212,7 +216,6 @@ observeEvent(input$confirmedGroupList, {
       # This function render a boxplot of sample distribution ----
       
       data <- variables$CountData[variables$groupListConvert != 0]
-      # cpm <- log2(data / 1000000)
       cpm <- log2(data + 1)
       cpm_stack <- stack(cpm)
       # Add a group column in case of bugs.
@@ -278,7 +281,6 @@ observeEvent(input$confirmedGroupList, {
       for(i in 1:length(densityTable)){
         p <- add_trace(p, x = densityTable[[i]][[1]],
                        y = densityTable[[i]][[2]],
-                       # fill = "tozeroy",
                        color = factor(group[V1 == names(densityTable[i]), V2]),
                        name = names(densityTable[i]))
       }
@@ -396,11 +398,12 @@ output$importDataSummary <- renderUI({
 
 v <- reactiveValues(importActionValue = FALSE)
 
+# Sample Distribution Density Plot UI ----
 output$sampleDistributionDensityPanel <- renderUI({
   if (v$importActionValue) {
     tagList(fluidRow(
       column(
-        2,
+        3,
         textInput(
           inputId = "sampleDistributionDenstityTitle",
           label = "Title",
@@ -421,7 +424,7 @@ output$sampleDistributionDensityPanel <- renderUI({
         )
       ),
       column(
-        10,
+        9,
         plotlyOutput("sampleDistributionDensity") %>% withSpinner()
       )
     ))
@@ -430,11 +433,12 @@ output$sampleDistributionDensityPanel <- renderUI({
   }
 })
 
+# Sample Distribution Boxplot UI ----
 output$sampleDistributionBoxPanel <- renderUI({
   if (v$importActionValue) {
     tagList(fluidRow(
       column(
-        2,
+        3,
         textInput(
           inputId = "sampleDistributionTitle",
           label = "Title",
@@ -454,8 +458,158 @@ output$sampleDistributionBoxPanel <- renderUI({
           placeholder = "log<sub>2</sub>(Count + 1)"
         )
       ),
-      column(10,
+      column(9,
              plotlyOutput("sampleDistribution") %>% withSpinner())
+    ))
+  } else {
+    helpText("No data for ploting. Please import dataset and assign group information first.")
+  }
+})
+
+# Filtering low count under different low number, barplot ----
+output$lowCountFilterByCutoff <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    data <- tcc$count
+    originalCount <- nrow(data)
+    
+    lowCount <-
+      sapply(0:input$lowCountSlide, function(x) {
+        nrow(filterLowCountGenes(tcc, low.count = x)$count)
+      })
+    
+    lowCountdt <- data.frame(
+      "Cutoff" = 0:input$lowCountSlide,
+      "Filtered" = originalCount - lowCount,
+      "Remain" = lowCount
+    )
+    
+    plot_ly(
+      lowCountdt,
+      name = "Filtered",
+      x =  ~ Cutoff,
+      y =  ~ Filtered,
+      text = ~ Filtered,
+      textposition = "outside",
+      hoverinfo = "text+name",
+      hovertext = ~ paste0(
+        "Cut off: ",
+        Cutoff,
+        "<br>Filtered number: ",
+        Filtered,
+        "<br>Remain number: ",
+        Remain,
+        "(",
+        round(Remain / nrow(data) * 100, 2),
+        "%)"
+      ),
+      type = "bar"
+    ) %>% add_trace(
+      name = "Remain",
+      y =  ~ Remain,
+      yaxis = "y2",
+      type = "scatter",
+      mode = "lines"
+    )  %>% layout(
+      title = "Filtering Threshold for Low Count Genes",
+      xaxis = list(title = "Filtering Low Count Cut off"),
+      yaxis = list(
+        title = "Filtered number",
+        titlefont = list(color = "#1F77B4"),
+        autorange = FALSE,
+        range = c(0, 3 * max(lowCountdt$Filtered))
+      ),
+      yaxis2 = list(
+        title = "Remain number",
+        titlefont = list(color = "#FF7F0E"),
+        overlaying = "y",
+        rangemode = "tozero",
+        side = "right"
+      )
+    )
+  } else {
+    return()
+  }
+})
+
+# Render Filtering Cutoff UI ----
+output$lowCountFilterByCutoffUI <- renderUI({
+  if (v$importActionValue) {
+    tagList(fluidRow(
+      column(
+        3,
+        sliderInput(
+          inputId = "lowCountSlide",
+          label = "Max Low Gene Count",
+          min = 3,
+          max = 50,
+          value = 15,
+          step = 1
+        )
+      ),
+      column(9, plotlyOutput("lowCountFilterByCutoff") %>% withSpinner())
+    ))
+  } else {
+    helpText("No data for ploting. Please import dataset and assign group information first.")
+  }
+})
+
+# MDS Plot ----
+output$mdsPlotObject <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    mds <-
+      data.frame(cmdscale(dist(
+        1 - cor(tcc$count, method = input$mdsMethod),
+        method = input$mdsDistMethod
+      )))
+    mds$name <- rownames(mds)
+    mdsG <- tcc$group
+    mdsG$name <- rownames(mdsG)
+    mdsJ <- left_join(mds, mdsG, by = "name")
+    plot_ly(
+      data = mdsJ,
+      x = ~ X1,
+      y = ~ X2,
+      type = "scatter",
+      mode = "text",
+      text =  ~ name,
+      color = ~ group
+    ) %>% layout(title = "MDS Plot")
+  } else {
+    return()
+  }
+})
+
+# Render MDS plot ----
+output$mdsUI <- renderUI({
+  if (v$importActionValue) {
+    tagList(fluidRow(
+      column(
+        3,
+        selectInput(
+          inputId = "mdsDistMethod",
+          label = "Distance Measure",
+          choices = c(
+            "Euclidean" = "euclidean",
+            "Maximum" = "maximum",
+            "Manhattan" = "manhattan",
+            "Canberra" = "canberra",
+            "Binary" = "binary",
+            "Minkowski" = "minkowski"
+          )
+        ),
+        selectInput(
+          inputId = "mdsMethod",
+          label = "Correlation Coefficient",
+          choices = c(
+            "Spearman" = "spearman",
+            "Pearson" = "pearson",
+            "Kendall" = "kendall"
+          )
+        )
+      ),
+      column(9, plotlyOutput("mdsPlotObject") %>% withSpinner())
     ))
   } else {
     helpText("No data for ploting. Please import dataset and assign group information first.")

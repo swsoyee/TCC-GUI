@@ -93,25 +93,9 @@ column(
     title = "",
     id = "sampleDistributionInTCC",
     width = NULL,
-    tabPanel(title = tagList(icon("line-chart"), "Filtering Threshold"),
-             fluidRow(
-               column(
-                 2,
-                 sliderInput(
-                   inputId = "lowCountSlide",
-                   label = "Max Low Gene Count",
-                   min = 3,
-                   max = 100,
-                   value = 50,
-                   step = 1
-                 )
-               ),
-               column(10, plotlyOutput("lowCountFilterByCutoff") %>% withSpinner())
-             )),
     tabPanel(
       title = tagList(icon("table"), "Summary of TCC normalization"),
-      fluidRow(column(12,
-                      uiOutput("tccSummationUI")))
+      uiOutput("tccSummationUI")
     ),
     tabPanel(
       title = tagList(icon("area-chart"), "Density Plot (Filtering)"),
