@@ -7,6 +7,7 @@
 # 2018-5-23 Change read.table to fread.
 
 observeEvent(input$CountDataSample, {
+  variables$tccObject <- NULL
   variables$CountData <-
     data.frame(fread(input$SampleDatabase), row.names = 1)
   
@@ -89,6 +90,7 @@ observeEvent(input$uploadCountData, {
   showNotification("Start uploading file...", type = "message")
   tryCatch({
     variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
+    variables$tccObject <- NULL
     showNotification("Received uploaded file.", type = "message")
   },
   error = function(e) {
@@ -214,52 +216,16 @@ observeEvent(input$confirmedGroupList, {
 
       
       # This function render a boxplot of sample distribution ----
-      
+
       data <- variables$CountData[variables$groupListConvert != 0]
       cpm <- log2(data + 1)
-      cpm_stack <- stack(cpm)
-      # Add a group column in case of bugs.
-      cpm_stack$group <- 0
-      # Add Group info
-      for (i in 1:length(variables$groupList)) {
-        cpm_stack[is.element(cpm_stack$ind, variables$groupList[[i]]), ]$group <-
-          names(variables$groupList[i])
-      }
-      # Reorder X axis, in case of some those dataset which sample name are not
-      # in group order
-      cpm_stack_order <-
-        unique(cpm_stack[order(cpm_stack$group), ]$ind)
-      xform <- list(
-        categoryorder = "array",
-        categoryarray = cpm_stack_order
-      )
-      
+
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
         title = "Ploting Sample Distribution",
         value = 40
       )
-      
-      psd <- plot_ly(
-        data = cpm_stack,
-        x =  ~ ind,
-        y =  ~ values,
-        type = "box",
-        split = ~group,
-        color = ~group
-      )
-      output$sampleDistribution <- renderPlotly({
-        xform$title <- input$sampleDistributionXlab
-        p <- psd %>%
-          layout(
-            title = input$sampleDistributionTitle,
-            xaxis = xform,
-            yaxis = list(title = input$sampleDistributionYlab)
-          )
-        variables$sampleDistributionBar <- p
-        p
-      })
       updateProgressBar(
         session = session,
         id = "dataImportProgress",
@@ -365,10 +331,10 @@ output$importDataSummary <- renderUI({
   data.cl <- variables$groupListConvert
   cName <- unlist(variables$groupList)
   
-  if(all(cName %in% colnames(data)) & nrow(data) > 0 & length(data.cl) > 0){
-    data.cl <- data.cl[data.cl != 0]
-    data <- data[data.cl != 0]
-    
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    data <- tcc$count
+    data.cl <- tcc$group$group
     # Filtering
     obj <- as.logical(rowSums(data) > 0)
     data <- unique(data[obj,])
@@ -382,11 +348,10 @@ output$importDataSummary <- renderUI({
         'A higher AS value <font color="##00C0EF">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).
         '
       )
-      )
+    )
   } else {
-    AS <- NULL
+    AS <- helpText("Assign group information needed.")
   }
-  
   tagList(
     tags$p(tags$b("Number of Genes:"), rowCount),
     tags$p(tags$b("Number of Groups:"), groupCount),
@@ -397,6 +362,40 @@ output$importDataSummary <- renderUI({
 })
 
 v <- reactiveValues(importActionValue = FALSE)
+
+# This function render a boxplot of sample distribution ----
+
+output$sampleDistributionBox <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    data <- tcc$count
+
+    cpm <- log2(data + 1)
+    cpm_stack <- data.frame(stack(cpm))
+
+    # Add Group info
+    group <- data.frame("col" = rownames(tcc$group), "group" = tcc$group$group)
+    data <- left_join(cpm_stack, group, by = "col")
+    data <- arrange(data, group)
+    
+    p <- plot_ly(
+      data = data,
+      x = ~ col,
+      y = ~ NA..1,
+      type = "box",
+      split = ~ group,
+      color = ~ group
+    ) %>% layout(
+      title = input$sampleDistributionTitle,
+      xaxis = list(title = input$sampleDistributionXlab),
+      yaxis = list(title = input$sampleDistributionYlab)
+    )
+    variables$sampleDistributionBar <- p
+    p
+  } else {
+    return()
+  }
+})
 
 # Sample Distribution Density Plot UI ----
 output$sampleDistributionDensityPanel <- renderUI({
@@ -459,7 +458,7 @@ output$sampleDistributionBoxPanel <- renderUI({
         )
       ),
       column(9,
-             plotlyOutput("sampleDistribution") %>% withSpinner())
+             plotlyOutput("sampleDistributionBox") %>% withSpinner())
     ))
   } else {
     helpText("No data for ploting. Please import dataset and assign group information first.")
@@ -486,10 +485,10 @@ output$lowCountFilterByCutoff <- renderPlotly({
     
     plot_ly(
       lowCountdt,
-      name = "Filtered",
+      name = "Remain",
       x =  ~ Cutoff,
-      y =  ~ Filtered,
-      text = ~ Filtered,
+      y =  ~ Remain,
+      text = ~ Remain,
       textposition = "outside",
       hoverinfo = "text+name",
       hovertext = ~ paste0(
@@ -505,27 +504,16 @@ output$lowCountFilterByCutoff <- renderPlotly({
       ),
       type = "bar"
     ) %>% add_trace(
-      name = "Remain",
-      y =  ~ Remain,
-      yaxis = "y2",
-      type = "scatter",
-      mode = "lines"
+      name = "Filtered",
+      y =  ~ Filtered,
+      text = ~ Filtered,
+      type = "bar",
+      textposition = "inside"
     )  %>% layout(
       title = "Filtering Threshold for Low Count Genes",
+      barmode = "stack",
       xaxis = list(title = "Filtering Low Count Cut off"),
-      yaxis = list(
-        title = "Filtered number",
-        titlefont = list(color = "#1F77B4"),
-        autorange = FALSE,
-        range = c(0, 3 * max(lowCountdt$Filtered))
-      ),
-      yaxis2 = list(
-        title = "Remain number",
-        titlefont = list(color = "#FF7F0E"),
-        overlaying = "y",
-        rangemode = "tozero",
-        side = "right"
-      )
+      yaxis = list(title = "Gene number")
     )
   } else {
     return()
@@ -538,9 +526,10 @@ output$lowCountFilterByCutoffUI <- renderUI({
     tagList(fluidRow(
       column(
         3,
+        helpText("Filter genes with a total read count smaller than thresholds."),
         sliderInput(
           inputId = "lowCountSlide",
-          label = "Max Low Gene Count",
+          label = "Max threshold",
           min = 3,
           max = 50,
           value = 15,
@@ -610,6 +599,63 @@ output$mdsUI <- renderUI({
         )
       ),
       column(9, plotlyOutput("mdsPlotObject") %>% withSpinner())
+    ))
+  } else {
+    helpText("No data for ploting. Please import dataset and assign group information first.")
+  }
+})
+
+# Dend and heatmap ----
+output$dendPlotObject <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    data <- tcc$count[rowSums(tcc$count) > 0, ]
+    data <- data.frame(1 - cor(data, method = input$dendCor))
+    data.cl.count <- length(unique(tcc$group$group))
+    heatmaply(
+      data,
+      k_col = data.cl.count,
+      k_row = data.cl.count,
+      hclust_method = input$dendCluster,
+      labRow = rownames(data),
+      labCol = colnames(data),
+      colors = rev(GnBu(500))
+    )
+  } else {
+    return()
+  }
+})
+
+# Render dend and heatmap UI ----
+output$dendUI <- renderUI({
+  if (v$importActionValue) {
+    tagList(fluidRow(
+      column(
+        3,
+        selectInput(
+          inputId = "dendCluster",
+          label = "Distance Measure",
+          choices = c(
+            "Complete" = "complete",
+            "Ward.D" = "ward.D",
+            "Ward.D2" = "ward.D2",
+            "Single" = "single",
+            "UPGMA (Average)" = "average",
+            "WPGMA (Mcquitty)" = "mcquitty",
+            "WPGMC (Median)" = "median",
+            "UPGMC (centroid)" = "centroid"
+          )
+        ),
+        selectInput(
+          inputId = "dendCor",
+          label = "Correlation Coefficient",
+          choices = c(
+            "Spearman" = "spearman",
+            "Pearson" = "pearson"
+          )
+        )
+      ),
+      column(9, plotlyOutput("dendPlotObject") %>% withSpinner())
     ))
   } else {
     helpText("No data for ploting. Please import dataset and assign group information first.")

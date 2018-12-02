@@ -12,9 +12,9 @@ fluidPage(fluidRow(column(
         "SampleDatabase",
         "Select Sample Data",
         choices = c(
-          "hypodata (sample dataset)" = "sample_data/data_hypodata_3vs3.txt" #,
-          # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
-          # "cheung" = "sample_data/cheung_count_table.txt"
+          "hypodata (sample dataset)" = "sample_data/data_hypodata_3vs3.txt",
+          "katz.mouse" = "sample_data/katzmouse_count_table.txt",
+          "cheung" = "sample_data/cheung_count_table.txt"
         )
       ),
       helpText("Quick start with sample dataset."),
@@ -43,7 +43,7 @@ fluidPage(fluidRow(column(
   )
   ,
   box(
-    title = tagList(icon("sitemap"), "Group Assignment"),
+    title = tagList(icon("tags"), "Group Assignment"),
     solidHeader = TRUE,
     status = "primary",
     width = NULL,
@@ -94,18 +94,20 @@ column(
     title = "",
     width = NULL,
     tabPanel(
-      title = tagList(icon("bar-chart"), "Boxplot"),
+      title = tagList(icon("bar-chart"), "Count Distribution"),
       uiOutput("sampleDistributionBoxPanel")
     ),
     tabPanel(
       title = tagList(icon("filter"), "Filtering Threshold"),
       uiOutput("lowCountFilterByCutoffUI")
     ),
-    tabPanel(title = tagList(icon("object-group"), "MDS Plot"),
-             uiOutput("mdsUI")),
     tabPanel(
       title = tagList(icon("area-chart"), "Density Plot"),
       uiOutput("sampleDistributionDensityPanel")
-    )
+    ),
+    tabPanel(title = tagList(icon("object-group"), "MDS Plot"),
+             uiOutput("mdsUI")),
+    tabPanel(title = tagList(icon("sitemap"), "Hierarchical Clustering"),
+             uiOutput("dendUI"))
   )
 )))
