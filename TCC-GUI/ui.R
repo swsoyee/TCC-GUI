@@ -223,7 +223,7 @@ tags$footer(
   tags$a(" Bioinformation Engineering Lab, ", href = "http://www.bi.a.u-tokyo.ac.jp/"), 
   tags$a(" Graduate School of Agricultural and Life Sciences / Faculty of Agriculture, ", href = "http://www.a.u-tokyo.ac.jp/english/index.html"),
   tags$a(" The University of Tokyo ", href = "https://www.u-tokyo.ac.jp/en/index.html"), 
-  tags$p("All Rights Reserved.  Version2018.12.01"),
+  tags$p("All Rights Reserved.  Version2018.12.02"),
   style = "
   bottom:0;
   width:100%;

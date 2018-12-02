@@ -17,7 +17,16 @@ fluidPage(column(
       justified = TRUE,
       status = "primary"
     ),
-    downloadButton('downloadPlotReport')
+    do.call(actionBttn, c(
+      list(
+        inputId = "generateReport",
+        label = "Generate Report",
+        icon = icon("play")
+      ),
+      actionBttnParams
+    )),
+    
+    uiOutput("renderDownloadButton")
   )
 )#,
 # column(9,

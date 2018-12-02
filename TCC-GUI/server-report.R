@@ -1,86 +1,95 @@
 # server-report.R
-# output$reportPreview <- renderUI({
-#   reportParameter <- list(
-#     CountData = variables$CountData,
-#     groupList = variables$groupList,
-#     filterLowCount = input$filterLowCount,
-#     normMethod = input$normMethod,
-#     testMethod = input$testMethod,
-#     iteration = input$iteration,
-#     fdr = input$fdr,
-#     floorpdeg = input$floorpdeg,
-#     runMAPlot = variables$runMAPlot,
-#     resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
-#     GeneAttribute = input$GeneAttribute,
-#     maFDR = input$maFDR,
-#     fdrColor = input$fdrColor,
-#     runVolcanoPlot = variables$runVolcanoPlot,
-#     CutFC = input$CutFC,
-#     Cutpvalue = input$Cutpvalue,
-#     resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
-#     downColor = input$downColor,
-#     upColor = input$upColor,
-#     xlabs = input$xlabs,
-#     ylabs = input$ylabs,
-#     graphicTitle = input$graphicTitle
-#   )
-#   # report <- rmarkdown::render('report.Rmd', params = reportParameter, md_document())
-#   includeMarkdown("report.Rmd")
-# })
 
-# output$downloadReport <- downloadHandler(
-#   filename = function() {
-#     paste('my-report', sep = '.', switch(
-#       input$format,
-#       Markdown = 'md',
-#       HTML = 'html',
-#       Word = 'docx'
-#     ))
-#   },
-#   
-#   content = function(file) {
-#     src <- normalizePath('report.Rmd')
-#     
-#     owd <- setwd(tempdir())
-#     on.exit(setwd(owd))
-#     file.copy(src, 'report.Rmd', overwrite = TRUE)
-#     
-#     library(rmarkdown)
-#     
-#     reportParameter <- list(
-#       CountData = variables$CountData,
-#       groupList = variables$groupList,
-#       filterLowCount = input$filterLowCount,
-#       normMethod = input$normMethod,
-#       testMethod = input$testMethod,
-#       iteration = input$iteration,
-#       fdr = input$fdr,
-#       floorpdeg = input$floorpdeg,
-#       runMAPlot = variables$runMAPlot,
-#       resultTableInPlot_rows_selected = input$resultTableInPlot_rows_selected,
-#       GeneAttribute = input$GeneAttribute,
-#       maFDR = input$maFDR,
-#       fdrColor = input$fdrColor,
-#       runVolcanoPlot = variables$runVolcanoPlot,
-#       CutFC = input$CutFC,
-#       Cutpvalue = input$Cutpvalue,
-#       resultTableInVolcanalPlot_rows_selected = input$resultTableInVolcanalPlot_rows_selected,
-#       downColor = input$downColor,
-#       upColor = input$upColor,
-#       xlabs = input$xlabs,
-#       ylabs = input$ylabs,
-#       graphicTitle = input$graphicTitle
-#     )
-#     
-#     out <- render('report.Rmd', params = reportParameter, switch(
-#       input$format,
-#       Markdown = md_document(),
-#       HTML = html_document(),
-#       Word = word_document()
-#     ))
-#     file.rename(out, file)
-#   }
-# )
+runReport <- reactiveValues(runReportValue = FALSE)
+
+observeEvent(input$generateReport, {
+  progressSweetAlert(
+    session = session,
+    id = "report",
+    title = "Setting parameters...",
+    display_pct = TRUE,
+    value = 0
+  )
+  
+  src <- normalizePath('Plot_Report.Rmd')
+  
+  owd <- setwd(tempdir())
+  on.exit(setwd(owd))
+  file.copy(src, 'Plot_Report.Rmd', overwrite = TRUE)
+  
+  library(rmarkdown)
+  updateProgressBar(
+    session = session,
+    id = "report",
+    title = "Start generating....",
+    value = 20
+  )
+  reportParameter <- list(
+    CountData = variables$CountData,
+    groupList = variables$groupList,
+    groupListConvert = variables$groupListConvert,
+    result = variables$result,
+    norData = variables$norData,
+    filterLowCount = input$filterLowCount,
+    normMethod = input$normMethod,
+    testMethod = input$testMethod,
+    iteration = input$iteration,
+    fdr = input$fdr,
+    floorpdeg = input$floorpdeg,
+    zeroValue = variables$zeroValue,
+    sampleDistributionBar = variables$sampleDistributionBar,
+    sampleDistributionDensity = variables$sampleDistributionDensity,
+    norSampleDistributionBar = variables$norSampleDistributionBar,
+    norSampleDistributionDensity = variables$norSampleDistributionDensity,
+    MAPlotObject = variables$MAPlotObject,
+    VolcanoPlotObject = variables$VolcanoPlotObject,
+    pcScale = input$pcScale,
+    pcCenter = input$pcCenter,
+    pcTransform = input$pcTransform,
+    screePlot = variables$screePlot,
+    pca3d = variables$pca3d,
+    pca2d = variables$pca2d,
+    heatmapObject = variables$heatmapObject,
+    expressionLevelBar = variables$expressionLevelBar,
+    expressionLevelBox = variables$expressionLevelBox
+  )
+  updateProgressBar(
+    session = session,
+    id = "report",
+    title = "Rendering report....",
+    value = 50
+  )
+  out <- render('Plot_Report.Rmd', params = reportParameter, switch(
+    input$format,
+    Markdown = md_document(),
+    HTML = html_document(),
+    Word = word_document()
+  ))
+  variables$reportFile <- out
+  runReport$runReportValue <- input$generateReport
+  
+  for(i in seq(51, 100, 3)){
+    updateProgressBar(
+      session = session,
+      id = "report",
+      title = "Saving report....",
+      value = i 
+    )
+  }
+  closeSweetAlert(session = session)
+  sendSweetAlert(session = session,
+                 title = "DONE",
+                 text = "Click [Download] to save your report.",
+                 type = "success")
+})
+
+output$renderDownloadButton <- renderUI({
+  if (runReport$runReportValue) {
+    tagList(tags$br(), downloadButton('downloadPlotReport'))
+  } else {
+    helpText("Click [Generate Report] for generation.")
+  }
+})
 
 output$downloadPlotReport <- downloadHandler(
   filename = function() {
@@ -93,53 +102,55 @@ output$downloadPlotReport <- downloadHandler(
   },
 
   content = function(file) {
-    src <- normalizePath('Plot_Report.Rmd')
-
-    owd <- setwd(tempdir())
-    on.exit(setwd(owd))
-    file.copy(src, 'Plot_Report.Rmd', overwrite = TRUE)
-
-    library(rmarkdown)
-
-    reportParameter <- list(
-      CountData = variables$CountData,
-      groupList = variables$groupList,
-      groupListConvert = variables$groupListConvert,
-      result = variables$result,
-      norData = variables$norData,
-      filterLowCount = input$filterLowCount,
-      normMethod = input$normMethod,
-      testMethod = input$testMethod,
-      iteration = input$iteration,
-      fdr = input$fdr,
-      floorpdeg = input$floorpdeg,
-      zeroValue = variables$zeroValue,
-      sampleDistributionBar = variables$sampleDistributionBar,
-      sampleDistributionDensity = variables$sampleDistributionDensity,
-      norSampleDistributionBar = variables$norSampleDistributionBar,
-      norSampleDistributionDensity = variables$norSampleDistributionDensity,
-      MAPlotObject = variables$MAPlotObject,
-      VolcanoPlotObject = variables$VolcanoPlotObject,
-      pcScale = input$pcScale,
-      pcCenter = input$pcCenter,
-      pcTransform = input$pcTransform,
-      screePlot = variables$screePlot,
-      pca3d = variables$pca3d,
-      pca2d = variables$pca2d,
-      heatmapObject = variables$heatmapObject,
-      expressionLevelBar = variables$expressionLevelBar,
-      expressionLevelBox = variables$expressionLevelBox
-    )
-
-    out <- render('Plot_Report.Rmd', params = reportParameter, switch(
-      input$format,
-      Markdown = md_document(),
-      HTML = html_document(),
-      Word = word_document()
-    ))
-    file.rename(out, file)
+    # src <- normalizePath('Plot_Report.Rmd')
+    # 
+    # owd <- setwd(tempdir())
+    # on.exit(setwd(owd))
+    # file.copy(src, 'Plot_Report.Rmd', overwrite = TRUE)
+    # 
+    # library(rmarkdown)
+    # 
+    # reportParameter <- list(
+    #   CountData = variables$CountData,
+    #   groupList = variables$groupList,
+    #   groupListConvert = variables$groupListConvert,
+    #   result = variables$result,
+    #   norData = variables$norData,
+    #   filterLowCount = input$filterLowCount,
+    #   normMethod = input$normMethod,
+    #   testMethod = input$testMethod,
+    #   iteration = input$iteration,
+    #   fdr = input$fdr,
+    #   floorpdeg = input$floorpdeg,
+    #   zeroValue = variables$zeroValue,
+    #   sampleDistributionBar = variables$sampleDistributionBar,
+    #   sampleDistributionDensity = variables$sampleDistributionDensity,
+    #   norSampleDistributionBar = variables$norSampleDistributionBar,
+    #   norSampleDistributionDensity = variables$norSampleDistributionDensity,
+    #   MAPlotObject = variables$MAPlotObject,
+    #   VolcanoPlotObject = variables$VolcanoPlotObject,
+    #   pcScale = input$pcScale,
+    #   pcCenter = input$pcCenter,
+    #   pcTransform = input$pcTransform,
+    #   screePlot = variables$screePlot,
+    #   pca3d = variables$pca3d,
+    #   pca2d = variables$pca2d,
+    #   heatmapObject = variables$heatmapObject,
+    #   expressionLevelBar = variables$expressionLevelBar,
+    #   expressionLevelBox = variables$expressionLevelBox
+    # )
+    # 
+    # out <- render('Plot_Report.Rmd', params = reportParameter, switch(
+    #   input$format,
+    #   Markdown = md_document(),
+    #   HTML = html_document(),
+    #   Word = word_document()
+    # ))
+    file.rename(variables$reportFile, file)
   }
 )
+
+
 
 # Tab click logs -----
 observeEvent(input$sider, {

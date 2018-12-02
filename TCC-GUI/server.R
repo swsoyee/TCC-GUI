@@ -37,7 +37,8 @@ shinyServer(function(input, output, session) {
       "Type" = vector(),
       "Action" = vector(),
       "Parameters" = vector()
-    )
+    ),
+    reportFile = NULL
   )
   source(file = "server-simulation.R",
          local = TRUE,
