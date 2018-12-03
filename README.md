@@ -24,19 +24,15 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 ## 📈 Screenshot
 (Screenshots are not to the date!)
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Home.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Simulation.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/dataImport.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/calculation.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/VolcanoPlot.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/PCA.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Heatmap.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/MAPlot.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Expression.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta6.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png">
 
-This function is under developing now...
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/report.png">
 
 ## 🌐 Online version
 
