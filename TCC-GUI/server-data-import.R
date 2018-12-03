@@ -279,7 +279,7 @@ output$importDataSummary <- renderUI({
       mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
     AS <- tagList(
       tags$p(tags$b("Average Silhouettes (AS):"), round(AS, 3)),
-      HTML('A higher AS value <font color="##00C0EF">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).')
+      HTML('A higher AS value <font color="##00C0EF">(0 <= AS <= 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).')
       )
   } else {
     AS <- helpText("Assign group information needed.")
