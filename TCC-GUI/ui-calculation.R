@@ -27,15 +27,15 @@ fluidPage(useSweetAlert(), fluidRow(column(
           # "WAD" = "wad"
         )
       ),
-      numericInput(
-        "filterLowCount",
-        tagList(
+      tipify(
+        numericInput(
+          "filterLowCount",
           "Filtering Threshold for Low Count Genes",
-          helpText("(Set -1 for using all genes)")
+          value = -1,
+          min = -1
         ),
-        value = -1,
-        min = -1
-      ),
+        title = "Set -1 for using all genes"
+      ), 
       textOutput("lowCountFilterText"),
       sliderInput(
         "iteration",

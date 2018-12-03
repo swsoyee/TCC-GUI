@@ -7,16 +7,21 @@ fluidPage(column(
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
+    tipify(
+      numericInput(
+        inputId = "simulationSeed",
+        label = "Set Random Seed",
+        value = -1,
+        min = -1,
+        step = 1
+      ),
+      title = "Set -1 to switch off random seed"
+    ),
     numericInput(
-      inputId = "simulationSeed",
-      label = tagList("Set Random Seed", helpText("Set -1 to switch off random seed")),
-      value = -1,
-      min = -1,
-      step = 1
-  ), 
-    numericInput(inputId = "simulationGeneNum",
-                 label = HTML("Number of Genes (N<sub>gene</sub>)"),
-                 value = 10000),
+      inputId = "simulationGeneNum",
+      label = HTML("Number of Genes (N<sub>gene</sub>)"),
+      value = 10000
+    ),
     sliderInput(
       inputId = "simulationPDEG",
       label = HTML("Proportion of DEGs (P<sub>DEG</sub>)"),
@@ -52,11 +57,13 @@ fluidPage(column(
 ),
 column(
   9,
-  box(title = tagList(icon("wrench"), "Group Parameters"),
-      width = NULL,
-      solidHeader = TRUE,
-      status = "primary",
-      uiOutput("simulationGroup")), 
+  box(
+    title = tagList(icon("wrench"), "Group Parameters"),
+    width = NULL,
+    solidHeader = TRUE,
+    status = "primary",
+    uiOutput("simulationGroup")
+  ),
   box(
     title = tagList(icon("table"), "Simulation Data"),
     width = NULL,

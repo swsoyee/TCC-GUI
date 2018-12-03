@@ -24,17 +24,17 @@ column(
     title = "",
     width = NULL,
     tabPanel(tagList(icon("bar-chart"), "Scree Plot"),
-             plotlyOutput("pcaVariances")),
+             uiOutput("screePlotUI")),
     tabPanel(tagList(icon("cube"), "PCA Plot (3D)"),
-             plotlyOutput("pcabiplot3d")),
+             uiOutput("pca3dPlotUI")),
     tabPanel(tagList(icon("square-o"), "PCA Plot (2D)"),
-             plotlyOutput("pcabiplot"))
+             uiOutput("pca2dPlotUI"))
   ),
   box(
     title = tagList(icon("info-circle"), "Summary of PCA"),
     width = NULL,
     solidHeader = TRUE,
     status = "info",
-    DT::dataTableOutput("summaryPCA")
+    uiOutput("pcaSummaryTable")
   )
 ))

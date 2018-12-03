@@ -8,6 +8,7 @@
 
 observeEvent(input$CountDataSample, {
   variables$tccObject <- NULL
+  v$importActionValue <- FALSE
   variables$CountData <-
     data.frame(fread(input$SampleDatabase), row.names = 1)
   
@@ -91,6 +92,7 @@ observeEvent(input$uploadCountData, {
   tryCatch({
     variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
     variables$tccObject <- NULL
+    v$importActionValue <- FALSE
     showNotification("Received uploaded file.", type = "message")
   },
   error = function(e) {

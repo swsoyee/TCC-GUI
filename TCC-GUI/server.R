@@ -27,6 +27,7 @@ shinyServer(function(input, output, session) {
     norSampleDistributionDensity = "",
     MAPlotObject = "",
     VolcanoPlotObject = "",
+    data.pca = NULL,
     screePlot = "",
     pca3d = "",
     pca2d = "",

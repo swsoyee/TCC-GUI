@@ -8,20 +8,7 @@ fluidPage(fluidRow(column(
     status = "primary",
     width = NULL,
     uiOutput("MAPlotParameter")
-  )
-),
-column(
-  9,
-  box(
-    title = tagList(icon("line-chart"), "MA Plot"),
-    solidHeader = TRUE,
-    status = "info",
-    width = NULL,
-    uiOutput("MAPlotUI")
-  )
-)),
-fluidRow(column(
-  3,
+  ),
   tabBox(
     title = "FDR vs DEGs",
     width = NULL,
@@ -47,23 +34,17 @@ fluidRow(column(
 column(
   9,
   box(
+    title = tagList(icon("line-chart"), "MA Plot"),
+    solidHeader = TRUE,
+    status = "info",
+    width = NULL,
+    uiOutput("MAPlotUI")
+  ),
+  box(
     title = tagList(icon("table"), "Result Table"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
     tagList(DT::dataTableOutput('resultTableInPlot'))
   )
-)#,
-# column(
-#   3,
-  # box(
-  #   title = tagList(icon("code"), "MA Plot Code"),
-  #   solidHeader = TRUE,
-  #   status = "danger",
-  #   collapsible = TRUE,
-  #   collapsed = TRUE,
-  #   width = NULL,
-  #   verbatimTextOutput("runMAPlot")
-  # )
-))
-#)
+)))
