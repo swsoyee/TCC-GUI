@@ -47,7 +47,7 @@ Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 ### 📥 Installation
 Make sure that you have already installed those packages in your environment.
 
-`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`.
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`.
 
 If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.
 
@@ -67,7 +67,8 @@ libs <- c("shiny",
           "RColorBrewer",
           "knitr",
           "cluster",
-          "shinycssloaders")
+          "shinycssloaders",
+          "shinyBS")
 
 for (i in libs){
   if( !is.element(i, .packages(all.available = TRUE)) ) {
