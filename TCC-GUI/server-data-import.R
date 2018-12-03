@@ -1,7 +1,7 @@
 # server-data-import.R
 
 # ====================================
-# If Sample Data button has been clicked, load sample data. 
+# If Sample Data button has been clicked, load sample data.
 # Position: In Computation tab, upper left. Button action.
 # ====================================
 # 2018-5-23 Change read.table to fread.
@@ -19,67 +19,69 @@ observeEvent(input$CountDataSample, {
     type = "success"
   )
   
-  sampleGroup <- switch(input$SampleDatabase,
-                        "sample_data/data_hypodata_3vs3.txt" = paste(
-                          "G1_rep1,Group1",
-                          "G1_rep2,Group1",
-                          "G1_rep3,Group1",
-                          "G2_rep1,Group2",
-                          "G2_rep2,Group2",
-                          "G2_rep3,Group2",
-                          sep = '\n'
-                        ),
-                        "sample_data/katzmouse_count_table.txt" = paste(
-                          "SRX026633,1",
-                          "SRX026632,2",
-                          "SRX026631,1",
-                          "SRX026630,2",
-                          sep = '\n'
-                        ),
-                        "sample_data/cheung_count_table.txt" = paste(
-                          "NA06985,1",
-                          "NA07000,1",
-                          "NA07055,1",
-                          "NA07056,1",
-                          "NA07345,1",
-                          "NA11830,1",
-                          "NA11832,1",
-                          "NA11882,1",
-                          "NA11993,1",
-                          "NA12004,1",
-                          "NA12006,1",
-                          "NA12044,1",
-                          "NA12057,1",
-                          "NA12145,1",
-                          "NA12717,1",
-                          "NA12813,1",
-                          "NA12815,1",
-                          "NA06993,2",
-                          "NA06994,2",
-                          "NA07022,2",
-                          "NA07034,2",
-                          "NA11829,2",
-                          "NA11831,2",
-                          "NA11839,2",
-                          "NA11881,2",
-                          "NA11992,2",
-                          "NA11994,2",
-                          "NA12003,2",
-                          "NA12005,2",
-                          "NA12043,2",
-                          "NA12056,2",
-                          "NA12144,2",
-                          "NA12155,2",
-                          "NA12264,2",
-                          "NA12716,2",
-                          "NA12750,2",
-                          "NA12762,2",
-                          "NA12814,2",
-                          "NA12872,2",
-                          "NA12874,2",
-                          "NA12891,2",
-                          sep = '\n'
-                        ))
+  sampleGroup <- switch(
+    input$SampleDatabase,
+    "sample_data/data_hypodata_3vs3.txt" = paste(
+      "G1_rep1,Group1",
+      "G1_rep2,Group1",
+      "G1_rep3,Group1",
+      "G2_rep1,Group2",
+      "G2_rep2,Group2",
+      "G2_rep3,Group2",
+      sep = '\n'
+    ),
+    "sample_data/katzmouse_count_table.txt" = paste(
+      "SRX026633,1",
+      "SRX026632,2",
+      "SRX026631,1",
+      "SRX026630,2",
+      sep = '\n'
+    ),
+    "sample_data/cheung_count_table.txt" = paste(
+      "NA06985,1",
+      "NA07000,1",
+      "NA07055,1",
+      "NA07056,1",
+      "NA07345,1",
+      "NA11830,1",
+      "NA11832,1",
+      "NA11882,1",
+      "NA11993,1",
+      "NA12004,1",
+      "NA12006,1",
+      "NA12044,1",
+      "NA12057,1",
+      "NA12145,1",
+      "NA12717,1",
+      "NA12813,1",
+      "NA12815,1",
+      "NA06993,2",
+      "NA06994,2",
+      "NA07022,2",
+      "NA07034,2",
+      "NA11829,2",
+      "NA11831,2",
+      "NA11839,2",
+      "NA11881,2",
+      "NA11992,2",
+      "NA11994,2",
+      "NA12003,2",
+      "NA12005,2",
+      "NA12043,2",
+      "NA12056,2",
+      "NA12144,2",
+      "NA12155,2",
+      "NA12264,2",
+      "NA12716,2",
+      "NA12750,2",
+      "NA12762,2",
+      "NA12814,2",
+      "NA12872,2",
+      "NA12874,2",
+      "NA12891,2",
+      sep = '\n'
+    )
+  )
   updateTextAreaInput(session, "groupSelectViaText", value = sampleGroup)
   
 })
@@ -90,7 +92,8 @@ observeEvent(input$CountDataSample, {
 observeEvent(input$uploadCountData, {
   showNotification("Start uploading file...", type = "message")
   tryCatch({
-    variables$CountData <- data.frame(fread(input$uploadCountData$datapath), row.names=1)
+    variables$CountData <-
+      data.frame(fread(input$uploadCountData$datapath), row.names = 1)
     variables$tccObject <- NULL
     v$importActionValue <- FALSE
     showNotification("Received uploaded file.", type = "message")
@@ -124,7 +127,7 @@ datasetInput <- reactive({
 
 output$table <- DT::renderDataTable({
   df <- datasetInput()
-  # Create 19 breaks and 20 rgb color values ranging from white to red
+  # Create 19 breaks and 20 rgb color values ranging from white to blue
   brks <-
     quantile(df %>% select_if(is.numeric),
              probs = seq(.05, .95, .05),
@@ -133,7 +136,7 @@ output$table <- DT::renderDataTable({
   DT::datatable(
     df,
     colnames = c("Gene Name" = 1),
-    extensions = c("Scroller","RowReorder"),
+    extensions = c("Scroller", "RowReorder"),
     option = list(
       rowReorder = TRUE,
       deferRender = TRUE,
@@ -159,7 +162,6 @@ output$emptyTable <- renderUI({
 })
 
 observeEvent(input$confirmedGroupList, {
-  
   if (nrow(datasetInput()) == 0) {
     sendSweetAlert(
       session = session,
@@ -178,81 +180,82 @@ observeEvent(input$confirmedGroupList, {
     )
     return()
   }
-
-  tryCatch(
-    {
-      progressSweetAlert(
-        session = session,
-        id = "dataImportProgress",
-        title = "Processing group info",
-        display_pct = TRUE,
-        value = 0
-      )
-      
-      group <- fread(input$groupSelectViaText, header = FALSE)
-      variables$groupList <-
-        lapply(unique(group$V2), function(x) {
-          group[group$V2 == x,]$V1
-        })
-      names(variables$groupList) <- unique(group$V2)
-      
-      data.cl <- rep(0, ncol(variables$CountData))
-      
-      for (i in 1:length(variables$groupList)) {
-        data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = names(variables$groupList[i])
-      }
-      
-      # Storage convert group list to local
-      variables$groupListConvert <- data.cl
-      
-      # Create TCC Object
-      tcc <- new("TCC", variables$CountData[data.cl != 0], data.cl[data.cl != 0])
-      variables$tccObject <- tcc
-      
-      updateProgressBar(
-        session = session,
-        id = "dataImportProgress",
-        title = "Summarizing data",
-        value = 90
-      )
-      
-      closeSweetAlert(session = session)
-      sendSweetAlert(session = session,
-                     title = "DONE",
-                     text = "Group labels are successfully assigned.",
-                     type = "success")
-      
-      v$importActionValue <- input$confirmedGroupList
-    },
-    error = function(e) {
-      sendSweetAlert(
-        session = session,
-        title = "ERROR",
-        text = "Check your group information format!",
-        type = "error"
-      )
-      return()
-    },
-    warning = function(w) {
-      sendSweetAlert(
-        session = session,
-        title = "Group error!",
-        text = "Check your group information format!",
-        type = "error"
-      )
-      return()
+  
+  tryCatch({
+    progressSweetAlert(
+      session = session,
+      id = "dataImportProgress",
+      title = "Processing group info",
+      display_pct = TRUE,
+      value = 0
+    )
+    
+    group <- fread(input$groupSelectViaText, header = FALSE)
+    variables$groupList <-
+      lapply(unique(group$V2), function(x) {
+        group[group$V2 == x, ]$V1
+      })
+    names(variables$groupList) <- unique(group$V2)
+    
+    data.cl <- rep(0, ncol(variables$CountData))
+    
+    for (i in 1:length(variables$groupList)) {
+      data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = names(variables$groupList[i])
     }
-  )
+    
+    # Storage convert group list to local
+    variables$groupListConvert <- data.cl
+    
+    # Create TCC Object
+    tcc <-
+      new("TCC", variables$CountData[data.cl != 0], data.cl[data.cl != 0])
+    variables$tccObject <- tcc
+    
+    updateProgressBar(
+      session = session,
+      id = "dataImportProgress",
+      title = "Summarizing data",
+      value = 90
+    )
+    
+    closeSweetAlert(session = session)
+    sendSweetAlert(
+      session = session,
+      title = "DONE",
+      text = "Group labels are successfully assigned.",
+      type = "success"
+    )
+    
+    v$importActionValue <- input$confirmedGroupList
+  },
+  error = function(e) {
+    sendSweetAlert(
+      session = session,
+      title = "ERROR",
+      text = "Check your group information format!",
+      type = "error"
+    )
+    return()
+  },
+  warning = function(w) {
+    sendSweetAlert(
+      session = session,
+      title = "Group error!",
+      text = "Check your group information format!",
+      type = "error"
+    )
+    return()
+  })
 })
 
 output$importDataSummary <- renderUI({
-  dt<- datasetInput()
+  dt <- datasetInput()
   
   rowCount <- nrow(dt)
   groupCount <- length(variables$groupList)
   groupText <- sapply(variables$groupList, length)
-  if(length(groupText) > 0){
-    gText <- paste0(names(groupText), ": ",groupText, collapse = "\n")
+  if (length(groupText) > 0) {
+    gText <- paste0(names(groupText), ": ", groupText, collapse = "\n")
   } else {
     gText <- NULL
   }
@@ -268,18 +271,16 @@ output$importDataSummary <- renderUI({
     data.cl <- tcc$group$group
     # Filtering
     obj <- as.logical(rowSums(data) > 0)
-    data <- unique(data[obj,])
+    data <- unique(data[obj, ])
     
     # AS calculation
-    d <- as.dist(1 - cor(data, method="spearman"))
-    AS <-  mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
+    d <- as.dist(1 - cor(data, method = "spearman"))
+    AS <-
+      mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
     AS <- tagList(
       tags$p(tags$b("Average Silhouettes (AS):"), round(AS, 3)),
-      HTML(
-        'A higher AS value <font color="##00C0EF">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).
-        '
+      HTML('A higher AS value <font color="##00C0EF">(0 ≤ AS ≤ 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).')
       )
-    )
   } else {
     AS <- helpText("Assign group information needed.")
   }
@@ -300,12 +301,14 @@ output$sampleDistributionBox <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
     data <- tcc$count
-
+    
     cpm <- log2(data + 1)
     cpm_stack <- data.frame(stack(cpm))
-
+    
     # Add Group info
-    group <- data.frame("col" = rownames(tcc$group), "group" = tcc$group$group)
+    group <-
+      data.frame("col" = rownames(tcc$group),
+                 "group" = tcc$group$group)
     data <- left_join(cpm_stack, group, by = "col")
     data <- arrange(data, group)
     
@@ -350,7 +353,7 @@ output$sampleDistributionDensity <- renderPlotly({
         p,
         x = densityTable[[i]][[1]],
         y = densityTable[[i]][[2]],
-        color = group[rownames(group) == names(densityTable[i]), ],
+        color = group[rownames(group) == names(densityTable[i]),],
         name = names(densityTable[i])
       )
     }
@@ -374,11 +377,13 @@ output$sampleDistributionDensityPanel <- renderUI({
     tagList(fluidRow(
       column(
         3,
-        sliderInput(inputId = "densityFilter",
-                    label = "Filter genes threshold",
-                    min = -1,
-                    max = 100,
-                    value = -1),
+        sliderInput(
+          inputId = "densityFilter",
+          label = "Filter genes threshold",
+          min = -1,
+          max = 100,
+          value = -1
+        ),
         textInput(
           inputId = "sampleDistributionDenstityTitle",
           label = "Title",
@@ -433,8 +438,10 @@ output$sampleDistributionBoxPanel <- renderUI({
           placeholder = "log<sub>2</sub>(Count + 1)"
         )
       ),
-      column(9,
-             plotlyOutput("sampleDistributionBox") %>% withSpinner())
+      column(
+        9,
+        plotlyOutput("sampleDistributionBox") %>% withSpinner()
+      )
     ))
   } else {
     helpText("No data for ploting. Please import dataset and assign group information first.")
@@ -512,7 +519,10 @@ output$lowCountFilterByCutoffUI <- renderUI({
           step = 1
         )
       ),
-      column(9, plotlyOutput("lowCountFilterByCutoff") %>% withSpinner())
+      column(
+        9,
+        plotlyOutput("lowCountFilterByCutoff") %>% withSpinner()
+      )
     ))
   } else {
     helpText("No data for ploting. Please import dataset and assign group information first.")
@@ -585,7 +595,7 @@ output$mdsUI <- renderUI({
 output$dendPlotObject <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
-    data <- tcc$count[rowSums(tcc$count) > 0, ]
+    data <- tcc$count[rowSums(tcc$count) > 0,]
     data <- data.frame(1 - cor(data, method = input$dendCor))
     data.cl.count <- length(unique(tcc$group$group))
     heatmaply(
@@ -625,10 +635,8 @@ output$dendUI <- renderUI({
         selectInput(
           inputId = "dendCor",
           label = "Correlation Coefficient",
-          choices = c(
-            "Spearman" = "spearman",
-            "Pearson" = "pearson"
-          )
+          choices = c("Spearman" = "spearman",
+                      "Pearson" = "pearson")
         )
       ),
       column(9, plotlyOutput("dendPlotObject") %>% withSpinner())

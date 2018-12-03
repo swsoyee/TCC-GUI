@@ -237,10 +237,19 @@ observeEvent(input$simulationRun, {
              collapse = "\n")
     })
     
+    output$copySimulationGroupInfoText <- renderUI({
+      p <- paste0(row.names(simulatedData$group),
+             ",G",
+             simulatedData$group$group,
+             collapse = "\n")
+      rclipButton("copySimuGroup", "Copy group information", p, icon("clipboard"))
+    })
+    
     output$simulationGroupInfo <- renderUI({
       tagList(
         tags$hr(),
         tags$p(tags$b("Group information:")),
+        tags$p(uiOutput("copySimulationGroupInfoText")),
         verbatimTextOutput("simulationGroupInfoText")
       )
     })

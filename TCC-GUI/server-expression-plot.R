@@ -1,12 +1,8 @@
 # server-expression-plot.R
 
-# ====================================
-# This function render a selectInput in expression paramters box
-# Position: In Expression Plot, upper left.
-# ====================================
-# Input: None
-# Output: Textinput (widget)
-# ====================================
+runExp <- reactiveValues(runExpValue = FALSE)
+# This function render a selectInput in expression paramters box ----
+
 output$expressionParameters <- renderUI({
   tagList(
     textAreaInput(
@@ -102,9 +98,6 @@ observeEvent(input$runExpression, {
     # Render plotly object of boxplot -----
     
     output$geneBoxPlotExpression <- renderPlotly({
-      # validate(
-      #   need(input$expressionGeneList != "", "Please select gene(s).")
-      # )
       isolate({
       p <- list(0)
       
@@ -291,17 +284,15 @@ observeEvent(input$runExpression, {
     # Selected gene row count DataTable ----
     output$geneTable <- DT::renderDataTable({
       df <- data
-      # Create 19 breaks and 20 rgb color values ranging from white to red
-      brks <- quantile(df, probs = seq(.05, .95, .05), na.rm = TRUE)
-      clrs <-
-        round(seq(255, 40, length.out = length(brks) + 1), 0) %>%
-        {
-          paste0("rgb(255,", ., ",", ., ")")
-        }
+      # Create 19 breaks and 20 rgb color values ranging from white to blue
+      brks <-
+        quantile(df %>% select_if(is.numeric),
+                 probs = seq(.05, .95, .05),
+                 na.rm = TRUE)
       
       DT::datatable(df,
                     options = list(dom = "t")) %>%
-        formatStyle(names(df), backgroundColor = styleInterval(brks, clrs))
+        formatStyle(names(df), backgroundColor = styleInterval(brks, head(Blues(40), n = length(brks) + 1)))
     })
     
 

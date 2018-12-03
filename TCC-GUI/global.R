@@ -13,6 +13,7 @@ library(tidyr)
 library(cluster)
 library(shinycssloaders)
 library(shinyBS)
+library(rclipboard)
 
 # ====================================
 # This function convert the input of group information to
