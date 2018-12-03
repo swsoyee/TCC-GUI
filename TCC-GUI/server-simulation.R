@@ -249,7 +249,7 @@ observeEvent(input$simulationRun, {
       tagList(
         tags$hr(),
         tags$p(tags$b("Group information:")),
-        tags$p(uiOutput("copySimulationGroupInfoText")),
+        uiOutput("copySimulationGroupInfoText"),
         verbatimTextOutput("simulationGroupInfoText")
       )
     })
