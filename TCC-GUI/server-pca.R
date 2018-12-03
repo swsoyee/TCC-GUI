@@ -63,7 +63,7 @@ observeEvent(input$sider, {
 # Preview gene count -----
 observeEvent(input$pcFDR, {
   gene_count <-
-    nrow(resultTable()[resultTable()$q.value <= input$pcFDR,])
+    nrow(resultTable()[resultTable()$q.value <= input$pcFDR, ])
   output$pcaGeneCountPreview <- renderText({
     paste0("Gene number: ", gene_count)
   })
@@ -75,8 +75,7 @@ observeEvent(input$pcFDR, {
 observeEvent(input$pcRun, {
   runPCA$runPCAValue <- input$pcRun
   tcc <- variables$tccObject
-  # Select Sample (Column)
-  # Grouping.
+  
   # Using Original Dataset or Normalized Dataset.
   if (input$pcData == "o") {
     data <- tcc$count
@@ -90,7 +89,7 @@ observeEvent(input$pcRun, {
   if (input$testMethod == 'wad') {
     data <- data
   } else {
-    data <- data[result$q.value <= input$pcFDR, ]
+    data <- data[result$q.value <= input$pcFDR,]
   }
   
   # PCA processing
@@ -105,47 +104,6 @@ observeEvent(input$pcRun, {
   
   variables$data.pca <- data.pca
   
-  # Scree Plot plotly object ----
-  # summaryTable <- summary(data.pca)$importance
-  
-  # # Summary Table
-  # output$summaryPCA <- DT::renderDataTable({
-  #   row.names(summaryTable)[1] <- "Standard Deviation"
-  #   summaryTable <- t(summaryTable)
-  #   DT::datatable(summaryTable, options = list(
-  #     dom = "Bt",
-  #     buttons = list(
-  #       'copy',
-  #       'print',
-  #       list(
-  #         extend = 'collection',
-  #         buttons = c('csv', 'excel', 'pdf'),
-  #         text = 'Download'
-  #       )
-  #     )
-  #   )) %>%
-  #     formatRound(columns = colnames(summaryTable),
-  #                 digits = 3) %>% formatStyle(
-  #                   "Proportion of Variance",
-  #                   background = styleColorBar(range(0, 1), 'lightblue'),
-  #                   backgroundSize = '98% 88%',
-  #                   backgroundRepeat = 'no-repeat',
-  #                   backgroundPosition = 'center'
-  #                 ) %>% formatStyle(
-  #                   "Standard Deviation",
-  #                   background = styleColorBar(range(0, summaryTable[, 1]), 'lightblue'),
-  #                   backgroundSize = '98% 88%',
-  #                   backgroundRepeat = 'no-repeat',
-  #                   backgroundPosition = 'center'
-  #                 ) %>% formatStyle(
-  #                   "Cumulative Proportion",
-  #                   background = styleColorBar(range(0, 1), 'lightblue'),
-  #                   backgroundSize = '98% 88%',
-  #                   backgroundRepeat = 'no-repeat',
-  #                   backgroundPosition = 'center'
-  #                 )
-  # })
-  
   output$runPCACode <- renderText({
     variables$runPCACode
   })
@@ -159,14 +117,14 @@ output$pcaVariances <- renderPlotly({
     
     p <- plot_ly(
       x = colnames(summaryTable),
-      y = summaryTable[2, ],
-      text = paste0(summaryTable[2, ] * 100, "%"),
+      y = summaryTable[2,],
+      text = paste0(summaryTable[2,] * 100, "%"),
       textposition = "auto",
       type = "bar",
       name = "Proportion of Variance"
     ) %>%
       add_trace(
-        y = summaryTable[3, ],
+        y = summaryTable[3,],
         type = "scatter",
         mode = "lines+markers",
         name = "Cumulative Proportion"
@@ -203,25 +161,22 @@ output$screePlotUI <- renderUI({
 output$pca2d <- renderPlotly({
   if (length(variables$data.pca) > 0) {
     data.pca <- variables$data.pca
+    data <- data.frame(data.pca$x)
+    data$name <- rownames(data)
+    group <- tcc$group
+    group$name <- rownames(group)
+    data <- left_join(x = data, y = group, by = "name")
     p <- plot_ly(
-      data = data.frame(data.pca$x),
+      data = data,
       x = ~ PC1,
       y = ~ PC2,
-      color = as.factor(data.cl),
-      text = row.names(data.pca$x),
+      color = ~ factor(group),
+      text = ~ name,
       textposition = "top right",
       type = "scatter",
       mode = "markers+text"
     ) %>%
-      layout(
-        title = "PCA Plot (2D)",
-        legend = list(
-          orientation = 'h',
-          xanchor = "center",
-          x = 0.5,
-          y = 1
-        )
-      )
+      layout(title = "PCA Plot (2D)")
     variables$pca2d <- p
     p
   } else {
@@ -242,26 +197,23 @@ output$pca2dPlotUI <- renderUI({
 output$pca3d <- renderPlotly({
   if (length(variables$data.pca) > 0) {
     data.pca <- variables$data.pca
+    data <- data.frame(data.pca$x)
+    data$name <- rownames(data)
+    group <- tcc$group
+    group$name <- rownames(group)
+    data <- left_join(x = data, y = group, by = "name")
     p <- plot_ly(
-      data = data.frame(data.pca$x),
+      data = data,
       x = ~ PC1,
       y = ~ PC2,
       z = ~ PC3,
-      color = as.factor(data.cl),
-      text = row.names(data.pca$x),
+      color = ~ factor(group),
+      text = ~ name,
       textposition = "top right",
       type = "scatter3d",
       mode = "markers+text"
     ) %>%
-      layout(
-        title = "PCA Plot (3D)",
-        legend = list(
-          orientation = 'h',
-          xanchor = "center",
-          x = 0.5,
-          y = 1
-        )
-      )
+      layout(title = "PCA Plot (3D)")
     variables$pca3d <- p
     p
   } else {
