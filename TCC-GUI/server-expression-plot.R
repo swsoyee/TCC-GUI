@@ -311,5 +311,5 @@ observeEvent(input$runExpression, {
                       backgroundColor = styleEqual(1, "lightblue")
                     )
     })
-
+    runExp$runExpValue <- input$runExpression
 })

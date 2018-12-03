@@ -189,7 +189,7 @@ observeEvent(input$simulationRun, {
             "Download this dataset and copy the group information, and you can upload them in [Data Import (Step1)] tab for analysis."
           )
         ),
-        extensions = c("Scroller", "RowReorder", "Buttons"),
+        extensions = c("Scroller", "Buttons"),
         option = list(
           dom = 'Bfrtip',
           buttons =
@@ -202,7 +202,6 @@ observeEvent(input$simulationRun, {
                 text = 'Download'
               )
             ),
-          rowReorder = TRUE,
           deferRender = TRUE,
           scrollX = TRUE,
           scrollY = 400,
@@ -293,34 +292,62 @@ output$simuDataTableAndDownload <- renderUI({
 # Render HTML of simulation parameters summary preview ----
 output$simuParams <- renderUI({
   GroupNum <- input$simulationGroupNum
+  
+  
   DEG.assign <- sapply(1:GroupNum, function(i) {
     input[[paste0("DEGAssign", i)]]
   })
-  names(DEG.assign) <- sapply(1:GroupNum, function(i) {
-    paste0("P<sub>G", i, "</sub>")
+  namesDEG.assign <- sapply(1:(GroupNum - 1), function(i) {
+    tagList(tags$b("P", tags$sub(paste0("G", i)), ","))
   })
+  namesDEG.assign[GroupNum] <- tagList(tags$b("P", tags$sub(paste0("G", GroupNum))))
+  
+  
   DEG.foldchange <- sapply(1:GroupNum, function(i) {
     input[[paste0("DEGFoldchange", i)]]
   })
-  names(DEG.foldchange) <- sapply(1:GroupNum, function(i) {
-    paste0("FC<sub>G", i, "</sub>")
+  namesDEG.foldchange <- sapply(1:(GroupNum - 1), function(i) {
+    tagList(tags$b("FC", tags$sub(paste0("G", i)), ","))
   })
+  namesDEG.foldchange[GroupNum] <- tagList(tags$b("FC", tags$sub(paste0("G", GroupNum))))
+  
+  
   replicates <- sapply(1:GroupNum, function(i) {
     input[[paste0("replicates", i)]]
   })
-  names(replicates) <- sapply(1:GroupNum, function(i) {
-    paste0("NR<sub>G", i, "</sub>")
+  namesreplicates <- sapply(1:(GroupNum - 1), function(i) {
+    tagList(tags$b("NR", tags$sub(paste0("G", i)), ","))
   })
+  namesreplicates[GroupNum] <- tagList(tags$b("NR", tags$sub(paste0("G", GroupNum))))
 
   tagList(
-    tags$div(style = "line-height:100%;",
-    HTML("<p><b>Number of Genes ( N<sub>gene</sub> ): </b>", GroupNum, "</p>"),
-    HTML("<p><b>Proportion of DEGs ( P<sub>DEG</sub> ): </b>", input$simulationPDEG, "</p>"),
-    HTML("<p><b>Number of Groups ( N<sub>group</sub> ): </b>", input$simulationGroupNum, "</p>"),
-    HTML("<p><b>Assignment of DEGs (", paste0(names(DEG.assign), collapse = ", "), "): </b>", paste0(DEG.assign, collapse = ", "), "</p>"),
-    HTML("<p><b>Degree of Fold-change (", paste0(names(DEG.foldchange), collapse = ", "), "): </b>", paste0(DEG.foldchange, collapse = ", "), "</p>"),
-    HTML("<b>Number of Replicates (", paste0(names(replicates), collapse = ", "), "): </b>", paste0(replicates, collapse = ", "), "</p>"),
-    uiOutput("simulationGroupInfo")
+    tags$div(
+      style = "line-height:100%;",
+      tipify(tags$p(
+        tags$b("N", tags$sub("gene")), ": ", input$simulationGeneNum
+      ), title = "Number of Genes", placement = "left"),
+      tipify(tags$p(
+        tags$b("P", tags$sub("DEG")), ": ", input$simulationPDEG
+      ), title =  "Proportion of DEGs", placement = "left"),
+      tipify(tags$p(
+        tags$b("N", tags$sub("group")), ": ", input$simulationGroupNum
+      ), title =  "Number of Groups", placement = "left"),
+      tipify(tags$p(
+        tags$b(lapply(1:GroupNum, function(i) {
+          namesDEG.assign[[i]]
+        })), ": ", paste0(DEG.assign, collapse = ", ")
+      ), title = "Assignment of DEGs", placement = "left"),
+      tipify(tags$p(
+        tags$b(lapply(1:GroupNum, function(i) {
+          namesDEG.foldchange[[i]]
+        })), ": ", paste0(DEG.foldchange, collapse = ", ")
+      ), title = "Degree of Fold-change", placement = "left"),
+      tipify(tags$p(
+        tags$b(lapply(1:GroupNum, function(i) {
+          namesreplicates[[i]]
+        })), ": ", paste0(replicates, collapse = ", ")
+      ), title = "Number of Replicates", placement = "left"),
+      uiOutput("simulationGroupInfo")
     )
   )
 })

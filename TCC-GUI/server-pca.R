@@ -237,7 +237,7 @@ output$summaryPCA <- DT::renderDataTable({
     summaryTable <- summary(data.pca)$importance
     row.names(summaryTable)[1] <- "Standard Deviation"
     summaryTable <- t(summaryTable)
-    DT::datatable(summaryTable, options = list(
+     t <- DT::datatable(summaryTable, options = list(
       dom = "Bt",
       buttons = list(
         'copy',
@@ -269,6 +269,7 @@ output$summaryPCA <- DT::renderDataTable({
                     backgroundRepeat = 'no-repeat',
                     backgroundPosition = 'center'
                   )
+    variables$summaryPCA <- t
   } else {
     return()
   }

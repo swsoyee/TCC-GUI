@@ -19,6 +19,7 @@ params:
   screePlot: NA
   pca3d: NA
   pca2d: NA
+  summaryPCA: NA
   heatmapObject: NA
   expressionLevelBar: NA
   expressionLevelBox: NA
@@ -214,9 +215,18 @@ Reload `result` and `norData` from the previous TCC computation part.
 # norData <- tcc$getNormalizedData()
 ```
 
+### Summary Table of PCA
+```{r}
+if(length(params$summaryPCA) > 0) {
+  params$summaryPCA
+} else {
+  "Not available"
+}
+```
+
 ### Scree plot  
 ```{r}
-if(params$screePlot != ""){
+if(length(params$screePlot) > 0){
   params$screePlot
 } else {
   "Not available"
@@ -225,7 +235,7 @@ if(params$screePlot != ""){
 
 ### 3D  
 ```{r}
-if(params$pca3d != ""){
+if(length(params$pca3d) > 0){
   params$pca3d
 } else {
   "Not available"
@@ -234,7 +244,7 @@ if(params$pca3d != ""){
 
 ### 2D  
 ```{r}
-if(params$pca2d != ""){
+if(length(params$pca2d) > 0){
   params$pca2d
 } else {
   "Not available"

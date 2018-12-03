@@ -2,6 +2,139 @@
 
 runReport <- reactiveValues(runReportValue = FALSE)
 
+output$renderMaReportOption <- renderUI({
+  if(runMA$runMAValues){
+    awesomeCheckboxGroup(
+      inputId = "maReportOption",
+      label = "MA Plot",
+      choices = c("Parameters", "Code", "MA Plot"),
+      selected = c("Parameters", "MA Plot"),
+      inline = TRUE
+    )
+  } else {
+    tagList(
+      tags$b("MA Plot"),
+      helpText("You need to execute this part first to generate reportable objects.")
+    )
+  }
+})
+
+output$renderVolcanoReportOption <- renderUI({
+  if(runVolcano$runVolcanoValue){
+    awesomeCheckboxGroup(
+      inputId = "volcanoReportOption",
+      label = "Volcano Plot",
+      choices = c("Parameters", "Code", "Volcano Plot"),
+      selected = c("Parameters", "Volcano Plot"),
+      inline = TRUE
+    )
+  } else {
+    tagList(
+      tags$b("Volcano Plot"),
+      helpText("You need to execute this part first to generate reportable objects.")
+    )
+  }
+})
+
+output$renderPcaReportOption <- renderUI({
+  if(runPCA$runPCAValue){
+    awesomeCheckboxGroup(
+      inputId = "pcaReportOption",
+      label = "PCA",
+      choices = c("Parameters", "Code", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
+      selected = c("Parameters", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
+      inline = TRUE
+    )
+  } else {
+    tagList(
+      tags$b("PCA"),
+      helpText("You need to execute this part first to generate reportable objects.")
+    )
+  }
+})
+
+output$renderHeatmapReportOption <- renderUI({
+  if(runHeatmap$runHeatmapValue){
+    awesomeCheckboxGroup(
+      inputId = "heatmapReportOption",
+      label = "Heatmap",
+      choices = c("Parameters", "Code", "Data Table", "Heatmap"),
+      selected = c("Parameters", "Data Table", "Heatmap"),
+      inline = TRUE
+    )
+  } else {
+    tagList(
+      tags$b("Heatmap"),
+      helpText("You need to execute this part first to generate reportable objects.")
+    )
+  }
+})
+
+output$renderExpressionReportOption <- renderUI({
+  if(runExp$runExpValue){
+    awesomeCheckboxGroup(
+      inputId = "expressionReportOption",
+      label = "Expression Level",
+      choices = c("Parameters", "Code", "Data Table", "Barplot", "Boxplot"),
+      selected = c("Parameters", "Data Table", "Barplot", "Boxplot"),
+      inline = TRUE
+    )
+  } else {
+    tagList(
+      tags$b("Expression Level"),
+      helpText("You need to execute this part first to generate reportable objects.")
+    )
+  }
+})
+
+output$reportOption <- renderUI({
+  if(runPCA$runPCAValue){
+    awesomeCheckboxGroup(
+      inputId = "pcaReportOption",
+      label = "PCA",
+      choices = c("Parameters", "Code", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
+      selected = c("Parameters", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
+      inline = TRUE
+    )
+  }
+  
+  tagList(
+  awesomeCheckboxGroup(
+    inputId = "simulationReportOption",
+    label = "Simulation",
+    choices = c("Parameters", "Code", "Summary Table"),
+    selected = c("Parameters", "Summary Table"),
+    inline = TRUE
+  ),
+  tags$hr(),
+  awesomeCheckboxGroup(
+    inputId = "importReportOption",
+    label = "Import",
+    choices = c("Parameters", "Code", "Summary Table", "Count Distribution", "Filtering Threshold", "Density Plot", "MDS Plot", "Hierarchical Clustering"),
+    selected = c("Parameters", "Summary Table", "Count Distribution", "Filtering Threshold", "Density Plot", "MDS Plot", "Hierarchical Clustering"),
+    inline = TRUE
+  ),
+  tags$hr(),
+  awesomeCheckboxGroup(
+    inputId = "tccReportOption",
+    label = "TCC Computation",
+    choices = c("Parameters", "Code", "Summary Table"),
+    selected = c("Parameters", "Summary Table"),
+    inline = TRUE
+  ),
+  tags$hr(),
+  uiOutput("renderMaReportOption"),
+  tags$hr(),
+  uiOutput("renderVolcanoReportOption"),
+  tags$hr(),
+  uiOutput("renderPcaReportOption"),
+  tags$hr(),
+  uiOutput("renderHeatmapReportOption"),
+  tags$hr(),
+  uiOutput("renderExpressionReportOption")
+  )
+})
+
 observeEvent(input$generateReport, {
   progressSweetAlert(
     session = session,
@@ -49,6 +182,7 @@ observeEvent(input$generateReport, {
     screePlot = variables$screePlot,
     pca3d = variables$pca3d,
     pca2d = variables$pca2d,
+    summaryPCA = variables$summaryPCA,
     heatmapObject = variables$heatmapObject,
     expressionLevelBar = variables$expressionLevelBar,
     expressionLevelBox = variables$expressionLevelBox
