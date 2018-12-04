@@ -89,17 +89,15 @@ column(
     status = "info",
     uiOutput("mainResultTable")
   ),
-  tabBox(
-    title = "",
-    id = "sampleDistributionInTCC",
+  box(
+    title = tagList(icon("table"), "Summary of TCC normalization"),
+    # id = "sampleDistributionInTCC",
     width = NULL,
-    tabPanel(
-      title = tagList(icon("table"), "Summary of TCC normalization"),
-      uiOutput("tccSummationUI")
-    )#,
+    solidHeader = TRUE,
+    status = "info",
     # tabPanel(
-    #   title = tagList(icon("area-chart"), "Density Plot (Filtering)"),
-    #   uiOutput("norDistributionDensityPanel")
+    #   title = tagList(icon("table"), "Summary of TCC normalization"),
+    uiOutput("tccSummationUI")
     # )
   )
 )))
