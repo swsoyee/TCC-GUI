@@ -35,7 +35,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
           min = -1
         ),
         title = "Set -1 for using all genes"
-      ), 
+      ),
       textOutput("lowCountFilterText"),
       sliderInput(
         "iteration",
@@ -91,13 +91,9 @@ column(
   ),
   box(
     title = tagList(icon("table"), "Summary of TCC normalization"),
-    # id = "sampleDistributionInTCC",
     width = NULL,
     solidHeader = TRUE,
     status = "info",
-    # tabPanel(
-    #   title = tagList(icon("table"), "Summary of TCC normalization"),
     uiOutput("tccSummationUI")
-    # )
   )
 )))

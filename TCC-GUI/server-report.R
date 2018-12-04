@@ -1,6 +1,23 @@
 # server-report.R
 
 runReport <- reactiveValues(runReportValue = FALSE)
+# If analysis part has been executed, than render check box ----
+output$renderSimulationReportOption <- renderUI({
+  if(simuRun$simulationRunValue){
+    awesomeCheckboxGroup(
+      inputId = "simulationReportOption",
+      label = "Simulation Data",
+      choices = c("Parameters", "Code", "Summary Table"),
+      selected = c("Parameters", "Summary Table"),
+      inline = TRUE
+    )
+  } else {
+    tagList(
+      tags$b("Simulation Data"),
+      helpText("You need to execute this part first to generate reportable objects.")
+    )
+  }
+})
 
 output$renderMaReportOption <- renderUI({
   if(runMA$runMAValues){
@@ -86,55 +103,57 @@ output$renderExpressionReportOption <- renderUI({
     )
   }
 })
-
+# Render all check box in the report option ----
 output$reportOption <- renderUI({
-  if(runPCA$runPCAValue){
-    awesomeCheckboxGroup(
-      inputId = "pcaReportOption",
-      label = "PCA",
-      choices = c("Parameters", "Code", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
-      selected = c("Parameters", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
-      inline = TRUE
-    )
-  }
-  
   tagList(
-  awesomeCheckboxGroup(
-    inputId = "simulationReportOption",
-    label = "Simulation",
-    choices = c("Parameters", "Code", "Summary Table"),
-    selected = c("Parameters", "Summary Table"),
-    inline = TRUE
-  ),
-  tags$hr(),
-  awesomeCheckboxGroup(
-    inputId = "importReportOption",
-    label = "Import",
-    choices = c("Parameters", "Code", "Summary Table", "Count Distribution", "Filtering Threshold", "Density Plot", "MDS Plot", "Hierarchical Clustering"),
-    selected = c("Parameters", "Summary Table", "Count Distribution", "Filtering Threshold", "Density Plot", "MDS Plot", "Hierarchical Clustering"),
-    inline = TRUE
-  ),
-  tags$hr(),
-  awesomeCheckboxGroup(
-    inputId = "tccReportOption",
-    label = "TCC Computation",
-    choices = c("Parameters", "Code", "Summary Table"),
-    selected = c("Parameters", "Summary Table"),
-    inline = TRUE
-  ),
-  tags$hr(),
-  uiOutput("renderMaReportOption"),
-  tags$hr(),
-  uiOutput("renderVolcanoReportOption"),
-  tags$hr(),
-  uiOutput("renderPcaReportOption"),
-  tags$hr(),
-  uiOutput("renderHeatmapReportOption"),
-  tags$hr(),
-  uiOutput("renderExpressionReportOption")
+    uiOutput("renderSimulationReportOption"),
+    tags$hr(),
+    awesomeCheckboxGroup(
+      inputId = "importReportOption",
+      label = "Import",
+      choices = c(
+        "Parameters",
+        "Code",
+        "Summary Table",
+        "Count Distribution",
+        "Filtering Threshold",
+        "Density Plot",
+        "MDS Plot",
+        "Hierarchical Clustering"
+      ),
+      selected = c(
+        "Parameters",
+        "Summary Table",
+        "Count Distribution",
+        "Filtering Threshold",
+        "Density Plot",
+        "MDS Plot",
+        "Hierarchical Clustering"
+      ),
+      inline = TRUE
+    ),
+    tags$hr(),
+    awesomeCheckboxGroup(
+      inputId = "tccReportOption",
+      label = "TCC Computation",
+      choices = c("Parameters", "Code", "Summary Table"),
+      selected = c("Parameters", "Summary Table"),
+      inline = TRUE
+    ),
+    tags$hr(),
+    uiOutput("renderMaReportOption"),
+    tags$hr(),
+    uiOutput("renderVolcanoReportOption"),
+    tags$hr(),
+    uiOutput("renderPcaReportOption"),
+    tags$hr(),
+    uiOutput("renderHeatmapReportOption"),
+    tags$hr(),
+    uiOutput("renderExpressionReportOption")
   )
 })
 
+# Click the generate report button, render report ----
 observeEvent(input$generateReport, {
   progressSweetAlert(
     session = session,
@@ -157,6 +176,7 @@ observeEvent(input$generateReport, {
     title = "Start generating....",
     value = 20
   )
+  
   reportParameter <- list(
     CountData = variables$CountData,
     groupList = variables$groupList,
@@ -176,17 +196,42 @@ observeEvent(input$generateReport, {
     norSampleDistributionDensity = variables$norSampleDistributionDensity,
     MAPlotObject = variables$MAPlotObject,
     VolcanoPlotObject = variables$VolcanoPlotObject,
-    pcScale = input$pcScale,
-    pcCenter = input$pcCenter,
-    pcTransform = input$pcTransform,
-    screePlot = variables$screePlot,
-    pca3d = variables$pca3d,
-    pca2d = variables$pca2d,
-    summaryPCA = variables$summaryPCA,
+    
+    pcaParameter = NULL,
+    screePlot = NULL,
+    pca3d = NULL,
+    pca2d = NULL,
+    summaryPCA = NULL,
+    
     heatmapObject = variables$heatmapObject,
     expressionLevelBar = variables$expressionLevelBar,
     expressionLevelBox = variables$expressionLevelBox
   )
+  
+  updateProgressBar(
+    session = session,
+    id = "report",
+    title = "Checking report option...",
+    value = 30
+  )
+  
+  # Check PCA
+  if("Parameters" %in% input$pcaReportOption){
+    reportParameter$pcaParameter <- variables$pcaParameter
+  }
+  if("Summary Table" %in% input$pcaReportOption){
+    reportParameter$summaryPCA <- variables$summaryPCA
+  }
+  if("Scree Plot" %in% input$pcaReportOption){
+    reportParameter$screePlot <- variables$screePlot
+  }
+  if("3D Plot" %in% input$pcaReportOption){
+    reportParameter$pca3d <- variables$pca3d
+  }
+  if("2D Plot" %in% input$pcaReportOption){
+    reportParameter$pca2d <- variables$pca2d
+  }
+  
   updateProgressBar(
     session = session,
     id = "report",
@@ -236,50 +281,6 @@ output$downloadPlotReport <- downloadHandler(
   },
 
   content = function(file) {
-    # src <- normalizePath('Plot_Report.Rmd')
-    # 
-    # owd <- setwd(tempdir())
-    # on.exit(setwd(owd))
-    # file.copy(src, 'Plot_Report.Rmd', overwrite = TRUE)
-    # 
-    # library(rmarkdown)
-    # 
-    # reportParameter <- list(
-    #   CountData = variables$CountData,
-    #   groupList = variables$groupList,
-    #   groupListConvert = variables$groupListConvert,
-    #   result = variables$result,
-    #   norData = variables$norData,
-    #   filterLowCount = input$filterLowCount,
-    #   normMethod = input$normMethod,
-    #   testMethod = input$testMethod,
-    #   iteration = input$iteration,
-    #   fdr = input$fdr,
-    #   floorpdeg = input$floorpdeg,
-    #   zeroValue = variables$zeroValue,
-    #   sampleDistributionBar = variables$sampleDistributionBar,
-    #   sampleDistributionDensity = variables$sampleDistributionDensity,
-    #   norSampleDistributionBar = variables$norSampleDistributionBar,
-    #   norSampleDistributionDensity = variables$norSampleDistributionDensity,
-    #   MAPlotObject = variables$MAPlotObject,
-    #   VolcanoPlotObject = variables$VolcanoPlotObject,
-    #   pcScale = input$pcScale,
-    #   pcCenter = input$pcCenter,
-    #   pcTransform = input$pcTransform,
-    #   screePlot = variables$screePlot,
-    #   pca3d = variables$pca3d,
-    #   pca2d = variables$pca2d,
-    #   heatmapObject = variables$heatmapObject,
-    #   expressionLevelBar = variables$expressionLevelBar,
-    #   expressionLevelBox = variables$expressionLevelBox
-    # )
-    # 
-    # out <- render('Plot_Report.Rmd', params = reportParameter, switch(
-    #   input$format,
-    #   Markdown = md_document(),
-    #   HTML = html_document(),
-    #   Word = word_document()
-    # ))
     file.rename(variables$reportFile, file)
   }
 )

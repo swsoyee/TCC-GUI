@@ -13,16 +13,16 @@ params:
   norSampleDistributionDensity: NA
   MAPlotObject: NA
   VolcanoPlotObject: NA
-  pcTransform: NA
-  pcCenter: NA
-  pcScale: NA
-  screePlot: NA
-  pca3d: NA
-  pca2d: NA
-  summaryPCA: NA
+  pcaParameter: NULL
+  screePlot: NULL
+  pca3d: NULL
+  pca2d: NULL
+  summaryPCA: NULL
   heatmapObject: NA
-  expressionLevelBar: NA
-  expressionLevelBox: NA
+  
+  expressionLevelBar: NULL
+  expressionLevelBox: NULL
+  
   groupListConvert: NA
   filterLowCount: NA
   normMethod: NA
@@ -40,12 +40,14 @@ library(knitr)
 library(DT)
 ```
 
+If "Not available" is shown in the report, it means:  
+1. You seleted not to show this part in ouput option.  
+2. You haven't generate the plot in TCC-GUI. Only the plot was shown in TCC-GUI at least one time, it can be output to the report.  
+
 # Session infomation
 
 This report is generated at: 
 `r Sys.time()`  
-
-> If "Not available" is shown in the report, it means you haven't generate the plot in TCC-GUI. Only the plot was shown in TCC-GUI at least one time, it can be output to the report.  
 
 Size of original dataset:   
 `r nrow(params$CountData)` rows  
@@ -67,7 +69,7 @@ for(i in 1:length(params$groupList)){
 Number of gene which expression level equal to zero in all sample: 
 `r params$zeroValue`  
 
-# TCC Computation
+# 2. TCC Computation
 
 This part is about TCC Computation processing.  
 TCC Parameters is shown as below. 
@@ -133,45 +135,8 @@ kable(head(params$result, 10), caption = "First 10 row of TCC result table")
 kable(head(params$norData, 10), caption = "First 10 row of normalized data")
 ```
 
-## Sample Distribution  
 
-### Sample distribution in boxplot  
-```{r}
-if(params$sampleDistributionBar != ""){
-  params$sampleDistributionBar
-} else {
-  "Not available"
-}
-```
-
-### Sample distribution in boxplot (normalized)  
-```{r}
-if(params$norSampleDistributionBar != ""){
-  params$norSampleDistributionBar
-} else {
-  "Not available"
-}
-```
-
-### Sample distribution density plot  
-```{r}
-if(params$sampleDistributionDensity != ""){
-  params$sampleDistributionDensity
-} else {
-  "Not available"
-}
-```
-
-### Sample distribution density plot (normalized)  
-```{r}
-if(params$norSampleDistributionDensity != ""){
-  params$norSampleDistributionDensity
-} else {
-  "Not available"
-}
-```
-
-## MA Plot  
+## 3. MA Plot  
 ```{r}
 if(params$MAPlotObject != ""){
   params$MAPlotObject
@@ -180,7 +145,7 @@ if(params$MAPlotObject != ""){
 }
 ```
 
-## Volcano Plot  
+## 4. Volcano Plot  
 ```{r}
 if(params$VolcanoPlotObject != ""){
   params$VolcanoPlotObject
@@ -189,42 +154,75 @@ if(params$VolcanoPlotObject != ""){
 }
 ```
 
-## Principal Components Analysis  
+## 5. Principal Components Analysis  
 
 PCA parameters is shown as below:
 
 ```{r pca para}
+if(params$pcaParameter$pcData == 'o'){
+  data <- "Raw Count Data"
+}else{
+  data <- "Normalized Data"
+}
+
 pcaPara <- rbind(
-  c("data", "Data source", "data.frame"),
-  c("input$pcFDR", "FDR Cut-off", params$pcFDR),
-  c("input$pcTransform", "Log(x+1) transform", params$pcTransform),
-  c("input$pcCenter", "Center", params$pcCenter),
-  c("input$pcScale", "Scale", params$pcScale)
+  c("pcaData", "Data source", data),
+  c("pcaFDR", "FDR Cut-off", params$pcaParameter$pcFDR),
+  c("pcaTransform", "Log(x+1) transform", params$pcaParameter$pcTransform),
+  c("pcaCenter", "Center", params$pcaParameter$pcCenter),
+  c("pcaScale", "Scale", params$pcaParameter$pcScale)
   )
   colnames(pcaPara) <-
-  c("Parameter", "Explanation", "Value / Class")
+  c("Parameter", "Explanation", "Value")
   kable(pcaPara, caption = "Paramters used in PCA.")
 ```
 
-Computation code is shown as below.  
-Reload `result` and `norData` from the previous TCC computation part.
 
-```{r pca computation, echo=TRUE, eval=FALSE}
-# Get final result of TCC
-# result <- getResult(tcc, sort = FALSE)
-# norData <- tcc$getNormalizedData()
+```{r pca computation}
+if(length(params$pcaParameter) > 0){
+cat("Computation code is shown as below. This part should be after the TCC Computation.\n")
+cat("```r\n")
+cat("# Obtain dataset from TCC Object\n")
+if (params$pcaParameter$pcData == "o") {
+  cat("data <- tcc$count\n")
+} else {
+  cat("data <- getNormalizedData(tcc)\n")
+}
+
+result <- getResult(tcc)
+
+# Select DEGs (Row)
+if (params$testMethod != 'wad') {
+  cat("\n# Select genes by q.value (FDR)\n")
+  cat("result <- getResult(tcc)\n")
+  cat(paste0("data <- data[result$q.value <= ", params$pcaParameter$pcFDR, ", ]\n"))
+} 
+
+# PCA processing
+if (params$pcaParameter$pcTransform == TRUE) {
+  cat("\n# Log transform dataset\n")
+  cat("data <- t(log1p(data))\n")
+} else {
+  cat("data <- t(data)\n")
+}
+cat("\n# Execute PCA")
+cat(paste0("data.pca <- prcomp(data[, apply(data, 2, var) != 0], center = ", params$pcaParameter$pcCenter,", scale. = ", params$pcaParameter$pcScale, "\n"))
+cat("```\n")
+} else {
+  cat("")
+}
 ```
 
-### Summary Table of PCA
+### 5.1 Summary Table of PCA
 ```{r}
-if(length(params$summaryPCA) > 0) {
+if(length(params$summaryPCA) > 0){
   params$summaryPCA
 } else {
   "Not available"
 }
 ```
 
-### Scree plot  
+### 5.2 Scree plot  
 ```{r}
 if(length(params$screePlot) > 0){
   params$screePlot
@@ -233,7 +231,7 @@ if(length(params$screePlot) > 0){
 }
 ```
 
-### 3D  
+### 5.3 3D  
 ```{r}
 if(length(params$pca3d) > 0){
   params$pca3d
@@ -242,7 +240,7 @@ if(length(params$pca3d) > 0){
 }
 ```
 
-### 2D  
+### 5.4 2D  
 ```{r}
 if(length(params$pca2d) > 0){
   params$pca2d
@@ -251,7 +249,7 @@ if(length(params$pca2d) > 0){
 }
 ```
 
-## Heatmap  
+## 6. Heatmap  
 ```{r}
 if(params$heatmapObject != ""){
   params$heatmapObject
@@ -260,11 +258,20 @@ if(params$heatmapObject != ""){
 }
 ```
 
-## Expression Level  
+## 7. Expression Level  
+
+### Selected Genes
+```{r}
+if(length(params$expressionLevelBar) > 0){
+  params$expressionLevelBar
+} else {
+  "Not available"
+}
+```
 
 ### Barplot  
 ```{r}
-if(params$expressionLevelBar != ""){
+if(length(params$expressionLevelBar) > 0){
   params$expressionLevelBar
 } else {
   "Not available"
@@ -273,7 +280,7 @@ if(params$expressionLevelBar != ""){
 
 ### Boxplot  
 ```{r}
-if(params$expressionLevelBox != ""){
+if(length(params$expressionLevelBox) > 0){
   params$expressionLevelBox
 } else {
   "Not available"

@@ -30,9 +30,9 @@ column(
     title = "Expression Level",
     width = NULL,
     tabPanel(title = tagList(icon("bar-chart"), "Barplot"),
-             plotlyOutput("geneBarPlotExpression")),
+             uiOutput("geneBarPlotUI")),
     tabPanel(title = tagList(icon("line-chart"), "Boxplot"),
-             plotlyOutput("geneBoxPlotExpression"))
+             uiOutput("geneBoxPlotUI"))
   ),
   tabBox(
     title = "Table of Expression Level",

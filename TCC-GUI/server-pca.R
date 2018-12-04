@@ -74,6 +74,11 @@ observeEvent(input$pcFDR, {
 
 observeEvent(input$pcRun, {
   runPCA$runPCAValue <- input$pcRun
+  variables$pcaParameter <- list("pcData" = input$pcData,
+                                 "pcFDR" = input$pcFDR,
+                                 "pcTransform" = input$pcTransform,
+                                 "pcCenter" = input$pcCenter,
+                                 "pcScale" = input$pcScale)
   tcc <- variables$tccObject
   
   # Using Original Dataset or Normalized Dataset.

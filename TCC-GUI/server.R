@@ -9,6 +9,7 @@ source(file = "global.R",
 shinyServer(function(input, output, session) {
   variables = reactiveValues(
     simulationData = NULL,
+    
     CountData = data.frame(),
     groupList = NULL,
     groupListConvert = NULL,
@@ -29,14 +30,20 @@ shinyServer(function(input, output, session) {
     VolcanoPlotObject = "",
     
     data.pca = NULL,
+    pcaParameter = NULL,
     screePlot = NULL,
     pca3d = NULL,
     pca2d = NULL,
     summaryPCA = NULL,
     
     heatmapObject = "",
-    expressionLevelBar = "",
-    expressionLevelBox = "",
+    
+    expressionData = NULL,
+    expressionLevelBar = NULL,
+    expressionLevelBox = NULL,
+    expressionLevelCountTable = NULL,
+    expressionLevelResultTable = NULL,
+    
     logList = data.frame(
       "Time" = vector(),
       "Type" = vector(),
