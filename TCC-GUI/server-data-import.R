@@ -206,6 +206,7 @@ observeEvent(input$confirmedGroupList, {
     tcc <-
       new("TCC", variables$CountData[data.cl != 0], data.cl[data.cl != 0])
     variables$tccObject <- tcc
+    variables$count.data <- tcc$count
     
     updateProgressBar(
       session = session,
@@ -277,7 +278,7 @@ output$importDataSummary <- renderUI({
       popify(
         tags$p(tags$b("AS"), ":", round(AS, 3)),
         title = "Average Silhouettes",
-        content = 'A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).', 
+        content = '<p>A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).</p><p><b>Reference</b><br>Zhao, Shitao, et al. <a href="https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8">"Silhouette Scores for Arbitrary Defined Groups in Gene Expression Data and Insights into Differential Expression Results."</a> <i>Biological procedures online</i> 20.1 (2018): 5.</p>', 
         placement = "bottom"
       )
     )
@@ -346,9 +347,10 @@ output$sampleDistributionBox <- renderPlotly({
 output$sampleDistributionDensity <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
-    if (input$densityFilter > -1) {
-      count <-
-        filterLowCountGenes(tcc, low.count = input$densityFilter)$count
+    if (input$densityFilter != "Do not filter") {
+      # count <-
+      #   filterLowCountGenes(tcc, low.count = as.numeric(input$densityFilter))$count
+      count <- tcc$count[rowSums(tcc$count) > as.numeric(input$densityFilter), ]
     } else {
       count <- tcc$count
     }
@@ -388,12 +390,14 @@ output$sampleDistributionDensityPanel <- renderUI({
     tagList(fluidRow(
       column(
         3,
-        sliderInput(
+        popify(helpText("Filter genes with a total read count smaller than thresholds."),
+               title = "Reference", 
+               content = 'Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.', 
+               placement = "left"),
+        sliderTextInput(
           inputId = "densityFilter",
-          label = "Filter genes threshold",
-          min = -1,
-          max = 100,
-          value = -1
+          label = "Filter genes threshold", 
+          choices = c("Do not filter", c(0:30))
         ),
         textInput(
           inputId = "sampleDistributionDenstityTitle",
@@ -468,7 +472,8 @@ output$lowCountFilterByCutoff <- renderPlotly({
     
     lowCount <-
       sapply(0:input$lowCountSlide, function(x) {
-        nrow(filterLowCountGenes(tcc, low.count = x)$count)
+        sum(rowSums(tcc$count) > x)
+        # nrow(filterLowCountGenes(tcc, low.count = x)$count)
       })
     
     lowCountdt <- data.frame(
@@ -520,7 +525,10 @@ output$lowCountFilterByCutoffUI <- renderUI({
     tagList(fluidRow(
       column(
         3,
-        helpText("Filter genes with a total read count smaller than thresholds."),
+        popify(helpText("Filter genes with a total read count smaller than thresholds."),
+               title = "Reference", 
+               content = 'Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.', 
+               placement = "left"),
         sliderInput(
           inputId = "lowCountSlide",
           label = "Max threshold",
@@ -541,30 +549,49 @@ output$lowCountFilterByCutoffUI <- renderUI({
 })
 
 # MDS Plot ----
+
 output$mdsPlotObject <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
-    mds <-
-      data.frame(cmdscale(dist(
-        1 - cor(tcc$count, method = input$mdsMethod),
-        method = input$mdsDistMethod
-      )))
+    if (input$mds == "Nonmetric MDS") {
+      mds <-
+        data.frame(isoMDS(dist(
+          1 - cor(tcc$count, method = input$mdsMethod),
+          method = input$mdsDistMethod
+        )))
+    } else{
+      mds <-
+        data.frame(cmdscale(dist(
+          1 - cor(tcc$count, method = input$mdsMethod),
+          method = input$mdsDistMethod
+        )))
+    }
     mds$name <- rownames(mds)
     mdsG <- tcc$group
     mdsG$name <- rownames(mdsG)
     mdsJ <- left_join(mds, mdsG, by = "name")
     plot_ly(
       data = mdsJ,
-      x = ~ X1,
-      y = ~ X2,
+      x = mdsJ[, 1],
+      y = mdsJ[, 2],
       type = "scatter",
       mode = "text",
       text =  ~ name,
       color = ~ group
-    ) %>% layout(title = "MDS Plot")
+    ) %>% layout(title = paste0(input$mds, " Plot"))
   } else {
     return()
   }
+  })
+
+
+output$MDShelpText <- renderUI({
+  helpText(
+    "Use all genes' raw count number to calculate",
+    input$mdsMethod,
+    "correlation coefficient (rho) to create a matrix of (1 - rho). Calculate the ",
+    input$mdsDistMethod,
+    " distances between samples and plot the result to a two-dimension MDS plot.")
 })
 
 # Render MDS plot ----
@@ -573,6 +600,16 @@ output$mdsUI <- renderUI({
     tagList(fluidRow(
       column(
         3,
+        uiOutput("MDShelpText"),
+        selectInput(
+          inputId = "mdsMethod",
+          label = "Correlation Coefficient",
+          choices = c(
+            "Spearman" = "spearman",
+            "Pearson" = "pearson",
+            "Kendall" = "kendall"
+          )
+        ),
         selectInput(
           inputId = "mdsDistMethod",
           label = "Distance Measure",
@@ -586,13 +623,10 @@ output$mdsUI <- renderUI({
           )
         ),
         selectInput(
-          inputId = "mdsMethod",
-          label = "Correlation Coefficient",
-          choices = c(
-            "Spearman" = "spearman",
-            "Pearson" = "pearson",
-            "Kendall" = "kendall"
-          )
+          inputId = "mds",
+          label = "MDS Method",
+          choices = c("Classical MDS" = "Classical MDS",
+                      "Nonmetric MDS" = "Nonmetric MDS")
         )
       ),
       column(9, plotlyOutput("mdsPlotObject") %>% withSpinner())
@@ -631,7 +665,7 @@ output$dendUI <- renderUI({
         3,
         selectInput(
           inputId = "dendCluster",
-          label = "Distance Measure",
+          label = "Agglomeration Method",
           choices = c(
             "Complete" = "complete",
             "Ward.D" = "ward.D",
@@ -645,7 +679,7 @@ output$dendUI <- renderUI({
         ),
         selectInput(
           inputId = "dendCor",
-          label = "Correlation Coefficient",
+          label = "Distance Measure",
           choices = c("Spearman" = "spearman",
                       "Pearson" = "pearson")
         )

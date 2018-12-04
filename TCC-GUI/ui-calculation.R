@@ -27,15 +27,16 @@ fluidPage(useSweetAlert(), fluidRow(column(
           # "WAD" = "wad"
         )
       ),
-      tipify(
-        numericInput(
-          "filterLowCount",
-          "Filtering Threshold for Low Count Genes",
-          value = -1,
-          min = -1
+      popify(
+        sliderTextInput(
+          inputId = "filterLowCount",
+          label = "Filtering Threshold for Low Count Genes",
+          choices = c("Do not filter", c(0:30))
         ),
-        title = "Set -1 for using all genes"
-      ),
+        title = "Reference",
+        content = '<p>Filter genes with a total read count smaller than thresholds.</p><p>Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.</p>',
+        placement = "bottom"
+      ), 
       textOutput("lowCountFilterText"),
       sliderInput(
         "iteration",

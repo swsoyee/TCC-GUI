@@ -14,6 +14,7 @@ library(cluster)
 library(shinycssloaders)
 library(shinyBS)
 library(rclipboard)
+library(MASS)
 
 # ====================================
 # This function convert the input of group information to

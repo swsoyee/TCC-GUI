@@ -32,10 +32,13 @@ observeEvent(input$TCC, {
   # tcc <- new("TCC", data[data.cl != 0], data.cl[data.cl != 0])
   tcc <- variables$tccObject
   # Filter low count genes before calculation
-  if(input$filterLowCount != -1){
-    tcc <-
-      filterLowCountGenes(tcc, low.count = input$filterLowCount)
+  if (input$filterLowCount != "Do not filter") {
+    tcc$count <- tcc$count[rowSums(tcc$count) > as.numeric(input$filterLowCount), ]
   }
+  # if(input$filterLowCount != -1){
+  #   tcc <-
+  #     filterLowCountGenes(tcc, low.count = input$filterLowCount)
+  # }
   
   updateProgressBar(
     session = session,
@@ -331,18 +334,23 @@ output$tccSummationUI <- renderUI({
   }
 })
 
+
+
 # Filtered number preview ----
 output$lowCountFilterText <- renderText({
   if (length(variables$tccObject) > 0) {
-    tcc <- variables$tccObject
-    data <- tcc$count
-    tcc <-
-      filterLowCountGenes(tcc, low.count = input$filterLowCount)
-    filtered <- nrow(data) - nrow(tcc$count)
+    # tcc <- variables$tccObject
+    data <- variables$count.data
+    if (input$filterLowCount != "Do not filter") {
+      count <- data[rowSums(data) > as.numeric(input$filterLowCount), ]
+    } else {
+      count <- data
+    }
+    filtered <- nrow(data) - nrow(count)
     paste0(filtered,
            " genes (",
-           100 * (filtered / nrow(data)) ,
-           "%) have been filtered out.")
+           round(100 * (filtered / nrow(data)),2) ,
+           "%) will be filtered out.")
   } else {
     return()
   }
