@@ -316,7 +316,7 @@ output$copySimulationGroupInfoText <- renderUI({
     collapse = "\n"
   )
   rclipButton("copySimuGroup",
-              "Copy group information",
+              "Copy (not working now)",
               p,
               icon("clipboard"))
 })

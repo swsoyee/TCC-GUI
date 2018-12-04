@@ -1,10 +1,6 @@
 # server-data-import.R
 
-# ====================================
-# If Sample Data button has been clicked, load sample data.
-# Position: In Computation tab, upper left. Button action.
-# ====================================
-# 2018-5-23 Change read.table to fread.
+# If Sample Data button has been clicked, load sample data. ----
 
 observeEvent(input$CountDataSample, {
   variables$tccObject <- NULL
@@ -193,7 +189,7 @@ observeEvent(input$confirmedGroupList, {
     group <- fread(input$groupSelectViaText, header = FALSE)
     variables$groupList <-
       lapply(unique(group$V2), function(x) {
-        group[group$V2 == x, ]$V1
+        group[group$V2 == x,]$V1
       })
     names(variables$groupList) <- unique(group$V2)
     
@@ -271,24 +267,39 @@ output$importDataSummary <- renderUI({
     data.cl <- tcc$group$group
     # Filtering
     obj <- as.logical(rowSums(data) > 0)
-    data <- unique(data[obj, ])
+    data <- unique(data[obj,])
     
     # AS calculation
     d <- as.dist(1 - cor(data, method = "spearman"))
     AS <-
       mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
     AS <- tagList(
-      tags$p(tags$b("Average Silhouettes (AS):"), round(AS, 3)),
-      HTML('A higher AS value <font color="##00C0EF">(0 <= AS <= 1)</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).')
+      popify(
+        tags$p(tags$b("AS"), ":", round(AS, 3)),
+        title = "Average Silhouettes",
+        content = 'A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).', 
+        placement = "bottom"
       )
+    )
   } else {
     AS <- helpText("Assign group information needed.")
   }
   tagList(
-    tags$p(tags$b("Number of Genes:"), rowCount),
-    tags$p(tags$b("Number of Groups:"), groupCount),
-    tags$p(tags$b("Number of Replicates:")),
-    tags$p(gText),
+    tipify(
+      tags$p(tags$b("N", tags$sub("gene")), ":", rowCount),
+      title = "Number of Genes",
+      placement = "left"
+    ),
+    tipify(
+      tags$p(tags$b("N", tags$sub("group")), ": ", groupCount),
+      title = "Number of Groups",
+      placement = "left"
+    ),
+    tipify(
+      tags$p(tags$b("NR"), ": ", gText),
+      title = "Number of Replicates",
+      placement = "left"
+    ),
     AS
   )
 })
@@ -353,7 +364,7 @@ output$sampleDistributionDensity <- renderPlotly({
         p,
         x = densityTable[[i]][[1]],
         y = densityTable[[i]][[2]],
-        color = group[rownames(group) == names(densityTable[i]),],
+        color = group[rownames(group) == names(densityTable[i]), ],
         name = names(densityTable[i])
       )
     }
@@ -595,7 +606,7 @@ output$mdsUI <- renderUI({
 output$dendPlotObject <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
-    data <- tcc$count[rowSums(tcc$count) > 0,]
+    data <- tcc$count[rowSums(tcc$count) > 0, ]
     data <- data.frame(1 - cor(data, method = input$dendCor))
     data.cl.count <- length(unique(tcc$group$group))
     heatmaply(
