@@ -2,7 +2,50 @@
 
 # Render input widget in group parameters ----
 observeEvent(input$simulationGroupNum, {
-  lapply(1:input$simulationGroupNum, function(x) {
+  numberLength <- nchar(as.character(input$simulationGeneNum))
+  defaultDEG <-
+    round(1 / input$simulationGroupNum, numberLength - 1)
+  
+  firstDefault <- 1 - (defaultDEG * (input$simulationGroupNum - 1))
+  
+  output[["Group1"]] <- renderUI({
+    tagList(fluidRow(
+      column(
+        4,
+        numericInput(
+          inputId = "DEGAssign1",
+          label = HTML("Assignment of DEGs (P<sub>G1</sub>)"),
+          value = firstDefault,
+          step = 0.01,
+          min = 0,
+          max = 1
+        )
+      ),
+      column(
+        4,
+        numericInput(
+          inputId = "DEGFoldchange1",
+          label = HTML("Degree of Fold-change (FC<sub>G1</sub>)"),
+          value = 4,
+          min = 0
+        )
+      ),
+      column(
+        4,
+        numericInput(
+          inputId = "replicates1",
+          label = HTML("Number of Replicates (NR<sub>G1</sub>)"),
+          value = 3,
+          min = 0
+        )
+      )
+    ),
+    fluidRow(column(12, textOutput(
+      "ingroupDEGsNum1"
+    ))))
+  })
+  
+  lapply(2:input$simulationGroupNum, function(x) {
     output[[paste0("Group", x)]] <- renderUI({
       tagList(fluidRow(
         column(
@@ -10,7 +53,7 @@ observeEvent(input$simulationGroupNum, {
           numericInput(
             inputId = paste0("DEGAssign", x),
             label = HTML("Assignment of DEGs (P<sub>", paste0("G", x), "</sub>)"),
-            value = 0.5,
+            value = defaultDEG,
             step = 0.01,
             min = 0,
             max = 1
@@ -20,7 +63,11 @@ observeEvent(input$simulationGroupNum, {
           4,
           numericInput(
             inputId = paste0("DEGFoldchange", x),
-            label = HTML("Degree of Fold-change (FC<sub>", paste0("G", x), "</sub>)"),
+            label = HTML(
+              "Degree of Fold-change (FC<sub>",
+              paste0("G", x),
+              "</sub>)"
+            ),
             value = 4,
             min = 0
           )
@@ -35,9 +82,9 @@ observeEvent(input$simulationGroupNum, {
           )
         )
       ),
-      fluidRow(column(12, textOutput(paste0(
-        "ingroupDEGsNum", x
-      )))))
+      fluidRow(column(12, textOutput(
+        paste0("ingroupDEGsNum", x)
+      ))))
     })
   })
   
@@ -45,20 +92,6 @@ observeEvent(input$simulationGroupNum, {
          function(i) {
            outputOptions(output, paste0("Group", i), suspendWhenHidden = FALSE)
          })
-})
-
-
-# According to group number, update proportion ingroup DEGs ----
-observeEvent(input$simulationGroupNum, {
-  numberLength <- nchar(as.character(input$simulationGeneNum))
-  defaultDEG <- round(1 / input$simulationGroupNum, numberLength - 1)
-  
-  firstDefault <- 1 - (defaultDEG * (input$simulationGroupNum - 1))
-  updateNumericInput(session, "DEGAssign1", value = firstDefault)
-  
-  lapply(2:input$simulationGroupNum, function(x) {
-    updateNumericInput(session, paste0("DEGAssign", x), value = defaultDEG)
-  })
 })
 
 # According all params, preview ingroup DEGs ----
@@ -77,7 +110,10 @@ observeEvent({
         " × ",
         input[[paste0("DEGAssign", x)]],
         ") = ",
-        round(input$simulationGeneNum * input$simulationPDEG * input[[paste0("DEGAssign", x)]], 0),
+        round(
+          input$simulationGeneNum * input$simulationPDEG * input[[paste0("DEGAssign", x)]],
+          0
+        ),
         " DEGs up-regulated in this group."
       )
     })
@@ -87,14 +123,14 @@ observeEvent({
 # Render Text of DEGs number preview ----
 observeEvent(input$simulationPDEG, {
   output$expectedDEGsText <- renderText({
-    paste0("Total Number of DEGs: ", floor(input$simulationPDEG * input$simulationGeneNum))
+    paste0("Total Number of DEGs: ",
+           floor(input$simulationPDEG * input$simulationGeneNum))
   })
 })
 
 # Render a series tab in group parameters ----
 output$simulationGroup <- renderUI({
   if (input$simulationGroupNum != 0) {
-    
     myTabs <- lapply(1:input$simulationGroupNum, function(i) {
       tabPanel(title = paste0("Group", i),
                uiOutput(paste0("Group", i)))
@@ -107,7 +143,6 @@ simuRun <- reactiveValues(simulationRunValue = FALSE)
 
 # Excute simulation data ----
 observeEvent(input$simulationRun, {
-  
   simuRun$simulationRunValue <- input$simulationRun
   
   GroupNum <- input$simulationGroupNum
@@ -143,11 +178,11 @@ observeEvent(input$simulationRun, {
     updateProgressBar(
       session = session,
       id = "simulationProgress",
-      title = "Start generating...",
+      title = "Generating simulation data under NB distribution...",
       value = 20
     )
     
-    if(input$simulationSeed != -1){
+    if (input$simulationSeed != -1) {
       set.seed(input$simulationSeed)
     }
     simulatedData <-
@@ -168,9 +203,11 @@ observeEvent(input$simulationRun, {
     # Create 19 breaks and 20 rgb color values ranging from white to red
     df <- data.frame(simulatedData$count)
     brks <-
-      quantile(df %>% select_if(is.numeric),
-               probs = seq(0.05, 0.95, 0.05),
-               na.rm = TRUE)
+      quantile(
+        df %>% select_if(is.numeric),
+        probs = seq(0.05, 0.95, 0.05),
+        na.rm = TRUE
+      )
     
     output$simulatedData <- DT::renderDataTable({
       DT::datatable(
@@ -209,49 +246,23 @@ observeEvent(input$simulationRun, {
           orderClasses = TRUE,
           scroller = TRUE
         )
-      )%>% formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, head(Blues(40), n = length(brks) + 1)))
+      ) %>% formatStyle(names(df %>% select_if(is.numeric)), backgroundColor = styleInterval(brks, head(Blues(40), n = length(brks) + 1)))
     })
     
     # Download Simulation Data function ----
     output$downloadSimuData <- downloadHandler(
       filename = function() {
-        paste(
-          Sys.Date(),
-          "Simulation_data.csv",
-          sep = "_"
-        )
+        paste(Sys.Date(),
+              "Simulation_data.csv",
+              sep = "_")
       },
       content = function(file) {
         write.csv(simulatedData$count, file, row.names = TRUE)
       }
     )
     
-    # Store simulation data 
-    variables$simulationData <- simulatedData$count
-    
-    output$simulationGroupInfoText <- renderText({
-      paste0(row.names(simulatedData$group),
-             ",G",
-             simulatedData$group$group,
-             collapse = "\n")
-    })
-    
-    output$copySimulationGroupInfoText <- renderUI({
-      p <- paste0(row.names(simulatedData$group),
-             ",G",
-             simulatedData$group$group,
-             collapse = "\n")
-      rclipButton("copySimuGroup", "Copy group information", p, icon("clipboard"))
-    })
-    
-    output$simulationGroupInfo <- renderUI({
-      tagList(
-        tags$hr(),
-        tags$p(tags$b("Group information:")),
-        uiOutput("copySimulationGroupInfoText"),
-        verbatimTextOutput("simulationGroupInfoText")
-      )
-    })
+    # Store simulation data
+    variables$simulationData <- simulatedData
     
     updateProgressBar(
       session = session,
@@ -261,10 +272,12 @@ observeEvent(input$simulationRun, {
     )
     
     closeSweetAlert(session = session)
-    sendSweetAlert(session = session,
-                   title = "DONE",
-                   text = "Simulation data were successfully generated.",
-                   type = "success")
+    sendSweetAlert(
+      session = session,
+      title = "DONE",
+      text = "Simulation data were successfully generated.",
+      type = "success"
+    )
   }
 })
 
@@ -288,6 +301,42 @@ output$simuDataTableAndDownload <- renderUI({
   }
 })
 
+output$simulationGroupInfoText <- renderText({
+  paste0(row.names(variables$simulationData$group),
+         ",G",
+         variables$simulationData$group$group,
+         collapse = "\n")
+})
+
+output$copySimulationGroupInfoText <- renderUI({
+  p <- paste0(
+    row.names(variables$simulationData$group),
+    ",G",
+    variables$simulationData$group$group,
+    collapse = "\n"
+  )
+  rclipButton("copySimuGroup",
+              "Copy group information",
+              p,
+              icon("clipboard"))
+})
+
+output$simulationGroupInfo <- renderUI({
+  if(length(variables$simulationData) > 0){
+  tagList(
+    tags$hr(),
+    tags$p(tags$b("Group information:")),
+    tags$p(uiOutput("copySimulationGroupInfoText")),
+    verbatimTextOutput("simulationGroupInfoText")
+  )} else {
+    tagList(
+      tags$hr(),
+      tags$p(tags$b("Group information:")),
+      helpText("No simulation data.")
+    )
+  }
+})
+
 
 # Render HTML of simulation parameters summary preview ----
 output$simuParams <- renderUI({
@@ -300,7 +349,8 @@ output$simuParams <- renderUI({
   namesDEG.assign <- sapply(1:(GroupNum - 1), function(i) {
     tagList(tags$b("P", tags$sub(paste0("G", i)), ","))
   })
-  namesDEG.assign[GroupNum] <- tagList(tags$b("P", tags$sub(paste0("G", GroupNum))))
+  namesDEG.assign[GroupNum] <-
+    tagList(tags$b("P", tags$sub(paste0("G", GroupNum))))
   
   
   DEG.foldchange <- sapply(1:GroupNum, function(i) {
@@ -309,7 +359,8 @@ output$simuParams <- renderUI({
   namesDEG.foldchange <- sapply(1:(GroupNum - 1), function(i) {
     tagList(tags$b("FC", tags$sub(paste0("G", i)), ","))
   })
-  namesDEG.foldchange[GroupNum] <- tagList(tags$b("FC", tags$sub(paste0("G", GroupNum))))
+  namesDEG.foldchange[GroupNum] <-
+    tagList(tags$b("FC", tags$sub(paste0("G", GroupNum))))
   
   
   replicates <- sapply(1:GroupNum, function(i) {
@@ -318,35 +369,48 @@ output$simuParams <- renderUI({
   namesreplicates <- sapply(1:(GroupNum - 1), function(i) {
     tagList(tags$b("NR", tags$sub(paste0("G", i)), ","))
   })
-  namesreplicates[GroupNum] <- tagList(tags$b("NR", tags$sub(paste0("G", GroupNum))))
-
+  namesreplicates[GroupNum] <-
+    tagList(tags$b("NR", tags$sub(paste0("G", GroupNum))))
+  
   tagList(
     tags$div(
       style = "line-height:100%;",
-      tipify(tags$p(
-        tags$b("N", tags$sub("gene")), ": ", input$simulationGeneNum
-      ), title = "Number of Genes", placement = "left"),
-      tipify(tags$p(
-        tags$b("P", tags$sub("DEG")), ": ", input$simulationPDEG
-      ), title =  "Proportion of DEGs", placement = "left"),
-      tipify(tags$p(
-        tags$b("N", tags$sub("group")), ": ", input$simulationGroupNum
-      ), title =  "Number of Groups", placement = "left"),
-      tipify(tags$p(
-        tags$b(lapply(1:GroupNum, function(i) {
+      tipify(
+        tags$p(tags$b("N", tags$sub("gene")), ": ", input$simulationGeneNum),
+        title = "Number of Genes",
+        placement = "left"
+      ),
+      tipify(
+        tags$p(tags$b("P", tags$sub("DEG")), ": ", input$simulationPDEG),
+        title =  "Proportion of DEGs",
+        placement = "left"
+      ),
+      tipify(
+        tags$p(tags$b("N", tags$sub("group")), ": ", input$simulationGroupNum),
+        title =  "Number of Groups",
+        placement = "left"
+      ),
+      tipify(
+        tags$p(tags$b(lapply(1:GroupNum, function(i) {
           namesDEG.assign[[i]]
-        })), ": ", paste0(DEG.assign, collapse = ", ")
-      ), title = "Assignment of DEGs", placement = "left"),
-      tipify(tags$p(
-        tags$b(lapply(1:GroupNum, function(i) {
+        })), ": ", paste0(DEG.assign, collapse = ", ")),
+        title = "Assignment of DEGs",
+        placement = "left"
+      ),
+      tipify(
+        tags$p(tags$b(lapply(1:GroupNum, function(i) {
           namesDEG.foldchange[[i]]
-        })), ": ", paste0(DEG.foldchange, collapse = ", ")
-      ), title = "Degree of Fold-change", placement = "left"),
-      tipify(tags$p(
-        tags$b(lapply(1:GroupNum, function(i) {
+        })), ": ", paste0(DEG.foldchange, collapse = ", ")),
+        title = "Degree of Fold-change",
+        placement = "left"
+      ),
+      tipify(
+        tags$p(tags$b(lapply(1:GroupNum, function(i) {
           namesreplicates[[i]]
-        })), ": ", paste0(replicates, collapse = ", ")
-      ), title = "Number of Replicates", placement = "left"),
+        })), ": ", paste0(replicates, collapse = ", ")),
+        title = "Number of Replicates",
+        placement = "left"
+      ),
       uiOutput("simulationGroupInfo")
     )
   )

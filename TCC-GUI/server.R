@@ -8,7 +8,7 @@ source(file = "global.R",
 # Define server
 shinyServer(function(input, output, session) {
   variables = reactiveValues(
-    simulationData = "",
+    simulationData = NULL,
     CountData = data.frame(),
     groupList = NULL,
     groupListConvert = NULL,

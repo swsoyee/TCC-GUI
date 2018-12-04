@@ -63,7 +63,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
       do.call(actionBttn, c(
         list(
           inputId = "TCC",
-          label = "Run TCC Calculation",
+          label = "Run TCC Computation",
           icon = icon("play")
         ),
         actionBttnParams
@@ -71,7 +71,7 @@ fluidPage(useSweetAlert(), fluidRow(column(
     )
   ),
   box(
-    title = tagList(icon("code"), "TCC Calculation Code"),
+    title = tagList(icon("code"), "TCC Computation Code"),
     status = "danger",
     solidHeader = TRUE,
     width = NULL,

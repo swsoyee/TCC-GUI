@@ -1,5 +1,5 @@
 # ui-simulation.R
-# rclipboardSetup()
+rclipboardSetup()
 fluidPage(column(
   3,
   box(

@@ -317,7 +317,7 @@ output$mainResultTable <- renderUI({
   fluidRow(column(
     12, DT::dataTableOutput('resultTable') %>% withSpinner()
   )))} else {
-    helpText("Click [Run TCC Calculation] to execute TCC computation first.")
+    helpText("Click [Run TCC Computation] to obtain Result Table.")
   }
 })
 
@@ -327,7 +327,7 @@ output$tccSummationUI <- renderUI({
   tagList(
     DT::dataTableOutput("tccSummation")
   )} else {
-    helpText("Summarization of TCC normalization will be shown after TCC computation.")
+    helpText("Summary of TCC normalization will be shown after TCC computation.")
   }
 })
 
