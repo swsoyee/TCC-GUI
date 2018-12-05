@@ -107,6 +107,8 @@ column(
     ),
     tabPanel(title = tagList(icon("object-group"), "MDS Plot"),
              uiOutput("mdsUI")),
+    tabPanel(title = tagList(icon("object-group"), "PCA"),
+             uiOutput("pcaUI")),
     tabPanel(title = tagList(icon("sitemap"), "Hierarchical Clustering"),
              uiOutput("dendUI"))
   )

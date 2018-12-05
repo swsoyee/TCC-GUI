@@ -42,9 +42,9 @@ tagList(dashboardPage(
         tags$hr(style = "border-color: black;"),
         menuSubItem(text = "3.1. MA Plot", tabName = "maPlotHelp"),
         menuSubItem(text = "3.2. Volcano Plot", tabName = "volcanoPlotHelp"),
-        menuSubItem(text = "3.3. PCA", tabName = "pcaHelp"),
-        menuSubItem(text = "3.4. Heatmap", tabName = "heatmapHelp"),
-        menuSubItem(text = "3.5. Expression Level", tabName = "expressionHelp"),
+        # menuSubItem(text = "3.3. PCA", tabName = "pcaHelp"),
+        menuSubItem(text = "3.3. Heatmap", tabName = "heatmapHelp"),
+        menuSubItem(text = "3.4. Expression Level", tabName = "expressionHelp"),
         tags$hr(style = "border-color: black;"),
         menuSubItem(text = "4. Output", tabName = "reportHelp"),
         startExpanded = TRUE
@@ -66,7 +66,7 @@ tagList(dashboardPage(
       menuItemOutput("calculationTab"),
       menuItemOutput("maplotTab"),
       menuItemOutput("volcanoplotTab"),
-      menuItemOutput("pcaTab"),
+      # menuItemOutput("pcaTab"),
       menuItemOutput("heatmapTab"),
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
@@ -124,16 +124,16 @@ tagList(dashboardPage(
           includeMarkdown("document/English_Volcano_plot.md")
         )
       ),
-      tabItem(
-        tabName = "pcaHelp",
-        box(
-          title = "Exploratory analysis (PCA)",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_PCA_analysis.md")
-        )
-      ),
+      # tabItem(
+      #   tabName = "pcaHelp",
+      #   box(
+      #     title = "Exploratory analysis (PCA)",
+      #     solidHeader = TRUE,
+      #     width = NULL,
+      #     status = "info",
+      #     includeMarkdown("document/English_PCA_analysis.md")
+      #   )
+      # ),
       tabItem(
         tabName = "heatmapHelp",
         box(
@@ -195,11 +195,11 @@ tagList(dashboardPage(
         local = TRUE,
         encoding = "UTF-8"
       )$value),
-      tabItem(tabName = "pcaTab", source(
-        file = "ui-pca.R",
-        local = TRUE,
-        encoding = "UTF-8"
-      )$value),
+      # tabItem(tabName = "pcaTab", source(
+      #   file = "ui-pca.R",
+      #   local = TRUE,
+      #   encoding = "UTF-8"
+      # )$value),
       tabItem(tabName = "heatmapTab", source(
         file = "ui-heatmap.R",
         local = TRUE,

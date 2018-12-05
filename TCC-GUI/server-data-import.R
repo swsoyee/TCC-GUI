@@ -189,7 +189,7 @@ observeEvent(input$confirmedGroupList, {
     group <- fread(input$groupSelectViaText, header = FALSE)
     variables$groupList <-
       lapply(unique(group$V2), function(x) {
-        group[group$V2 == x,]$V1
+        group[group$V2 == x, ]$V1
       })
     names(variables$groupList) <- unique(group$V2)
     
@@ -268,7 +268,7 @@ output$importDataSummary <- renderUI({
     data.cl <- tcc$group$group
     # Filtering
     obj <- as.logical(rowSums(data) > 0)
-    data <- unique(data[obj,])
+    data <- unique(data[obj, ])
     
     # AS calculation
     d <- as.dist(1 - cor(data, method = "spearman"))
@@ -278,7 +278,7 @@ output$importDataSummary <- renderUI({
       popify(
         tags$p(tags$b("AS"), ":", round(AS, 3)),
         title = "Average Silhouettes",
-        content = '<p>A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).</p><p><b>Reference</b><br>Zhao, Shitao, et al. <a href="https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8">"Silhouette Scores for Arbitrary Defined Groups in Gene Expression Data and Insights into Differential Expression Results."</a> <i>Biological procedures online</i> 20.1 (2018): 5.</p>', 
+        content = '<p>A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).</p><p><b>Reference</b><br>Zhao, Shitao, et al. <a href="https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8">"Silhouette Scores for Arbitrary Defined Groups in Gene Expression Data and Insights into Differential Expression Results."</a> <i>Biological procedures online</i> 20.1 (2018): 5.</p>',
         placement = "bottom"
       )
     )
@@ -350,7 +350,8 @@ output$sampleDistributionDensity <- renderPlotly({
     if (input$densityFilter != "Do not filter") {
       # count <-
       #   filterLowCountGenes(tcc, low.count = as.numeric(input$densityFilter))$count
-      count <- tcc$count[rowSums(tcc$count) > as.numeric(input$densityFilter), ]
+      count <-
+        tcc$count[rowSums(tcc$count) > as.numeric(input$densityFilter),]
     } else {
       count <- tcc$count
     }
@@ -366,7 +367,7 @@ output$sampleDistributionDensity <- renderPlotly({
         p,
         x = densityTable[[i]][[1]],
         y = densityTable[[i]][[2]],
-        color = group[rownames(group) == names(densityTable[i]), ],
+        color = group[rownames(group) == names(densityTable[i]),],
         name = names(densityTable[i])
       )
     }
@@ -390,13 +391,15 @@ output$sampleDistributionDensityPanel <- renderUI({
     tagList(fluidRow(
       column(
         3,
-        popify(helpText("Filter genes with a total read count smaller than thresholds."),
-               title = "Reference", 
-               content = 'Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.', 
-               placement = "left"),
+        popify(
+          helpText("Filter genes with a total read count smaller than thresholds."),
+          title = "Reference",
+          content = 'Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.',
+          placement = "left"
+        ),
         sliderTextInput(
           inputId = "densityFilter",
-          label = "Filter genes threshold", 
+          label = "Filter genes threshold",
           choices = c("Do not filter", c(0:30))
         ),
         textInput(
@@ -525,10 +528,12 @@ output$lowCountFilterByCutoffUI <- renderUI({
     tagList(fluidRow(
       column(
         3,
-        popify(helpText("Filter genes with a total read count smaller than thresholds."),
-               title = "Reference", 
-               content = 'Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.', 
-               placement = "left"),
+        popify(
+          helpText("Filter genes with a total read count smaller than thresholds."),
+          title = "Reference",
+          content = 'Sultan, Marc, et al. <a href="http://science.sciencemag.org/content/321/5891/956">"A global view of gene activity and alternative splicing by deep sequencing of the human transcriptome."</a> <i>Science</i> 321.5891 (2008): 956-960.',
+          placement = "left"
+        ),
         sliderInput(
           inputId = "lowCountSlide",
           label = "Max threshold",
@@ -582,16 +587,17 @@ output$mdsPlotObject <- renderPlotly({
   } else {
     return()
   }
-  })
+})
 
-
+# MDS information
 output$MDShelpText <- renderUI({
   helpText(
     "Use all genes' raw count number to calculate",
     input$mdsMethod,
     "correlation coefficient (rho) to create a matrix of (1 - rho). Calculate the ",
     input$mdsDistMethod,
-    " distances between samples and plot the result to a two-dimension MDS plot.")
+    " distances between samples and plot the result to a two-dimension MDS plot."
+  )
 })
 
 # Render MDS plot ----
@@ -636,11 +642,268 @@ output$mdsUI <- renderUI({
   }
 })
 
+# PCA Plot Scree ----
+output$pcaPlotObjectScree <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    if (input$pcaTransform == TRUE) {
+      data <- log1p(tcc$count)
+    } else {
+      data <- tcc$count
+    }
+    data <- data[apply(data, 1, var) != 0, ]
+    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+      data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
+    }
+    
+    data.pca.all <- prcomp(data,
+                           center = input$pcaCenter,
+                           scale. = input$pcaScale)
+    summaryTable <- summary(data.pca.all)$importance
+    p <- plot_ly(
+      x = colnames(summaryTable),
+      y = summaryTable[2, ],
+      text = paste0(summaryTable[2, ] * 100, "%"),
+      textposition = "auto",
+      type = "bar",
+      name = "Proportion of Variance"
+    ) %>%
+      add_trace(
+        y = summaryTable[3, ],
+        type = "scatter",
+        mode = "lines+markers",
+        name = "Cumulative Proportion"
+      ) %>%
+      layout(
+        xaxis = list(title = "Principal Components"),
+        yaxis = list(title = "Proportion of Variance",
+                     tickformat = "%"),
+        title = "Scree Plot",
+        legend = list(
+          orientation = 'h',
+          xanchor = "center",
+          x = 0.5,
+          y = 1.05
+        )
+      )
+    
+  } else {
+    return(0)
+  }
+})
+# PCA Plot 3D ----
+output$pcaPlotObject3d <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    if (input$pcaTransform == TRUE) {
+      data <- log1p(tcc$count)
+    } else {
+      data <- tcc$count
+    }
+    data <- data[apply(data, 1, var) != 0, ]
+    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+      data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
+    }
+    data.pca.all <- prcomp(data,
+                           center = input$pcaCenter,
+                           scale. = input$pcaScale)
+    
+    data <- data.frame(data.pca.all$x)
+    data$name <- rownames(data)
+    group <- tcc$group
+    group$name <- rownames(group)
+    data <- left_join(x = data, y = group, by = "name")
+    p <- plot_ly(
+      data = data,
+      x = ~ PC1,
+      y = ~ PC2,
+      z = ~ PC3,
+      color = ~ factor(group),
+      text = ~ name,
+      textposition = "top right",
+      type = "scatter3d",
+      mode = "markers+text"
+    ) %>%
+      layout(title = "PCA Plot (3D)")
+    
+  } else {
+    return(0)
+  }
+})
+# PCA Plot 2D ----
+output$pcaPlotObject2d <- renderPlotly({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    if (input$pcaTransform == TRUE) {
+      data <- log1p(tcc$count)
+    } else {
+      data <- tcc$count
+    }
+    data <- data[apply(data, 1, var) != 0, ]
+    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+      data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
+    }
+    data.pca.all <- prcomp(data,
+                           center = input$pcaCenter,
+                           scale. = input$pcaScale)
+    data <- data.frame(data.pca.all$x)
+    data$name <- rownames(data)
+    group <- tcc$group
+    group$name <- rownames(group)
+    data <- left_join(x = data, y = group, by = "name")
+    p <- plot_ly(
+      data = data,
+      x = ~ PC1,
+      y = ~ PC2,
+      color = ~ factor(group),
+      text = ~ name,
+      textposition = "top right",
+      type = "scatter",
+      mode = "markers+text"
+    ) %>%
+      layout(title = "PCA Plot (2D)")
+    
+  } else {
+    return(0)
+  }
+})
+
+# PCA Summary Table ----
+output$pcaSummaryObject <- DT::renderDataTable({
+  if (length(variables$tccObject) > 0) {
+    tcc <- variables$tccObject
+    if (input$pcaTransform == TRUE) {
+      data <- log1p(tcc$count)
+    } else {
+      data <- tcc$count
+    }
+    data <- data[apply(data, 1, var) != 0, ]
+    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+      data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
+    }
+    data.pca.all <- prcomp(data,
+                           center = input$pcaCenter,
+                           scale. = input$pcaScale)
+    summaryTable <- summary(data.pca.all)$importance
+    row.names(summaryTable)[1] <- "Standard Deviation"
+    summaryTable <- t(summaryTable)
+    t <- DT::datatable(summaryTable, options = list(
+      dom = "Bt",
+      buttons = list(
+        'copy',
+        'print',
+        list(
+          extend = 'collection',
+          buttons = c('csv', 'excel', 'pdf'),
+          text = 'Download'
+        )
+      )
+    )) %>%
+      formatRound(columns = colnames(summaryTable),
+                  digits = 3) %>% formatStyle(
+                    "Proportion of Variance",
+                    background = styleColorBar(range(0, 1), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  ) %>% formatStyle(
+                    "Standard Deviation",
+                    background = styleColorBar(range(0, summaryTable[, 1]), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  ) %>% formatStyle(
+                    "Cumulative Proportion",
+                    background = styleColorBar(range(0, 1), 'lightblue'),
+                    backgroundSize = '98% 88%',
+                    backgroundRepeat = 'no-repeat',
+                    backgroundPosition = 'center'
+                  )
+  } else {
+    return()
+  }
+})
+
+# render PCA UI ----
+output$pcaUI <- renderUI({
+  if (v$importActionValue) {
+    tagList(fluidRow(
+      column(
+        3,
+        helpText(
+          "PCA is performed on the all genes (or top n gene) selected by none-zero row variance (or the most variable genes)."
+        ),
+        tipify(
+          numericInput(
+            inputId = "pcaTopGene",
+            label = "Top Gene",
+            value = 100,
+            min = -1,
+            step = 1
+          ),
+          title = "How many of the most variable genes should be used for calculating the PCA. Use all none-zero row variance gene if none value is supplied.",
+          placement = "left"
+        ), 
+        tipify(
+          materialSwitch(
+            inputId = "pcaTransform",
+            label = "Log(x+1) transform",
+            value = TRUE,
+            right = TRUE,
+            status = "primary"
+          ),
+          title = "Whether the raw count should be performed log(x+1) transformation before analysis.",
+          placement = "left"
+        ),
+        tipify(
+          materialSwitch(
+            inputId = "pcaCenter",
+            label = "Center",
+            value = TRUE,
+            right = TRUE,
+            status = "primary"
+          ),
+          title = "Whether the value should be shifted to be zero centered.",
+          placement = "left"
+        ),
+        tipify(
+          materialSwitch(
+            inputId = "pcaScale",
+            label = "Scale",
+            value = TRUE,
+            right = TRUE,
+            status = "primary"
+          ),
+          title = "Whether the value should be scaled to have unit variance before the analysis.",
+          placement = "left"
+        )
+      ),
+      column(9,
+             tabsetPanel(
+               tabPanel(
+                 title = "Summary Table",
+                 DT::dataTableOutput("pcaSummaryObject") %>% withSpinner()
+               )
+               ,
+               tabPanel(
+                 title = "Scree Plot",
+                 plotlyOutput("pcaPlotObjectScree") %>% withSpinner()
+               )
+               ,
+               tabPanel(title = "3D Plot", plotlyOutput("pcaPlotObject3d") %>% withSpinner()),
+               tabPanel(title = "2D Plot", plotlyOutput("pcaPlotObject2d") %>% withSpinner())
+             ))
+    ))
+  } else {
+    helpText("No data for ploting. Please import dataset and assign group information first.")
+  }
+})
+
 # Dend and heatmap ----
 output$dendPlotObject <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
-    data <- tcc$count[rowSums(tcc$count) > 0, ]
+    data <- tcc$count[rowSums(tcc$count) > 0,]
     data <- data.frame(1 - cor(data, method = input$dendCor))
     data.cl.count <- length(unique(tcc$group$group))
     heatmaply(
@@ -672,9 +935,9 @@ output$dendUI <- renderUI({
             "Ward.D2" = "ward.D2",
             "Single" = "single",
             "UPGMA (Average)" = "average",
-            "WPGMA (Mcquitty)" = "mcquitty",
-            "WPGMC (Median)" = "median",
-            "UPGMC (centroid)" = "centroid"
+            "WPGMA (Mcquitty)" = "mcquitty"#,
+            # "WPGMC (Median)" = "median",
+            # "UPGMC (centroid)" = "centroid"
           )
         ),
         selectInput(
