@@ -319,15 +319,15 @@ output$sampleDistributionBox <- renderPlotly({
     
     # Add Group info
     group <-
-      data.frame("col" = rownames(tcc$group),
+      data.frame("ind" = rownames(tcc$group),
                  "group" = tcc$group$group)
-    data <- left_join(cpm_stack, group, by = "col")
+    data <- left_join(cpm_stack, group, by = "ind")
     data <- arrange(data, group)
     
     p <- plot_ly(
       data = data,
-      x = ~ col,
-      y = ~ NA..1,
+      x = ~ ind,
+      y = ~ values,
       type = "box",
       split = ~ group,
       color = ~ group
