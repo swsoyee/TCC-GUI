@@ -37,7 +37,8 @@ tagList(dashboardPage(
         tabName = "guidence",
         icon = icon("home"),
         menuSubItem(text = "Welcome", tabName = "welcome"),
-        menuSubItem(text = "1. Data Import", tabName = "dataInputHelp"),
+        menuSubItem(text = "0. Simulation Data"),
+        menuSubItem(text = "1. Exploratory Analysis", tabName = "dataInputHelp"),
         menuSubItem(text = "2. TCC Computation", tabName = "tccComputationHelp"),
         tags$hr(style = "border-color: black;"),
         menuSubItem(text = "3.1. MA Plot", tabName = "maPlotHelp"),
@@ -57,9 +58,9 @@ tagList(dashboardPage(
         badgeColor = "yellow"
       ),
       menuItem(
-        "Data Import",
+        "Exploratory Analysis",
         tabName = "dateImport",
-        icon = icon("database"),
+        icon = icon("flask"),
         badgeLabel = "Step 1",
         badgeColor = "orange"
       ),

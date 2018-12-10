@@ -5,8 +5,10 @@
 observeEvent(input$CountDataSample, {
   variables$tccObject <- NULL
   v$importActionValue <- FALSE
-  variables$CountData <-
-    data.frame(fread(input$SampleDatabase), row.names = 1)
+  # variables$CountData <-
+  #   data.frame(fread(input$SampleDatabase), row.names = 1)
+  data(hypoData)
+  variables$CountData <- data.frame(hypoData)
   
   sendSweetAlert(
     session = session,
