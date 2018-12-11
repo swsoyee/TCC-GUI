@@ -16,7 +16,7 @@ tagList(dashboardPage(
         from = "Source Code",
         message = "Available on Github",
         icon = icon("github"),
-        time = "Update at 2018-12-05",
+        time = "Update at 2018-12-11",
         href = "https://github.com/swsoyee/TCC-GUI"
       ),
       messageItem(
@@ -224,7 +224,7 @@ tags$footer(
   tags$a(" Bioinformation Engineering Lab, ", href = "http://www.bi.a.u-tokyo.ac.jp/"), 
   tags$a(" Graduate School of Agricultural and Life Sciences / Faculty of Agriculture, ", href = "http://www.a.u-tokyo.ac.jp/english/index.html"),
   tags$a(" The University of Tokyo ", href = "https://www.u-tokyo.ac.jp/en/index.html"), 
-  tags$p("All Rights Reserved.  Version2018.12.05"),
+  tags$p("All Rights Reserved.  Version2018.12.11"),
   style = "
   bottom:0;
   width:100%;

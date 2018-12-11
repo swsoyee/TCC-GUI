@@ -8,16 +8,9 @@ fluidPage(fluidRow(column(
     width = NULL,
     tabPanel(
       tagList(icon("folder-open"), "Sample"),
-      selectInput(
-        "SampleDatabase",
-        "Select Sample Data",
-        choices = c(
-          "hypoData (sample dataset)" = "sample_data/data_hypodata_3vs3.txt"#,
-         # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
-          #"cheung" = "sample_data/cheung_count_table.txt"
-        )
-      ),
-      helpText("Quick start with sample dataset."),
+      uiOutput("dataSourceSelect"),
+      tags$p("1. The 1000 genes dataset", tags$b("hypoData"), "is load from the TCC package command", tags$code("data(hypoData)")),
+      tags$p("2. After performing simulation in the", tags$code("Step0"), ",", tags$code("Simulation Data"), "can be selected and it's referring the latest simulation result."),
       do.call(actionBttn, c(
         list(
           inputId = "CountDataSample",

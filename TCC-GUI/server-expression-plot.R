@@ -25,6 +25,7 @@ output$expressionParameters <- renderUI({
 # Render plotly object of barplot -----
 output$geneBarPlotExpression <- renderPlotly({
   if (length(variables$expressionData) > 0) {
+    tcc <- variables$tccObject
     data <- variables$expressionData
     isolate({
       p <- list(0)
@@ -42,7 +43,10 @@ output$geneBarPlotExpression <- renderPlotly({
           x = colnames(data),
           y = t(data[i, ]),
           color = xOrder[xOrder$name == colnames(data), ]$group,
-          type = "bar"
+          type = "bar",
+          textposition = "auto",
+          text = t(data[i, ]),
+          insidetextfont = list(color = "white")
         ) %>%
           layout(
             annotations = list(
@@ -79,6 +83,7 @@ output$geneBarPlotExpression <- renderPlotly({
 # Render plotly object of boxplot -----
 output$geneBoxPlotExpression <- renderPlotly({
   if (length(variables$expressionData) > 0) {
+    tcc <- variables$tccObject
     data <- variables$expressionData
     isolate({
       p <- list(0)
@@ -133,7 +138,7 @@ output$geneBoxPlotExpression <- renderPlotly({
 
 # Render plotly Bar and Box UI
 output$geneBarPlotUI <- renderUI({
-  if(runExp$runExpValue){
+  if(runExp$runExpValue & !is.null(variables$expressionData)){
     geneNum <- nrow(variables$expressionData)
     if(geneNum %/% 2) {
       height <- 300 * geneNum / 2
@@ -147,7 +152,7 @@ output$geneBarPlotUI <- renderUI({
 })
 
 output$geneBoxPlotUI <- renderUI({
-  if(runExp$runExpValue){
+  if(runExp$runExpValue & !is.null(variables$expressionData)){
     geneNum <- nrow(variables$expressionData)
     if(geneNum %/% 2) {
       height <- 300 * geneNum / 2
@@ -169,7 +174,19 @@ observeEvent(input$runExpression, {
     data <-
       data[row.names(data) %in% unlist(strsplit(x = input$expressionGeneList, split = '[\r\n]')),]
     
-    variables$expressionData <- data
+    if(nrow(data) == 0) {
+      sendSweetAlert(
+        session = session,
+        title = "ERROR",
+        text = "Input list error, please make sure you have provided a correct list.",
+        type = "error"
+      )
+      variables$expressionData <- NULL
+      return()
+    } else {
+      variables$expressionData <- data
+    }
+
     
     # R code of expression plot in barplot -----
     # output$expressionLevelCodeText <- renderText({
@@ -269,25 +286,44 @@ observeEvent(input$runExpression, {
                  na.rm = TRUE)
       
       DT::datatable(df,
-                    options = list(dom = "t")) %>%
+                    colnames = c("Gene Name" = 1),
+                    options = list(dom = "t",
+                                   scrollX = TRUE)) %>%
         formatStyle(names(df), backgroundColor = styleInterval(brks, head(Blues(40), n = length(brks) + 1)))
     })
     
 
     # Selected gene TCC result DataTable -----
     output$geneTableCal <- DT::renderDataTable({
-      DT::datatable(resultTable()[resultTable()$gene_id %in% row.names(data), ],
-                    options = list(dom = "t")) %>% formatRound(
-                      columns = c("a.value",
-                                  "m.value",
-                                  "p.value",
-                                  "q.value"),
-                      digits = 3
-                    ) %>% formatStyle(
-                      "estimatedDEG",
-                      target = 'row',
-                      backgroundColor = styleEqual(1, "lightblue")
-                    )
+      DT::datatable(
+        resultTable()[resultTable()$gene_id %in% row.names(data),],
+        colnames = c(
+          "Gene Name",
+          "A Value",
+          "M Value",
+          "P Value",
+          "Q Value (FDR)",
+          "Rank",
+          "estimated DEG"
+        ),
+        extensions = c("Buttons"),
+        options = list(dom = 'Bt',
+                       buttons =
+                         list(
+                           'copy',
+                           'print',
+                           list(
+                             extend = 'collection',
+                             buttons = c('csv', 'excel', 'pdf'),
+                             text = 'Download'
+                           )
+                         ),
+        columnDefs = list(list(visible = FALSE, targets = -1))
+      )) %>% formatRound(columns = c("a.value",
+                                    "m.value",
+                                    "p.value",
+                                    "q.value"),
+                        digits = 3)
     })
     runExp$runExpValue <- input$runExpression
 })

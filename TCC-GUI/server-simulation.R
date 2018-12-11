@@ -223,7 +223,7 @@ observeEvent(input$simulationRun, {
             " buttons only deal with loaded part of the whole table (max to 99 rows)."
           ),
           tags$li(
-            "Download this dataset and copy the group information, and you can upload them in [Data Import (Step1)] tab for analysis."
+            "After performing simulation,", tags$code("Simulation Data"), "can be selected in", tags$code("Step1"), "and it's referring the latest simulation result."
           )
         ),
         extensions = c("Scroller", "Buttons"),
@@ -308,25 +308,25 @@ output$simulationGroupInfoText <- renderText({
          collapse = "\n")
 })
 
-output$copySimulationGroupInfoText <- renderUI({
-  p <- paste0(
-    row.names(variables$simulationData$group),
-    ",G",
-    variables$simulationData$group$group,
-    collapse = "\n"
-  )
-  rclipButton("copySimuGroup",
-              "Copy (not working now)",
-              p,
-              icon("clipboard"))
-})
+# output$copySimulationGroupInfoText <- renderUI({
+#   p <- paste0(
+#     row.names(variables$simulationData$group),
+#     ",G",
+#     variables$simulationData$group$group,
+#     collapse = "\n"
+#   )
+#   rclipButton("copySimuGroup",
+#               "Copy (not working now)",
+#               p,
+#               icon("clipboard"))
+# })
 
 output$simulationGroupInfo <- renderUI({
   if(length(variables$simulationData) > 0){
   tagList(
     tags$hr(),
     tags$p(tags$b("Group information:")),
-    tags$p(uiOutput("copySimulationGroupInfoText")),
+    # tags$p(uiOutput("copySimulationGroupInfoText")),
     verbatimTextOutput("simulationGroupInfoText")
   )} else {
     tagList(

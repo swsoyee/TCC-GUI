@@ -1,5 +1,28 @@
 # server-data-import.R
 
+output$dataSourceSelect <- renderUI({
+  if( is.null(variables$simulationData)) {
+    selectInput(
+      "SampleDatabase",
+      "Select Sample Data",
+      choices = c(
+        "hypoData (sample dataset)" = "sample_data/data_hypodata_3vs3.txt"#,
+        # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
+        #"cheung" = "sample_data/cheung_count_table.txt"
+      )
+    )
+  } else {
+    selectInput(
+      "SampleDatabase",
+      "Select Sample Data",
+      choices = c(
+        "Simulation Data" = "simulationData",
+        "hypoData (sample dataset)" = "sample_data/data_hypodata_3vs3.txt"
+      )
+    )
+  }
+})
+
 # If Sample Data button has been clicked, load sample data. ----
 
 observeEvent(input$CountDataSample, {
@@ -7,8 +30,12 @@ observeEvent(input$CountDataSample, {
   v$importActionValue <- FALSE
   # variables$CountData <-
   #   data.frame(fread(input$SampleDatabase), row.names = 1)
-  data(hypoData)
-  variables$CountData <- data.frame(hypoData)
+  if (input$SampleDatabase == "sample_data/data_hypodata_3vs3.txt") {
+    data(hypoData)
+    variables$CountData <- data.frame(hypoData)
+  } else {
+    variables$CountData <- data.frame(variables$simulationData$count)
+  }
   
   sendSweetAlert(
     session = session,
@@ -28,6 +55,10 @@ observeEvent(input$CountDataSample, {
       "G2_rep3,Group2",
       sep = '\n'
     ),
+    "simulationData" = paste0(row.names(variables$simulationData$group),
+                              ",G",
+                              variables$simulationData$group$group,
+                              collapse = "\n"),
     "sample_data/katzmouse_count_table.txt" = paste(
       "SRX026633,1",
       "SRX026632,2",
