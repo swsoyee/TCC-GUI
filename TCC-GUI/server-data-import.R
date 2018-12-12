@@ -719,7 +719,8 @@ output$pcaPlotObjectScree <- renderPlotly({
           y = 1.05
         )
       )
-    
+    variables$screePlot <- p
+    p
   } else {
     return(0)
   }
@@ -758,7 +759,8 @@ output$pcaPlotObject3d <- renderPlotly({
       mode = "markers+text"
     ) %>%
       layout(title = "PCA Plot (3D)")
-    
+    variables$pca3d <- p
+    p
   } else {
     return(0)
   }
@@ -795,7 +797,8 @@ output$pcaPlotObject2d <- renderPlotly({
       mode = "markers+text"
     ) %>%
       layout(title = "PCA Plot (2D)")
-    
+    variables$pca2d <- p
+    p
   } else {
     return(0)
   }
@@ -817,6 +820,12 @@ output$pcaSummaryObject <- DT::renderDataTable({
     data.pca.all <- prcomp(data,
                            center = input$pcaCenter,
                            scale. = input$pcaScale)
+    
+    variables$pcaParameter <- list("pcaTransform" = input$pcaTransform,
+                                   "pcaCenter" = input$pcaCenter,
+                                   "pcaScale" = input$pcaScale,
+                                   "pcaTopGene" = input$pcaTopGene)
+    
     summaryTable <- summary(data.pca.all)$importance
     row.names(summaryTable)[1] <- "Standard Deviation"
     summaryTable <- t(summaryTable)
@@ -852,6 +861,8 @@ output$pcaSummaryObject <- DT::renderDataTable({
                     backgroundRepeat = 'no-repeat',
                     backgroundPosition = 'center'
                   )
+    variables$summaryPCA <- t
+    t
   } else {
     return()
   }

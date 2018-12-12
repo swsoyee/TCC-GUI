@@ -13,11 +13,13 @@ params:
   norSampleDistributionDensity: NA
   MAPlotObject: NA
   VolcanoPlotObject: NA
+  
   pcaParameter: NULL
   screePlot: NULL
   pca3d: NULL
   pca2d: NULL
   summaryPCA: NULL
+  
   heatmapObject: NA
   
   expressionLevelBar: NULL
@@ -31,6 +33,7 @@ params:
   fdr: NA
   floorpdeg: NA
   
+  tccObject: NULL
 ---
 
 ```{r setup, include=FALSE}
@@ -68,6 +71,101 @@ for(i in 1:length(params$groupList)){
 
 Number of gene which expression level equal to zero in all sample: 
 `r params$zeroValue`  
+
+# 1. Exploratory Analysis
+
+## 1.5 Principal Components Analysis  
+
+The PCA parameters is shown as below:
+
+```{r pca para}
+if(length(params$pcaParameter) > 0){
+# Get parameters from TCC-GUI
+pcaTransform <- params$pcaParameter$pcaTransform
+pcaTopGene <- params$pcaParameter$pcaTopGene
+pcaCenter <- params$pcaParameter$pcaCenter
+pcaScale <- params$pcaParameter$pcaScale
+
+pcaPara <- rbind(
+  c("pcaTopGene", "Number of gene", pcaTopGene),
+  c("pcaTransform", "Log(x+1) transform", pcaTransform),
+  c("pcaCenter", "Center", pcaCenter),
+  c("pcaScale", "Scale", pcaScale)
+  )
+  colnames(pcaPara) <-
+  c("Parameter", "Explanation", "Value")
+  kable(pcaPara, caption = "Paramters setting of PCA.")
+} else {
+  cat("Not available")
+}
+```
+
+
+```{r pca computation}
+if(length(params$pcaParameter) > 0){
+cat("Using top N gene to perform PCA\n")
+cat("```r\n")
+cat("# Obtain dataset from TCC Object\n")
+cat("data <- tcc$count\n")
+
+# PCA processing
+if (pcaTransform == TRUE) {
+  cat("\n# Log transform dataset\n")
+  cat("data <- log1p(data)\n")
+}
+
+cat("\n# Perform PCA, Extract genes with none-zero variance\n")
+cat("data <- data[apply(data, 1, var) != 0, ]\n")
+
+if(!is.na(pcaTopGene) & pcaTopGene < nrow(params$tccObject$count)){
+  cat("data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:", pcaTopGene, "], ])\n")
+}
+
+cat(paste0("data.pca <- prcomp(data[, apply(data, 2, var) != 0], center = ", 
+           pcaCenter,
+           ", scale. = ", 
+           pcaScale, ")\n"))
+cat("```\n")
+} else {
+  cat("")
+}
+```
+
+### 1.5.1 Summary Table of PCA
+```{r}
+if(length(params$summaryPCA) > 0){
+  params$summaryPCA
+} else {
+  "Not available"
+}
+```
+
+### 1.5.2 Scree plot  
+```{r}
+if(length(params$screePlot) > 0){
+  params$screePlot
+} else {
+  "Not available"
+}
+```
+
+### 1.5.3 3D  
+```{r}
+if(length(params$pca3d) > 0){
+  params$pca3d
+} else {
+  "Not available"
+}
+```
+
+### 1.5.4 2D  
+```{r}
+if(length(params$pca2d) > 0){
+  params$pca2d
+} else {
+  "Not available"
+}
+```
 
 # 2. TCC Computation
 
@@ -149,101 +247,6 @@ if(params$MAPlotObject != ""){
 ```{r}
 if(params$VolcanoPlotObject != ""){
   params$VolcanoPlotObject
-} else {
-  "Not available"
-}
-```
-
-## 5. Principal Components Analysis  
-
-PCA parameters is shown as below:
-
-```{r pca para}
-if(params$pcaParameter$pcData == 'o'){
-  data <- "Raw Count Data"
-}else{
-  data <- "Normalized Data"
-}
-
-pcaPara <- rbind(
-  c("pcaData", "Data source", data),
-  c("pcaFDR", "FDR Cut-off", params$pcaParameter$pcFDR),
-  c("pcaTransform", "Log(x+1) transform", params$pcaParameter$pcTransform),
-  c("pcaCenter", "Center", params$pcaParameter$pcCenter),
-  c("pcaScale", "Scale", params$pcaParameter$pcScale)
-  )
-  colnames(pcaPara) <-
-  c("Parameter", "Explanation", "Value")
-  kable(pcaPara, caption = "Paramters used in PCA.")
-```
-
-
-```{r pca computation}
-if(length(params$pcaParameter) > 0){
-cat("Computation code is shown as below. This part should be after the TCC Computation.\n")
-cat("```r\n")
-cat("# Obtain dataset from TCC Object\n")
-if (params$pcaParameter$pcData == "o") {
-  cat("data <- tcc$count\n")
-} else {
-  cat("data <- getNormalizedData(tcc)\n")
-}
-
-result <- getResult(tcc)
-
-# Select DEGs (Row)
-if (params$testMethod != 'wad') {
-  cat("\n# Select genes by q.value (FDR)\n")
-  cat("result <- getResult(tcc)\n")
-  cat(paste0("data <- data[result$q.value <= ", params$pcaParameter$pcFDR, ", ]\n"))
-} 
-
-# PCA processing
-if (params$pcaParameter$pcTransform == TRUE) {
-  cat("\n# Log transform dataset\n")
-  cat("data <- t(log1p(data))\n")
-} else {
-  cat("data <- t(data)\n")
-}
-cat("\n# Execute PCA")
-cat(paste0("data.pca <- prcomp(data[, apply(data, 2, var) != 0], center = ", params$pcaParameter$pcCenter,", scale. = ", params$pcaParameter$pcScale, "\n"))
-cat("```\n")
-} else {
-  cat("")
-}
-```
-
-### 5.1 Summary Table of PCA
-```{r}
-if(length(params$summaryPCA) > 0){
-  params$summaryPCA
-} else {
-  "Not available"
-}
-```
-
-### 5.2 Scree plot  
-```{r}
-if(length(params$screePlot) > 0){
-  params$screePlot
-} else {
-  "Not available"
-}
-```
-
-### 5.3 3D  
-```{r}
-if(length(params$pca3d) > 0){
-  params$pca3d
-} else {
-  "Not available"
-}
-```
-
-### 5.4 2D  
-```{r}
-if(length(params$pca2d) > 0){
-  params$pca2d
 } else {
   "Not available"
 }

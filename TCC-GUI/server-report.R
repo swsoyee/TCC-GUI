@@ -53,22 +53,22 @@ output$renderVolcanoReportOption <- renderUI({
   }
 })
 
-output$renderPcaReportOption <- renderUI({
-  if(runPCA$runPCAValue){
-    awesomeCheckboxGroup(
-      inputId = "pcaReportOption",
-      label = "PCA",
-      choices = c("Parameters", "Code", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
-      selected = c("Parameters", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
-      inline = TRUE
-    )
-  } else {
-    tagList(
-      tags$b("PCA"),
-      helpText("You need to execute this part first to generate reportable objects.")
-    )
-  }
-})
+# output$renderPcaReportOption <- renderUI({
+#   if(runPCA$runPCAValue){
+#     awesomeCheckboxGroup(
+#       inputId = "pcaReportOption",
+#       label = "PCA",
+#       choices = c("Parameters", "Code", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
+#       selected = c("Parameters", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
+#       inline = TRUE
+#     )
+#   } else {
+#     tagList(
+#       tags$b("PCA"),
+#       helpText("You need to execute this part first to generate reportable objects.")
+#     )
+#   }
+# })
 
 output$renderHeatmapReportOption <- renderUI({
   if(runHeatmap$runHeatmapValue){
@@ -110,7 +110,7 @@ output$reportOption <- renderUI({
     tags$hr(),
     awesomeCheckboxGroup(
       inputId = "importReportOption",
-      label = "Import",
+      label = "Exploratory Analysis",
       choices = c(
         "Parameters",
         "Code",
@@ -119,6 +119,10 @@ output$reportOption <- renderUI({
         "Filtering Threshold",
         "Density Plot",
         "MDS Plot",
+        "PCA Summary Table", 
+        "PCA Scree Plot", 
+        "PCA 3D Plot", 
+        "PCA 2D Plot",
         "Hierarchical Clustering"
       ),
       selected = c(
@@ -128,6 +132,10 @@ output$reportOption <- renderUI({
         "Filtering Threshold",
         "Density Plot",
         "MDS Plot",
+        "PCA Summary Table", 
+        "PCA Scree Plot", 
+        "PCA 3D Plot", 
+        "PCA 2D Plot",
         "Hierarchical Clustering"
       ),
       inline = TRUE
@@ -144,8 +152,6 @@ output$reportOption <- renderUI({
     uiOutput("renderMaReportOption"),
     tags$hr(),
     uiOutput("renderVolcanoReportOption"),
-    tags$hr(),
-    uiOutput("renderPcaReportOption"),
     tags$hr(),
     uiOutput("renderHeatmapReportOption"),
     tags$hr(),
@@ -197,7 +203,7 @@ observeEvent(input$generateReport, {
     MAPlotObject = variables$MAPlotObject,
     VolcanoPlotObject = variables$VolcanoPlotObject,
     
-    pcaParameter = NULL,
+    pcaParameter = variables$pcaParameter,
     screePlot = NULL,
     pca3d = NULL,
     pca2d = NULL,
@@ -205,7 +211,9 @@ observeEvent(input$generateReport, {
     
     heatmapObject = variables$heatmapObject,
     expressionLevelBar = variables$expressionLevelBar,
-    expressionLevelBox = variables$expressionLevelBox
+    expressionLevelBox = variables$expressionLevelBox,
+    
+    tccObject = variables$tccObject
   )
   
   updateProgressBar(
@@ -216,19 +224,16 @@ observeEvent(input$generateReport, {
   )
   
   # Check PCA
-  if("Parameters" %in% input$pcaReportOption){
-    reportParameter$pcaParameter <- variables$pcaParameter
-  }
-  if("Summary Table" %in% input$pcaReportOption){
+  if("PCA Summary Table" %in% input$importReportOption){
     reportParameter$summaryPCA <- variables$summaryPCA
   }
-  if("Scree Plot" %in% input$pcaReportOption){
+  if("PCA Scree Plot" %in% input$importReportOption){
     reportParameter$screePlot <- variables$screePlot
   }
-  if("3D Plot" %in% input$pcaReportOption){
+  if("PCA 3D Plot" %in% input$importReportOption){
     reportParameter$pca3d <- variables$pca3d
   }
-  if("2D Plot" %in% input$pcaReportOption){
+  if("PCA 2D Plot" %in% input$importReportOption){
     reportParameter$pca2d <- variables$pca2d
   }
   
