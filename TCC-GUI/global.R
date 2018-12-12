@@ -13,7 +13,6 @@ library(tidyr)
 library(cluster)
 library(shinycssloaders)
 library(shinyBS)
-# library(rclipboard)
 library(MASS)
 
 # ====================================
