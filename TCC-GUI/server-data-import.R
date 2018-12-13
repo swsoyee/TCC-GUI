@@ -31,8 +31,8 @@ observeEvent(input$CountDataSample, {
   # variables$CountData <-
   #   data.frame(fread(input$SampleDatabase), row.names = 1)
   if (input$SampleDatabase == "sample_data/data_hypodata_3vs3.txt") {
-    data(hypoData)
-    variables$CountData <- data.frame(hypoData)
+    # data(hypoData)
+    variables$CountData <- data.frame(fread(input$SampleDatabase), row.names = 1)
   } else {
     variables$CountData <- data.frame(variables$simulationData$count)
   }
