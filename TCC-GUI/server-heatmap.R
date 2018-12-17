@@ -31,7 +31,7 @@ observeEvent(input$sider, {
         ),
         selectInput(
           "heatmapDist",
-          "Distance Method",
+          "Distance Measure",
           choices = list(
             "Euclidean" = "euclidean",
             "Maximum" = "maximum",
@@ -44,7 +44,7 @@ observeEvent(input$sider, {
         ),
         selectInput(
           "heatmapCluster",
-          "Hierarchical Clustering Method",
+          "Agglomeration Method",
           choices = list(
             "ward.D" = "ward.D",
             "ward.D2" = "ward.D2",

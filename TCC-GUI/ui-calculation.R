@@ -91,7 +91,7 @@ column(
     uiOutput("mainResultTable")
   ),
   box(
-    title = tagList(icon("table"), "Summary of TCC normalization"),
+    title = tagList(icon("table"), "Summary of TCC Normalization"),
     width = NULL,
     solidHeader = TRUE,
     status = "info",
