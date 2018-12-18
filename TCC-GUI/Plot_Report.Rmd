@@ -14,6 +14,9 @@ params:
   MAPlotObject: NA
   VolcanoPlotObject: NA
   
+  mdsPlot: NULL
+  mdsPlotplot: NULL
+  
   pcaParameter: NULL
   screePlot: NULL
   pca3d: NULL
@@ -73,6 +76,60 @@ Number of gene which expression level equal to zero in all sample:
 `r params$zeroValue`  
 
 # 1. Exploratory Analysis
+
+## 1.4 Multidimensional Scaling
+
+```{r mds para}
+if(length(params$mdsPlot) > 0){
+mdsMain <- params$mdsPlot$params$mds
+mdsMethod <- params$mdsPlot$params$mdsMethod
+mdsDistMethod <- params$mdsPlot$params$mdsDistMethod
+
+mdsPara <- rbind(
+  c("mdsMain", "Main MDS method", mdsMain),
+  c("mdsMethod", "Correlation Coefficient", mdsMethod),
+  c("mdsDistMethod", "Distance Measure", mdsDistMethod)
+)
+colnames(mdsPara) <- c("Parameter", "Explanation", "Value")
+kable(mdsPara, caption = "Parameters setting of MDS")
+} else {
+  "Not available."
+}
+```
+
+```{r mds computation}
+if(length(params$mdsPlot) > 0){
+cat("```r
+library(dplyr)
+# Obtain dataset from TCC Object
+data <- tcc$count
+# Perform MDS computation\n")
+  
+if(mdsMain == "Nonmetric MDS"){
+  cat("library(MASS)\n")
+  cat("mds <- data.frame(isoMDS(dist(1 - cor(data, method = '", mdsMethod, "'), method = '", mdsDistMethod, "')))\n")
+} else {
+  cat("mds <- data.frame(cmdscale(dist(1 - cor(data, method = '", mdsMethod, "'), method = '", mdsDistMethod, "')))\n")
+}
+cat("
+# Convert data.frame to plot
+mds$name <- rownames(mds)
+mdsG <- tcc$group
+mdsG$name <- rownames(mdsG)
+mdsJ <- left_join(mds, mdsG, by = 'name')
+plot_ly(data = mdsJ,
+           x = mdsJ[, 1],
+           y = mdsJ[, 2],
+        type = 'scatter',
+        mode = 'text',
+        text =~ name,
+       color =~ group) %>% layout(title = '", mdsMain, "Plot')
+```\n")
+params$mdsPlotplot
+} else {
+  cat("Not available.")
+}
+```
 
 ## 1.5 Principal Components Analysis  
 

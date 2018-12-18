@@ -608,7 +608,7 @@ output$mdsPlotObject <- renderPlotly({
     mdsG <- tcc$group
     mdsG$name <- rownames(mdsG)
     mdsJ <- left_join(mds, mdsG, by = "name")
-    plot_ly(
+    p <- plot_ly(
       data = mdsJ,
       x = mdsJ[, 1],
       y = mdsJ[, 2],
@@ -617,6 +617,12 @@ output$mdsPlotObject <- renderPlotly({
       text =  ~ name,
       color = ~ group
     ) %>% layout(title = paste0(input$mds, " Plot"))
+
+    variables$mdsPlotplot <- p
+    variables$mdsPlot[["params"]] <- list("mds" = input$mds,
+                                      "mdsMethod" = input$mdsMethod,
+                                      "mdsDistMethod" = input$mdsDistMethod)
+    p
   } else {
     return()
   }

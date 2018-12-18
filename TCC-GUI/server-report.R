@@ -7,7 +7,7 @@ output$renderSimulationReportOption <- renderUI({
     awesomeCheckboxGroup(
       inputId = "simulationReportOption",
       label = "Simulation Data",
-      choices = c("Parameters", "Code", "Summary Table"),
+      choices = c("Parameters", "Summary Table"),
       selected = c("Parameters", "Summary Table"),
       inline = TRUE
     )
@@ -24,7 +24,7 @@ output$renderMaReportOption <- renderUI({
     awesomeCheckboxGroup(
       inputId = "maReportOption",
       label = "MA Plot",
-      choices = c("Parameters", "Code", "MA Plot"),
+      choices = c("Parameters", "MA Plot"),
       selected = c("Parameters", "MA Plot"),
       inline = TRUE
     )
@@ -41,7 +41,7 @@ output$renderVolcanoReportOption <- renderUI({
     awesomeCheckboxGroup(
       inputId = "volcanoReportOption",
       label = "Volcano Plot",
-      choices = c("Parameters", "Code", "Volcano Plot"),
+      choices = c("Parameters", "Volcano Plot"),
       selected = c("Parameters", "Volcano Plot"),
       inline = TRUE
     )
@@ -53,29 +53,12 @@ output$renderVolcanoReportOption <- renderUI({
   }
 })
 
-# output$renderPcaReportOption <- renderUI({
-#   if(runPCA$runPCAValue){
-#     awesomeCheckboxGroup(
-#       inputId = "pcaReportOption",
-#       label = "PCA",
-#       choices = c("Parameters", "Code", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
-#       selected = c("Parameters", "Summary Table", "Scree Plot", "3D Plot", "2D Plot"),
-#       inline = TRUE
-#     )
-#   } else {
-#     tagList(
-#       tags$b("PCA"),
-#       helpText("You need to execute this part first to generate reportable objects.")
-#     )
-#   }
-# })
-
 output$renderHeatmapReportOption <- renderUI({
   if(runHeatmap$runHeatmapValue){
     awesomeCheckboxGroup(
       inputId = "heatmapReportOption",
       label = "Heatmap",
-      choices = c("Parameters", "Code", "Data Table", "Heatmap"),
+      choices = c("Parameters", "Data Table", "Heatmap"),
       selected = c("Parameters", "Data Table", "Heatmap"),
       inline = TRUE
     )
@@ -92,7 +75,7 @@ output$renderExpressionReportOption <- renderUI({
     awesomeCheckboxGroup(
       inputId = "expressionReportOption",
       label = "Expression Level",
-      choices = c("Parameters", "Code", "Data Table", "Barplot", "Boxplot"),
+      choices = c("Parameters", "Data Table", "Barplot", "Boxplot"),
       selected = c("Parameters", "Data Table", "Barplot", "Boxplot"),
       inline = TRUE
     )
@@ -113,7 +96,6 @@ output$reportOption <- renderUI({
       label = "Exploratory Analysis",
       choices = c(
         "Parameters",
-        "Code",
         "Summary Table",
         "Count Distribution",
         "Filtering Threshold",
@@ -203,6 +185,9 @@ observeEvent(input$generateReport, {
     MAPlotObject = variables$MAPlotObject,
     VolcanoPlotObject = variables$VolcanoPlotObject,
     
+    mdsPlot = NULL,
+    mdsPlotplot = NULL,
+    
     pcaParameter = variables$pcaParameter,
     screePlot = NULL,
     pca3d = NULL,
@@ -222,6 +207,12 @@ observeEvent(input$generateReport, {
     title = "Checking report option...",
     value = 30
   )
+  
+  # Check MDS
+  if("MDS Plot" %in% input$importReportOption){
+    reportParameter$mdsPlot <- variables$mdsPlot
+    reportParameter$mdsPlotplot <- variables$mdsPlotplot
+  }
   
   # Check PCA
   if("PCA Summary Table" %in% input$importReportOption){

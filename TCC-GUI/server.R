@@ -29,6 +29,9 @@ shinyServer(function(input, output, session) {
     MAPlotObject = "",
     VolcanoPlotObject = "",
     
+    mdsPlot = list(),
+    mdsPlotplot = NULL,
+      
     data.pca = NULL,
     pcaParameter = NULL,
     screePlot = NULL,
