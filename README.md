@@ -23,27 +23,26 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 ---
 
 ## 📈 Screenshot
-(Screenshots are not to the date!)
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta6.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png">
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png">
 
 
 ## 🌐 Online version
 
 Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 
-## 💻 Local version
+## 💻 Standalone version
 
 ### 📥 Installation
 Make sure that you have already installed those packages in your environment.
 
-`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`，`rclipboard`.
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`.
 
 If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.
 
@@ -64,8 +63,7 @@ libs <- c("shiny",
           "knitr",
           "cluster",
           "shinycssloaders",
-          "shinyBS",
-          "rclipboard")
+          "shinyBS")
 
 for (i in libs){
   if( !is.element(i, .packages(all.available = TRUE)) ) {
@@ -96,9 +94,9 @@ This method always download the source code from github before launching, so may
 
 1. Click `Clone or download` button on the top of this page, then click `Download ZIP`;
 
-2. Unzip the file to your working directory ( use `getwd()` to know your working directory );
+2. Unzip the file to your working directory (use `getwd()` to know your working directory);
 
-3. Run the code of launching ( according to your structure of working directory it may be different ). 
+3. Run the code of launching (according to your structure of working directory it may be different). 
 
    ```R
    shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
