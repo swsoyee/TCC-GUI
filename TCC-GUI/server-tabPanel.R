@@ -37,15 +37,15 @@ observeEvent(input$TCC, {
       badgeColor = "maroon"
     )
   })
-  output$pcaTab <- renderMenu({
-    menuItem(
-      "PCA",
-      tabName = "pcaTab",
-      icon = icon("tachometer"),
-      badgeLabel = "Step 3",
-      badgeColor = "maroon"
-    )
-  })
+  # output$pcaTab <- renderMenu({
+  #   menuItem(
+  #     "PCA",
+  #     tabName = "pcaTab",
+  #     icon = icon("tachometer"),
+  #     badgeLabel = "Step 3",
+  #     badgeColor = "maroon"
+  #   )
+  # })
   output$heatmapTab <- renderMenu({
     menuItem(
       "Heatmap",

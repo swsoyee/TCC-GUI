@@ -33,22 +33,9 @@ tagList(dashboardPage(
     sidebarMenu(
       id = "sider",
       menuItem(
-        "Guidance",
-        tabName = "guidence",
-        icon = icon("home"),
-        menuSubItem(text = "Welcome", tabName = "welcome"),
-        menuSubItem(text = "0. Simulation Data"),
-        menuSubItem(text = "1. Exploratory Analysis", tabName = "dataInputHelp"),
-        menuSubItem(text = "2. TCC Computation", tabName = "tccComputationHelp"),
-        tags$hr(style = "border-color: black;"),
-        menuSubItem(text = "3.1. MA Plot", tabName = "maPlotHelp"),
-        menuSubItem(text = "3.2. Volcano Plot", tabName = "volcanoPlotHelp"),
-        # menuSubItem(text = "3.3. PCA", tabName = "pcaHelp"),
-        menuSubItem(text = "3.3. Heatmap", tabName = "heatmapHelp"),
-        menuSubItem(text = "3.4. Expression Level", tabName = "expressionHelp"),
-        tags$hr(style = "border-color: black;"),
-        menuSubItem(text = "4. Output", tabName = "reportHelp"),
-        startExpanded = TRUE
+        "Documentation",
+        tabName = "introduction",
+        icon = icon("book")
       ),
       menuItem(
         "Simulation Data",
@@ -67,7 +54,6 @@ tagList(dashboardPage(
       menuItemOutput("calculationTab"),
       menuItemOutput("maplotTab"),
       menuItemOutput("volcanoplotTab"),
-      # menuItemOutput("pcaTab"),
       menuItemOutput("heatmapTab"),
       menuItemOutput("expressionTab"),
       menuItemOutput("reportTab")
@@ -76,96 +62,48 @@ tagList(dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(
-        tabName = "welcome",
-        box(
-          title = "Introduction",
-          solidHeader = TRUE,
+        tabName = "introduction",
+        tabBox(
+          title = "",
           width = NULL,
-          status = "info",
-          includeMarkdown("document/English_Welcome.md")
+          tabPanel(title = "Welcome to TCC-GUI",
+                   icon = icon("info"),
+                   fluidRow(column(includeMarkdown("document/English_Welcome.md"), width = 10, offset = 1))
+                   ),
+          tabPanel(title = "Simulation Data",
+                   icon = icon("random"),
+                   fluidRow(column(includeMarkdown("document/English_Simulation_Data.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "Exploratory Analysis",
+                   icon = icon("flask"),
+                   fluidRow(column(includeMarkdown("document/English_Data_input.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "TCC Computation",
+                   icon = icon("calculator"),
+                   fluidRow(column(includeMarkdown("document/English_Computation.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "MA Plot",
+                   icon = icon("line-chart"),
+                   fluidRow(column(includeMarkdown("document/English_MA_plot.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "Volcano Plot",
+                   icon = icon("area-chart"),
+                   fluidRow(column(includeMarkdown("document/English_Volcano_plot.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "Heatmap",
+                   icon = icon("th"),
+                   fluidRow(column(includeMarkdown("document/English_Heatmap.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "Expression Level Plot",
+                   icon = icon("bar-chart"),
+                   fluidRow(column(includeMarkdown("document/English_Expression.md"), width = 10, offset = 1))
+          ),
+          tabPanel(title = "Analysis Report",
+                   icon = icon("file"),
+                   fluidRow(column(includeMarkdown("document/English_More_help.md"), width = 10, offset = 1))
+          )
         )
       ),
-      tabItem(
-        tabName = "dataInputHelp",
-        box(
-          title = "Data import",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_Data_input.md")
-        )
-      ),
-      tabItem(
-        tabName = "tccComputationHelp",
-        box(
-          title = "TCC Computation",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_Computation.md")
-        )
-      ),
-      tabItem(
-        tabName = "maPlotHelp",
-        box(
-          title = "MA Plot",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_MA_plot.md")
-        )
-      ),
-      tabItem(
-        tabName = "volcanoPlotHelp",
-        box(
-          title = "Volcano Plot",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_Volcano_plot.md")
-        )
-      ),
-      # tabItem(
-      #   tabName = "pcaHelp",
-      #   box(
-      #     title = "Exploratory analysis (PCA)",
-      #     solidHeader = TRUE,
-      #     width = NULL,
-      #     status = "info",
-      #     includeMarkdown("document/English_PCA_analysis.md")
-      #   )
-      # ),
-      tabItem(
-        tabName = "heatmapHelp",
-        box(
-          title = "Heatmap",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_Heatmap.md")
-        )
-      ),
-      tabItem(
-        tabName = "expressionHelp",
-        box(
-          title = "Expression Level Plot",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_Expression.md")
-        )
-      ),
-      tabItem(
-        tabName = "reportHelp",
-        box(
-          title = "Analysis Report",
-          solidHeader = TRUE,
-          width = NULL,
-          status = "info",
-          includeMarkdown("document/English_More_help.md")
-        )
-      ),
-      
       tabItem(tabName = "guidence", source(
         file = "ui-homepage.R",
         local = TRUE,
@@ -196,11 +134,6 @@ tagList(dashboardPage(
         local = TRUE,
         encoding = "UTF-8"
       )$value),
-      # tabItem(tabName = "pcaTab", source(
-      #   file = "ui-pca.R",
-      #   local = TRUE,
-      #   encoding = "UTF-8"
-      # )$value),
       tabItem(tabName = "heatmapTab", source(
         file = "ui-heatmap.R",
         local = TRUE,
@@ -224,7 +157,7 @@ tags$footer(
   tags$a(" Bioinformation Engineering Lab, ", href = "http://www.bi.a.u-tokyo.ac.jp/"), 
   tags$a(" Graduate School of Agricultural and Life Sciences / Faculty of Agriculture, ", href = "http://www.a.u-tokyo.ac.jp/english/index.html"),
   tags$a(" The University of Tokyo ", href = "https://www.u-tokyo.ac.jp/en/index.html"), 
-  tags$p("All Rights Reserved.  Version2018.12.13"),
+  tags$p("All Rights Reserved.  Version 2018.12.23"),
   style = "
   bottom:0;
   width:100%;

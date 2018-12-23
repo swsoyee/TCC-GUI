@@ -41,9 +41,9 @@ fluidPage(useSweetAlert(), fluidRow(column(
       sliderInput(
         "iteration",
         "Number of Iteration",
-        min = 1,
-        max = 50,
-        value = 3
+        min = 0,
+        max = 30,
+        value = 1
       ),
       sliderInput(
         "fdr",
