@@ -1,20 +1,22 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
 </p>
-<p align="center">TCC-GUI: Graphical User Interface for TCC package</p>
+<p align="center">📊<b>TCC-GUI: Graphical User Interface for TCC package</b></p>
 <p align="center">
     <img src="https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg">
     <img src="https://img.shields.io/github/license/swsoyee/TCC-GUI.svg">
 </p>
 
+---
+<img src="https://github.com/swsoyee/TCC-GUI/blob/master/ScreenShot/Home.png" width="420" align="right" style="max-width: 50%">
 
 [`TCC`](http://bioconductor.org/packages/TCC/)<sup>1</sup> is a [`R`](https://www.r-project.org/)/[`Bioconductor`](https://www.bioconductor.org/) package provides a series of functions for performing differential expression  (**DE**)  analysis from    RNA-seq count data using a robust normalization strategy (called **DEGES**).  
 
 The basic idea of **DEGES** is that potential differentially expressed genes (**DEGs**) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true **DEGs** are top-ranked and **non-DEGs** are bottom ranked. This can be done by performing the multi-step normalization procedures based on **DEGES** (**DEG elimination strategy**) implemented in TCC.    
 
-TCC internally uses functions provided by **edgeR**<sup>2</sup>, **DESeq**<sup>3</sup>, **DESeq2**<sup>4</sup>, and **baySeq**<sup>5</sup> . The multi-step normalization of TCC can be done by using functions in the four packages.   
+TCC internally uses functions provided by [`edgeR`](https://www.bioconductor.org/packages/release/bioc/html/edgeR.html)<sup>2</sup>, [`DESeq`](https://www.bioconductor.org/packages/release/bioc/html/DESeq.html)<sup>3</sup>, [`DESeq2`](https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html)<sup>4</sup>, and [`baySeq`](https://www.bioconductor.org/packages/release/bioc/html/baySeq.html)<sup>5</sup> . The multi-step normalization of TCC can be done by using functions in the four packages.   
 
-In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
+In this **GUI version of TCC (📊TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
 
 
 ```
@@ -25,22 +27,22 @@ Note: Development is now undergoing, some function may be changed in the final v
 
 ## 📈 Features
 
-| 0. Simulation Data Generation                                | 1. Exploratory Analysis                                      |
+| Simulation Data Generation                                | Exploratory Analysis                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png"> |
-| **2. TCC Computation**                                       | **3. MA Plot Generation**                                    |
+| **TCC Computation**                                       | **MA Plot Generation**                                    |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png"> |
-| **4. Volcano Plot Generation**                               | **5. Heatmap Generation**                                    |
+| **Volcano Plot Generation**                               | **Heatmap Generation**                                    |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png"> |
-| **6. Expression Level Plot Generation**                      | **7. Report Generation**                                     |
+| **Expression Level Plot Generation**                      | **Report Generation**                                     |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png"> |
 
 ## 📔Usage
 
-### 🌐 1. Online version  
-Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).  
+### 🌐 Online version  
+Go to 🔗[`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/).  
 
-### 💻 2. Standalone version  
+### 💻 Standalone version  
 <details>
 <summary><b>📲 Installation</b></summary>  
     
