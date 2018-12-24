@@ -5,10 +5,11 @@
 
 
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
+
 ​	TCC^1^(http://bioconductor.org/packages/TCC/) is a R/Bioconductor package provides a series of functions for performing differential expression  (**DE**)  analysis from RNA-seq count data using a robust normalization strategy (called **DEGES**).  
 ​	The basic idea of **DEGES** is that potential differentially expressed genes (**DEGs**) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true **DEGs** are top-ranked and **non-DEGs** are bottom ranked. This can be done by performing the multi-step normalization procedures based on **DEGES** (**DEG elimination strategy**) implemented in TCC.    
-​	TCC internally uses functions provided by **edgeR**^2^, **DESeq**^3^, **DESeq2**^4^, and **baySeq**^5^ . The multi-step normalization of TCC can be done by using functions in the four packages.   
-​	In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
+​	TCC internally uses functions provided by **edgeR**^2^, **DESeq**^3^, **DESeq2**<sup>4</sup>, and **baySeq**^5^ . The multi-step normalization of TCC can be done by using functions in the four packages.   
+In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
   
   
 ```
@@ -35,6 +36,7 @@ Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 ### 💻 2. Standalone version  
 <details>
 <summary><b>📲 Installation</b></summary>  
+
 ---
 
 Make sure that you have already installed those packages in your environment.   
@@ -78,7 +80,9 @@ if( !is.element("TCC", .packages(all.available = TRUE)) ) {
 
 <details>  
 <summary><b>⭕Launch</b></summary>  
+
 ---
+
 Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
 
 ##### Method 1  
