@@ -35,7 +35,8 @@ Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 
 ### 💻 2. Standalone version  
 <details>
-<summary>📥 Installation</summary>
+<summary>📥 Installation</summary>  
+
 Make sure that you have already installed those packages in your environment.   
 
 `shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`.    
@@ -76,7 +77,8 @@ if( !is.element("TCC", .packages(all.available = TRUE)) ) {
 </details>
 
 <details>  
-<summary>⭕Launch</summary>
+<summary>⭕Launch</summary>  
+
 Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
 
 ##### Method 1  
