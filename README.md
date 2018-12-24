@@ -2,9 +2,8 @@
 
 # 📊TCC-GUI: Graphical User Interface for TCC package
 
-![](https://img.shields.io/github/last-commit/google/skia.svg)
-![](https://img.shields.io/badge/license-MIT-green.svg)
-![](https://img.shields.io/github/downloads/:user/:repo/total.svg)
+![](https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg)
+![](https://img.shields.io/github/license/swsoyee/TCC-GUI.svg)
 
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
 
