@@ -1,20 +1,14 @@
 
 
-# TCC-GUI
-
-**TCC: Differential expression analysis for tag count data with robust normalization strategies**
-
- [Full Text](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3716788/)
-
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">
-
-This package provides a series of functions for performing differential expression analysis from RNA-seq count data using robust normalization strategy (called DEGES). The basic idea of DEGES is that potential differentially expressed genes or transcripts (DEGs) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true DEGs are top-ranked and non-DEGs are bottom ranked. This can be done by performing a multi-step normalization strategy (called DEGES for DEG elimination strategy). A major characteristic of TCC is to provide the robust normalization methods for several kinds of count data (two-group with or without replicates, multi-group/multi-factor, and so on) by virtue of the use of combinations of functions in depended packages.
-
-Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
-
-**GUI Version Developer: Wei Su**
+# 📊TCC-GUI: Graphical User Interface for TCC package
 
 
+
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
+**[TCC](http://bioconductor.org/packages/TCC/)**^[1] is a [R](https://www.r-project.org/)/[Bioconductor](https://www.bioconductor.org/) package provides a series of functions for performing differential expression  (**DE**)  analysis from RNA-seq count data using a robust normalization strategy (called **DEGES**).  
+The basic idea of **DEGES** is that potential differentially expressed genes (**DEGs**) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true **DEGs** are top-ranked and **non-DEGs** are bottom ranked. This can be done by performing the multi-step normalization procedures based on **DEGES** (**DEG elimination strategy**) implemented in TCC.    
+TCC internally uses functions provided by **edgeR**^[2], **DESeq**^[3], **DESeq2**^[4], and **baySeq**^[5] . The multi-step normalization of TCC can be done by using functions in the four packages.   
+In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
 
 ---
 
@@ -22,24 +16,26 @@ Author: Jianqiang Sun, Tomoaki Nishiyama, Kentaro Shimizu, and Koji Kadota
 
 ---
 
-## 📈 Screenshot
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png">
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png">
+## 📈 Features
 
+| 0. Simulation Data Generation                                | 1. Exploratory Analysis                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png"> |
+| **2. TCC Computation**                                       | **3. MA Plot Generation**                                    |
+| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png"> |
+| **4. Volcano Plot Generation**                               | **5. Heatmap Generation**                                    |
+| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png"> |
+| **6. Expression Level Plot Generation**                      | **7. Report Generation**                                     |
+| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png"> |
 
-## 🌐 Online version
+## 📔Usage
 
-Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
+### 🌐 1. Online version  
+Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).  
 
-## 💻 Standalone version
-
-### 📥 Installation
+### 💻 2. Standalone version  
+<details>
+<summary>📥 Installation</summary>
 Make sure that you have already installed those packages in your environment.
 
 `shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`.
@@ -78,30 +74,36 @@ if( !is.element("TCC", .packages(all.available = TRUE)) ) {
     biocLite("TCC")
 }
 ```
+</details>
+<details>
+<summary>▶ Launch</summary>
+Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
 
-### ▶ Launch
-Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.
-
-#### Method 1
-
+##### Method 1  
 ```R
 shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI", launch.browser = TRUE)
 ```
-
-This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it. 
-
-#### Method 2
-
-1. Click `Clone or download` button on the top of this page, then click `Download ZIP`;
-
-2. Unzip the file to your working directory (use `getwd()` to know your working directory);
-
-3. Run the code of launching (according to your structure of working directory it may be different). 
+This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it.   
+##### Method 2  
+1. Click `Clone or download` button on the top of this page, then click `Download ZIP`;  
+2. Unzip the file to your working directory (use `getwd()` to know your working directory);  
+3. Run the code of launching (according to your structure of working directory it may be different).   
 
    ```R
    shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
    ```
-4. Enjoy your analysis on `TCC-GUI`!
+4. Enjoy your analysis on `TCC-GUI`!  
+</details>
+
+## 📚References
+
+------
+
+[1] Sun J, Nishiyama T, Shimizu K, et al. **TCC**: an R package for comparing tag count data with robust normalization strategies. BMC bioinformatics, 2013, 14(1): 219.  
+[2] Robinson M D, McCarthy D J, Smyth G K. **edgeR**: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 2010, 26(1): 139-140.  
+[3] Anders S, Huber W. Differential expression analysis for sequence count data. Genome biology, 2010, 11(10): R106.   
+[4] Love M I, Huber W, Anders S. Moderated estimation of fold change and dispersion for RNA-seq data with **DESeq2**. Genome biology, 2014, 15(12): 550.  
+[5] Hardcastle T J, Kelly K A. **baySeq** : empirical Bayesian methods for identifying differential expression in sequence count data. BMC bioinformatics, 2010, 11(1): 422.  
 
 
 
