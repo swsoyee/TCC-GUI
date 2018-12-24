@@ -3,6 +3,7 @@
 # 📊TCC-GUI: Graphical User Interface for TCC package
 
 ![](https://img.shields.io/github/last-commit/google/skia.svg)
+![](https://img.shields.io/github/license/:user/:repo.svg)
 
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
 
