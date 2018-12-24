@@ -38,7 +38,7 @@ tagList(dashboardPage(
         icon = icon("book")
       ),
       menuItem(
-        "Simulation Data",
+        "Data Simulation",
         tabName = "simulationData",
         icon = icon("random"),
         badgeLabel = "Step 0",
@@ -70,7 +70,7 @@ tagList(dashboardPage(
                    icon = icon("info"),
                    fluidRow(column(includeMarkdown("document/English_Welcome.md"), width = 10, offset = 1))
                    ),
-          tabPanel(title = "Simulation Data",
+          tabPanel(title = "Data Simulation",
                    icon = icon("random"),
                    fluidRow(column(includeMarkdown("document/English_Simulation_Data.md"), width = 10, offset = 1))
           ),

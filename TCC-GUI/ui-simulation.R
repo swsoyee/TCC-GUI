@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = tagList(icon("cogs"), "Simulation Data Parameters"),
+    title = tagList(icon("cogs"), "Data Simulation Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
