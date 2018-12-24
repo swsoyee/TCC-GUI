@@ -2,7 +2,7 @@
 
 # 📊TCC-GUI: Graphical User Interface for TCC package
 
-
+![](https://img.shields.io/github/last-commit/google/skia.svg)
 
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
 
@@ -20,7 +20,6 @@ Note: Development is now undergoing, some function may be changed in the final v
 ```
 
 
-[TOC]
 
 ## 📈 Features
 
@@ -42,7 +41,7 @@ Go to 🔗[TCC-GUI](https://infinityloop.shinyapps.io/TCC-GUI/).
 ### 💻 2. Standalone version  
 <details>
 <summary><b>📲 Installation</b></summary>  
----
+---------
 
 Make sure that you have already installed those packages in your environment.   
 
@@ -69,7 +68,7 @@ for (i in libs){
 
 <details>  
 <summary><b>⭕Launch</b></summary>  
----
+---------
 
 Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
 
