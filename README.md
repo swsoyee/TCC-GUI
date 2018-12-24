@@ -5,11 +5,12 @@
 
 
 <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
-​	[TCC](http://bioconductor.org/packages/TCC/)^1^ is a [R](https://www.r-project.org/)/[Bioconductor](https://www.bioconductor.org/) package provides a series of functions for performing differential expression  (**DE**)  analysis from RNA-seq count data using a robust normalization strategy (called **DEGES**).  
+​	TCC^1^(http://bioconductor.org/packages/TCC/) is a R/Bioconductor package provides a series of functions for performing differential expression  (**DE**)  analysis from RNA-seq count data using a robust normalization strategy (called **DEGES**).  
 ​	The basic idea of **DEGES** is that potential differentially expressed genes (**DEGs**) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true **DEGs** are top-ranked and **non-DEGs** are bottom ranked. This can be done by performing the multi-step normalization procedures based on **DEGES** (**DEG elimination strategy**) implemented in TCC.    
 ​	TCC internally uses functions provided by **edgeR**^2^, **DESeq**^3^, **DESeq2**^4^, and **baySeq**^5^ . The multi-step normalization of TCC can be done by using functions in the four packages.   
 ​	In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
-
+  
+  
 ```
 Note: Development is now undergoing, some function may be changed in the final version.
 ```
