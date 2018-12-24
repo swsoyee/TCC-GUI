@@ -19,6 +19,9 @@ In this **GUI version of TCC (TCC-GUI)**, all parameter settings are available j
 Note: Development is now undergoing, some function may be changed in the final version.
 ```
 
+
+[TOC]
+
 ## 📈 Features
 
 | 0. Simulation Data Generation                                | 1. Exploratory Analysis                                      |
@@ -48,35 +51,19 @@ Make sure that you have already installed those packages in your environment.
 If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.  
 
 ```R
-# Part1. Install via CRAN
-libs <- c("shiny",
-          "shinydashboard", 
-          "shinyWidgets", 
-          "plotly", 
-          "dplyr", 
-          "DT", 
-          "heatmaply",
-          "tidyr",
-          "utils",
-          "rmarkdown",
-          "data.table",
-          "RColorBrewer",
-          "knitr",
-          "cluster",
-          "shinycssloaders",
-          "shinyBS")
+# Check "BiocManager"
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+# Package list
+libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "heatmaply", "tidyr","utils","rmarkdown","data.table","RColorBrewer", "knitr", "cluster", "shinycssloaders", "shinyBS", "TCC")
+
+# Install packages if missing
 for (i in libs){
   if( !is.element(i, .packages(all.available = TRUE)) ) {
-​    install.packages(i)
+     BiocManager::install(i)
   }
 }
-
-# Part2. Install via Bioconductor  
-if( !is.element("TCC", .packages(all.available = TRUE)) ) {
-​    ## try http:// if https:// URLs are not supported
-​    source("https://bioconductor.org/biocLite.R")
-​    biocLite("TCC")
-}  
 ```
 </details>
 
