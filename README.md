@@ -16,11 +16,11 @@ The basic idea of **DEGES** is that potential differentially expressed genes (**
 
 TCC internally uses functions provided by [`edgeR`](https://www.bioconductor.org/packages/release/bioc/html/edgeR.html)<sup>2</sup>, [`DESeq`](https://www.bioconductor.org/packages/release/bioc/html/DESeq.html)<sup>3</sup>, [`DESeq2`](https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html)<sup>4</sup>, and [`baySeq`](https://www.bioconductor.org/packages/release/bioc/html/baySeq.html)<sup>5</sup> . The multi-step normalization of TCC can be done by using functions in the four packages.   
 
-In this **GUI version of TCC (📊TCC-GUI)**, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
+In this `GUI version of TCC (TCC-GUI)`, all parameter settings are available just like you are using the original one. Besides, it also provides lots of plotting functions where the original package is unsupported now.   
 
 
 ```
-Note: Development is now undergoing, some function may be changed in the final version.
+Tips: Development is now undergoing, some functions and features may be changed in the final version.
 ```
 
 
@@ -30,11 +30,11 @@ Note: Development is now undergoing, some function may be changed in the final v
 | Simulation Data Generation                                | Exploratory Analysis                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png"> |
-| **TCC Computation**                                       | **MA Plot Generation**                                    |
+| <p align="center">**TCC Computation**</p>                                  | <p align="center">**MA Plot Generation**</p>                                    |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png"> |
-| **Volcano Plot Generation**                               | **Heatmap Generation**                                    |
+| <p align="center">**Volcano Plot Generation**</p>                               | <p align="center">**Heatmap Generation**</p>                                    |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png"> |
-| **Expression Level Plot Generation**                      | **Report Generation**                                     |
+| <p align="center">**Expression Level Plot Generation**</p>                      | <p align="center">**Report Generation**</p>                                     |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png"> |
 
 ## 📔Usage
@@ -86,7 +86,7 @@ shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI", launch.browser = TRUE
 This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it.   
 
 ##### Method 2  
-1. Click `Clone or download` button on the top of this page, then click `Download ZIP`;  
+1. Click `Clone or download` button on the top of this page, then click [`Download ZIP`](https://github.com/swsoyee/TCC-GUI/archive/master.zip);  
 2. Unzip the file to your working directory (use `getwd()` to know your working directory);  
 3. Run the code of launching (according to your structure of working directory it may be different).   
 
@@ -94,7 +94,6 @@ This method always download the source code from github before launching, so may
   shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
   ```
 
-4. Enjoy your analysis on `TCC-GUI`!  
 </details>
 
 ## 📚References
