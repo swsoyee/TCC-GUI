@@ -184,7 +184,7 @@ output$table <- DT::renderDataTable({
 
 output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
-    helpText("No data to show. Click [Import Data] or [Upload] your own dataset.")
+    tags$p("No data to show. Click", tags$code("Sample"), "or", tags$code("Upload"), "your own dataset.")
   } else {
     DT::dataTableOutput('table')
   }
@@ -252,7 +252,7 @@ observeEvent(input$confirmedGroupList, {
     sendSweetAlert(
       session = session,
       title = "DONE",
-      text = "Group labels are successfully assigned.",
+      text = "Group labels were successfully assigned.",
       type = "success"
     )
     
