@@ -50,9 +50,9 @@ Go to 🔗[`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/).
 
 Make sure that you have already installed those packages in your environment.   
 
-`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`.    
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`, `MASS`.    
 
-If any package is missing, Please run the following command in your **RStudio** and it will install all packages automatically.  
+If any package is missing, Please run the following command in your [`RStudio`](https://www.rstudio.com/) and it will install all packages automatically.  
 
 ```R
 # Check "BiocManager"
@@ -60,7 +60,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
 # Package list
-libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "heatmaply", "tidyr","utils","rmarkdown","data.table","RColorBrewer", "knitr", "cluster", "shinycssloaders", "shinyBS", "TCC")
+libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "heatmaply", "tidyr","utils","rmarkdown","data.table","RColorBrewer", "knitr", "cluster", "shinycssloaders", "shinyBS", "MASS", "TCC")
 
 # Install packages if missing
 for (i in libs){
