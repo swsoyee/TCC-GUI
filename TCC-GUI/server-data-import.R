@@ -347,16 +347,23 @@ output$sampleDistributionBox <- renderPlotly({
     tcc <- variables$tccObject
     data <- tcc$count
     
+    # Filter
+    if (input$sampleDistributionFilterLow != -1) {
+      data <- data[rowSums(data) > input$sampleDistributionFilterLow,]
+    }
+    
     cpm <- log2(data + 1)
     cpm_stack <- data.frame(stack(cpm))
-    
+
     # Add Group info
     group <-
       data.frame("col" = rownames(tcc$group),
                  "group" = tcc$group$group)
+
     data <- left_join(cpm_stack, group, by = "col")
     data <- arrange(data, group)
     
+    print(head(data))
     p <- plot_ly(
       data = data,
       x = ~ col,
@@ -366,7 +373,7 @@ output$sampleDistributionBox <- renderPlotly({
       color = ~ group
     ) %>% layout(
       title = input$sampleDistributionTitle,
-      xaxis = list(title = input$sampleDistributionXlab),
+      xaxis = list(title = input$sampleDistributionXlab, categoryarray = "array", categoryarray = ~col),
       yaxis = list(title = input$sampleDistributionYlab)
     )
     variables$sampleDistributionBar <- p
@@ -470,6 +477,11 @@ output$sampleDistributionBoxPanel <- renderUI({
     tagList(fluidRow(
       column(
         3,
+        sliderInput(inputId = "sampleDistributionFilterLow", 
+                    label = "Filter low genes",
+                    min = -1, 
+                    max = 20, 
+                    value = 0),
         textInput(
           inputId = "sampleDistributionTitle",
           label = "Title",
