@@ -1,7 +1,7 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
 </p>
-<p align="center">📊<b>TCC-GUI: Graphical User Interface for TCC package</b></p>
+<p align="center">📊 <b>TCC-GUI: Graphical User Interface for TCC package</b></p>
 <p align="center">
     <img src="https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg">
     <img src="https://img.shields.io/github/license/swsoyee/TCC-GUI.svg">
@@ -37,7 +37,7 @@ Tips: Development is now undergoing, some functions and features may be changed 
 | <p align="center">**Expression Level Plot Generation**</p>                      | <p align="center">**Report Generation**</p>                                     |
 | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png"> |
 
-## 📔Usage
+## 📔 Usage
 
 ### 🌐 Online version  
 Go to 🔗[`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/).  
@@ -72,7 +72,7 @@ for (i in libs){
 </details>
 
 <details>  
-<summary><b>⭕Launch</b></summary>  
+<summary><b>⭕ Launch</b></summary>  
     
 ---------
 
@@ -96,7 +96,14 @@ This method always download the source code from github before launching, so may
 
 </details>
 
-## 📚References
+## 📕 Publication
+**TCC-GUI: a Shiny-based application for differential expression analysis of RNA-Seq count data**  
+Wei Su, Jianqiang Sun, Kentaro Shimizu and Koji Kadota  
+*BMC Research Notes* 2019 **12**:133  
+https://doi.org/10.1186/s13104-019-4179-2 | © The Author(s) 2019  
+**Received:** 14 January 2019 | **Accepted:** 11 March 2019 | **Published:** 13 March 2019
+
+## 📚 References
 
 [1] Sun J, Nishiyama T, Shimizu K, et al. **TCC**: an R package for comparing tag count data with robust normalization strategies. *BMC bioinformatics*, 2013, 14(1): 219.  
 
