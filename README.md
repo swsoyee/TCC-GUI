@@ -97,7 +97,7 @@ This method always download the source code from github before launching, so may
 </details>
 
 ## 📕 Publication
-**TCC-GUI: a Shiny-based application for differential expression analysis of RNA-Seq count data**  
+> **TCC-GUI: a Shiny-based application for differential expression analysis of RNA-Seq count data**  
 Wei Su, Jianqiang Sun, Kentaro Shimizu and Koji Kadota  
 *BMC Research Notes* 2019 **12**:133  
 https://doi.org/10.1186/s13104-019-4179-2 | © The Author(s) 2019  
