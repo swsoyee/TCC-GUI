@@ -65,7 +65,7 @@ libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "h
 # Install packages if missing
 for (i in libs){
   if( !is.element(i, .packages(all.available = TRUE)) ) {
-     BiocManager::install(i)
+     BiocManager::install(i, suppressUpdates=TRUE)
   }
 }
 ```
