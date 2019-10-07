@@ -30,19 +30,6 @@ fluidPage(fluidRow(
          tags$hr(),
          tabsetPanel(
            id = "home",
-           tabPanel(title = "English", includeMarkdown("document/README_English.md")),
-           tabPanel(title = "中文", div(HTML(
-             markdownToHTML(
-               fragment.only = TRUE,
-               options = c("skip_images"), # Need to be fixed
-               text = readLines("document/README_Chinese.md", encoding = "UTF-8")
-             )
-           ))),
-           tabPanel(title = "日本語", div(HTML(
-             markdownToHTML(
-               fragment.only = TRUE,
-               text = readLines("document/README_Chinese.md", encoding = "UTF-8")
-             )
-           )))
+           tabPanel(title = "English", includeMarkdown("document/README_English.md"))
          ))
 ))
