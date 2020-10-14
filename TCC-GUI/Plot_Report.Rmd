@@ -101,30 +101,35 @@ kable(mdsPara, caption = "Parameters setting of MDS")
 if(length(params$mdsPlot) > 0){
 cat("```r
 library(dplyr)
+library(plotly)
+
 # Obtain dataset from TCC Object
 data <- tcc$count
 # Perform MDS computation\n")
   
-if(mdsMain == "Nonmetric MDS"){
+if (mdsMain == "Nonmetric MDS") {
   cat("library(MASS)\n")
-  cat("mds <- data.frame(isoMDS(dist(1 - cor(data, method = '", mdsMethod, "'), method = '", mdsDistMethod, "')))\n")
+  mds_code <- sprintf('mds <- data.frame(isoMDS(dist(1 - cor(data, method = "%s"), method = "%s")))\n', mdsMethod, mdsDistMethod)
 } else {
-  cat("mds <- data.frame(cmdscale(dist(1 - cor(data, method = '", mdsMethod, "'), method = '", mdsDistMethod, "')))\n")
+  mds_code <- sprintf('mds <- data.frame(cmdscale(dist(1 - cor(data, method = "%s"), method = "%s")))\n', mdsMethod, mdsDistMethod)
 }
-cat("
+cat(mds_code)
+cat(sprintf('
 # Convert data.frame to plot
 mds$name <- rownames(mds)
 mdsG <- tcc$group
 mdsG$name <- rownames(mdsG)
-mdsJ <- left_join(mds, mdsG, by = 'name')
+mdsJ <- left_join(mds, mdsG, by = "name")
+
 plot_ly(data = mdsJ,
            x = mdsJ[, 1],
            y = mdsJ[, 2],
-        type = 'scatter',
-        mode = 'text',
+        type = "scatter",
+        mode = "text",
         text =~ name,
-       color =~ group) %>% layout(title = '", mdsMain, "Plot')
-```\n")
+       color =~ group) %%>%%
+  layout(title = "%s Plot")
+```\n', mdsMain))
 params$mdsPlotplot
 } else {
   cat("Not available.")
@@ -230,14 +235,14 @@ This part is about TCC Computation processing.
 TCC Parameters is shown as below. 
 ```{r tcc parameters}
 tccPara <- rbind(
-  c("params$CountData", "Count data", class(params$CountData)),
-  c("params$groupListConvert", "List of group infomation", class(params$groupListConvert)),
-  c("params$filterLowCount", "Filter low count genes threshold", params$filterLowCount),
-  c("params$normMethod", "Normalization method", params$normMethod),
-  c("params$testMethod", "DEGs identify method", params$testMethod),
-  c("params$iteration", "Iteration", params$iteration),
-  c("params$fdr", "FDR", params$fdr),
-  c("params$floorpdeg", "Elimination of potential DEGs", params$floorpdeg)
+  c("params\\$CountData", "Count data", class(params$CountData)),
+  c("params\\$groupListConvert", "List of group infomation", class(params$groupListConvert)),
+  c("params\\$filterLowCount", "Filter low count genes threshold", params$filterLowCount),
+  c("params\\$normMethod", "Normalization method", params$normMethod),
+  c("params\\$testMethod", "DEGs identify method", params$testMethod),
+  c("params\\$iteration", "Iteration", params$iteration),
+  c("params\\$fdr", "FDR", params$fdr),
+  c("params\\$floorpdeg", "Elimination of potential DEGs", params$floorpdeg)
   )
 colnames(tccPara) <- c("Parameters", "Explanation", "Value / class")
 kable(tccPara, caption = "Paramters used in TCC computation.")
