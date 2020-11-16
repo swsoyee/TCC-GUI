@@ -560,7 +560,7 @@ observeEvent(input$heatmapRun, {
           "m.value",
           "p.value",
           "q.value",
-          colnames(data)
+          colnames(data)[colnames(data) != "gene_id"]
         ),
         digits = 3
       ) %>% formatStyle(

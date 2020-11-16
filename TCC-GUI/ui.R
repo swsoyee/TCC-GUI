@@ -152,11 +152,11 @@ tagList(dashboardPage(
   )
 ),
 tags$footer(
-  tags$p("Copyright © 2020"), 
-  tags$a(" Bioinformation Engineering Lab, ", href = "http://www.bi.a.u-tokyo.ac.jp/"), 
+  tags$p("Copyright © 2020"),
+  tags$a(" Bioinformation Engineering Lab, ", href = "http://www.bi.a.u-tokyo.ac.jp/"),
   tags$a(" Graduate School of Agricultural and Life Sciences / Faculty of Agriculture, ", href = "http://www.a.u-tokyo.ac.jp/english/index.html"),
-  tags$a(" The University of Tokyo ", href = "https://www.u-tokyo.ac.jp/en/index.html"), 
-  tags$p("Version 2020.10.14"),
+  tags$a(" The University of Tokyo ", href = "https://www.u-tokyo.ac.jp/en/index.html"),
+  tags$p("Version 2020.11.16"),
   style = "
   bottom:0;
   width:100%;
