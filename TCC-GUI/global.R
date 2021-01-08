@@ -53,7 +53,7 @@ make_summary_for_tcc_result <- function(df){
     "Percentage" = paste(round(deg_in_cutoff / total_gene, 4) * 100, "%")
   )
   df <-
-    tbl_df(df) %>% mutate(Between_Count = Under_Count - lag(Under_Count)) %>%
+    as_tibble(df) %>% mutate(Between_Count = Under_Count - lag(Under_Count)) %>%
     mutate(Count = paste0(Under_Count, "(+", Between_Count, ")"))
   return(df)
 }
