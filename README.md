@@ -1,11 +1,12 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
 </p>
-<p align="center">📊 <b>TCC-GUI: Graphical User Interface for TCC package</b></p>
-<p align="center">
-    <img src="https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg">
-    <img src="https://img.shields.io/github/license/swsoyee/TCC-GUI.svg">
-</p>
+
+# 📊 TCC-GUI: Graphical User Interface for TCC package
+
+![last commit](https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg)
+![license](https://img.shields.io/github/license/swsoyee/TCC-GUI.svg)
+[![citations](https://img.shields.io/badge/citations-13-blue?link=https://scholar.google.com/scholar?rlz=1C5CHFA_enJP843JP843&um=1&ie=UTF-8&lr&cites=4813951894701221269)](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-019-4179-2)
 
 ---
 
@@ -23,14 +24,14 @@ In this `GUI version of TCC (TCC-GUI)`, all parameter settings are available jus
 
 ## 📈 Features
 
-| Simulation Data Generation                                | Exploratory Analysis                                      |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Simulation Data Generation| Exploratory Analysis|
+| --- | --- |
 | ![Simulation Data Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png) | ![Exploratory Analysis](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png) |
-| <div align="center">**TCC Computation**</div>                                  | <div align="center">**MA Plot Generation**</div>                                    |
+| <div align="center">**TCC Computation**</div>| <div align="center">**MA Plot Generation**</div>|
 | ![TCC Computation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png) | ![MA Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png) |
-| <div align="center">**Volcano Plot Generation**</div>                               | <div align="center">**Heatmap Generation**</div>                                    |
+| <div align="center">**Volcano Plot Generation**</div>| <div align="center">**Heatmap Generation**</div>|
 | ![Volcano Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png) | ![Heatmap Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png) |
-| <div align="center">**Expression Level Plot Generation**</div>                      | <div align="center">**Report Generation**</div>                                     |
+| <div align="center">**Expression Level Plot Generation**</div>| <div align="center">**Report Generation**</div>|
 | ![Expression Level Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png) | ![Report Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png) |
 
 ## 📔 Usage
