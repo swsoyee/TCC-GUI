@@ -26,11 +26,11 @@ In this `GUI version of TCC (TCC-GUI)`, all parameter settings are available jus
 | Simulation Data Generation                                | Exploratory Analysis                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![Simulation Data Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png) | ![Exploratory Analysis](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png) |
-| <p align="center">**TCC Computation**</p>                                  | <p align="center">**MA Plot Generation**</p>                                    |
+| <div align="center">**TCC Computation**</div>                                  | <div align="center">**MA Plot Generation**</div>                                    |
 | ![TCC Computation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png) | ![MA Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png) |
-| <p align="center">**Volcano Plot Generation**</p>                               | <p align="center">**Heatmap Generation**</p>                                    |
+| <div align="center">**Volcano Plot Generation**</div>                               | <div align="center">**Heatmap Generation**</div>                                    |
 | ![Volcano Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png) | ![Heatmap Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png) |
-| <p align="center">**Expression Level Plot Generation**</p>                      | <p align="center">**Report Generation**</p>                                     |
+| <div align="center">**Expression Level Plot Generation**</div>                      | <div align="center">**Report Generation**</div>                                     |
 | ![Expression Level Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png) | ![Report Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png) |
 
 ## 📔 Usage
@@ -61,6 +61,10 @@ If you are familiar with git, **Method 1** is highly recommended.
     * Project '~/Desktop/TCC-GUI' loaded. [renv 0.12.5]
     * The project library is out of sync with the lockfile.
     * Use `renv::restore()` to install packages recorded in the lockfile.
+    
+    > renv::restore()
+    The following package(s) will be updated:
+    ...
     ````
 
 3. If you are using `RStudio`, just open the `ui.R`, `server.R` or `global.R` in `TCC-GUI` directory, and click the `Run App` button to launch the application. Or use the commend below to complete the same thing.
@@ -80,7 +84,7 @@ If you are familiar with git, **Method 1** is highly recommended.
     renv::restore()
 
     # launch the application
-    shiny::runApp("TCC-GUI-master//TCC-GUI")
+    shiny::runApp(appDir = "TCC-GUI-master//TCC-GUI")
     ```
 
 ## 📕 Publication
