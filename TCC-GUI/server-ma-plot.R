@@ -136,7 +136,11 @@ observeEvent(input$makeMAPlot, {
               x = 0.5,
               y = 1.05
             )
-          )
+          ) %>%
+          config(toImageButtonOptions = list(
+            format = "svg",
+            filename = "MA_Plot"
+          ))
         variables$MAPlotObject <- p
         p
       } else {
@@ -173,7 +177,11 @@ observeEvent(input$makeMAPlot, {
               x = 0.5,
               y = 1.05
             )
-          )
+          ) %>%
+          config(toImageButtonOptions = list(
+            format = "svg",
+            filename = "MA_Plot"
+          ))
         variables$MAPlotObject <- p
         p
       }
@@ -279,7 +287,11 @@ output$geneBarPlot <- renderPlotly({
       xaxis = xform,
       yaxis = list(title = "Raw Count"),
       title = colnames(expression)
-    )
+    ) %>%
+    config(toImageButtonOptions = list(
+      format = "svg",
+      filename = colnames(expression)
+    ))
 })
 
 
@@ -436,5 +448,9 @@ output$fdrCutoffPlotInMAPage <- renderPlotly({
       ),
       showlegend = FALSE,
       margin = list(r = 50)
-    )
+    ) %>%
+    config(toImageButtonOptions = list(
+      format = "svg",
+      filename = "FDR_vs_DEGs"
+    ))
 })

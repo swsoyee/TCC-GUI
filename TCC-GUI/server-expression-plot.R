@@ -73,7 +73,13 @@ output$geneBarPlotExpression <- renderPlotly({
         }
         j <- j + 1
       }
-      pp <- subplot(f, nrows = j - 1, margin = 0.05)
+      pp <- subplot(f, nrows = j - 1, margin = 0.05) %>%
+        config(
+          toImageButtonOptions = list(
+            format = "svg",
+            filename = "Expression_Plot"
+          )
+        )
       variables$expressionLevelBar <- pp
       pp
     })
@@ -132,7 +138,13 @@ output$geneBoxPlotExpression <- renderPlotly({
         }
         j <- j + 1
       }
-      pp <- subplot(f, nrows = j - 1, margin = 0.05)
+      pp <- subplot(f, nrows = j - 1, margin = 0.05) %>%
+        config(
+          toImageButtonOptions = list(
+            format = "svg",
+            filename = "Expression_Plot"
+          )
+        )
       variables$expressionLevelBox <- pp
       pp
     })

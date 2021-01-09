@@ -378,11 +378,18 @@ output$sampleDistributionBox <- renderPlotly({
       type = "box",
       split = ~group,
       color = ~group
-    ) %>% layout(
-      title = input$sampleDistributionTitle,
-      xaxis = list(title = input$sampleDistributionXlab, categoryarray = "array", categoryarray = ~col),
-      yaxis = list(title = input$sampleDistributionYlab)
-    )
+    ) %>%
+      layout(
+        title = input$sampleDistributionTitle,
+        xaxis = list(title = input$sampleDistributionXlab, categoryarray = "array", categoryarray = ~col),
+        yaxis = list(title = input$sampleDistributionYlab)
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = input$sampleDistributionTitle
+        )
+      )
     variables$sampleDistributionBar <- p
     p
   } else {
@@ -424,6 +431,12 @@ output$sampleDistributionDensity <- renderPlotly({
         title = input$sampleDistributionDenstityTitle,
         xaxis = list(title = input$sampleDistributionDensityXlab),
         yaxis = list(title = input$sampleDistributionDensityYlab)
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = input$sampleDistributionDenstityTitle
+        )
       )
     variables$sampleDistributionDensity <- pp
     pp
@@ -572,6 +585,12 @@ output$lowCountFilterByCutoff <- renderPlotly({
         barmode = "stack",
         xaxis = list(title = "Filtering Low Count Cut off"),
         yaxis = list(title = "Gene number")
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Filtering_Threshold_for_Low_Count_Genes"
+        )
       )
   } else {
     return()
@@ -639,7 +658,14 @@ output$mdsPlotObject <- renderPlotly({
       mode = "text",
       text = ~name,
       color = ~group
-    ) %>% layout(title = paste0(input$mds, " Plot"))
+    ) %>%
+      layout(title = paste0(input$mds, " Plot")) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = paste0(input$mds, "_Plot")
+        )
+      )
 
     variables$mdsPlotplot <- p
     variables$mdsPlot[["params"]] <- list(
@@ -754,6 +780,12 @@ output$pcaPlotObjectScree <- renderPlotly({
           x = 0.5,
           y = 1.05
         )
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Scree_Plot"
+        )
       )
     variables$screePlot <- p
     p
@@ -795,7 +827,13 @@ output$pcaPlotObject3d <- renderPlotly({
       type = "scatter3d",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Plot (3D)")
+      layout(title = "PCA Plot (3D)") %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "PCA_Plot_in_3D"
+        )
+      )
     variables$pca3d <- p
     p
   } else {
@@ -834,7 +872,13 @@ output$pcaPlotObject2d <- renderPlotly({
       type = "scatter",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Plot (2D)")
+      layout(title = "PCA Plot (2D)") %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "PCA_Plot_in_2D"
+        )
+      )
     variables$pca2d <- p
     p
   } else {
@@ -1004,7 +1048,13 @@ output$dendPlotObject <- renderPlotly({
       labRow = rownames(data),
       labCol = colnames(data),
       colors = rev(GnBu(500))
-    )
+    ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Hierarchical_Clustering"
+        )
+      )
   } else {
     return()
   }

@@ -289,6 +289,12 @@ observeEvent(input$makeVolcanoPlot, {
               line = list(dash = "dot", width = 2)
             )
           )
+        ) %>%
+        config(
+          toImageButtonOptions = list(
+            format = "svg",
+            filename = input$graphicTitle
+          )
         )
       variables$VolcanoPlotObject <- p
       p
@@ -474,5 +480,11 @@ output$geneBarPlotInVolcano <- renderPlotly({
       xaxis = xform,
       yaxis = list(title = "Raw Count"),
       title = colnames(expression)
+    ) %>%
+    config(
+      toImageButtonOptions = list(
+        format = "svg",
+        filename = colnames(expression)
+      )
     )
 })

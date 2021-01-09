@@ -153,6 +153,12 @@ output$pcaVariances <- renderPlotly({
           x = 0.5,
           y = 1.05
         )
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Scree_Plot"
+        )
       )
     variables$screePlot <- p
     p
@@ -189,7 +195,13 @@ output$pca2d <- renderPlotly({
       type = "scatter",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Plot (2D)")
+      layout(title = "PCA Plot (2D)") %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "PCA_Plot_in_2D"
+        )
+      )
     variables$pca2d <- p
     p
   } else {
@@ -226,7 +238,13 @@ output$pca3d <- renderPlotly({
       type = "scatter3d",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Plot (3D)")
+      layout(title = "PCA Plot (3D)") %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "PCA_Plot_in_3D"
+        )
+      )
     variables$pca3d <- p
     p
   } else {
