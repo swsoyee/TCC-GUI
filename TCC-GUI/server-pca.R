@@ -6,7 +6,7 @@ observeEvent(input$sider, {
   if (input$sider == "pcaTab") {
     output$pcaParameter <- renderUI({
       tagList(
-        if (input$testMethod != 'wad') {
+        if (input$testMethod != "wad") {
           tipify(sliderInput(
             "pcFDR",
             "FDR Cut-off",
@@ -14,7 +14,8 @@ observeEvent(input$sider, {
             max = 1,
             value = 0.05
           ),
-          title = "Genes under the FDR cut-off will be used for PCA. Set 1 for exploratory analysis with all genes.")
+          title = "Genes under the FDR cut-off will be used for PCA. Set 1 for exploratory analysis with all genes."
+          )
         },
         textOutput("pcaGeneCountPreview"),
         materialSwitch(
@@ -41,8 +42,10 @@ observeEvent(input$sider, {
         radioGroupButtons(
           "pcData",
           "Source",
-          choices = c("Original" = "o",
-                      "Normalized" = "n"),
+          choices = c(
+            "Original" = "o",
+            "Normalized" = "n"
+          ),
           justified = TRUE,
           status = "primary"
         ),
@@ -74,29 +77,31 @@ observeEvent(input$pcFDR, {
 
 observeEvent(input$pcRun, {
   runPCA$runPCAValue <- input$pcRun
-  variables$pcaParameter <- list("pcData" = input$pcData,
-                                 "pcFDR" = input$pcFDR,
-                                 "pcTransform" = input$pcTransform,
-                                 "pcCenter" = input$pcCenter,
-                                 "pcScale" = input$pcScale)
+  variables$pcaParameter <- list(
+    "pcData" = input$pcData,
+    "pcFDR" = input$pcFDR,
+    "pcTransform" = input$pcTransform,
+    "pcCenter" = input$pcCenter,
+    "pcScale" = input$pcScale
+  )
   tcc <- variables$tccObject
-  
+
   # Using Original Dataset or Normalized Dataset.
   if (input$pcData == "o") {
     data <- tcc$count
   } else {
     data <- getNormalizedData(tcc)
   }
-  
+
   result <- getResult(tcc)
-  
+
   # Select DEGs (Row)
-  if (input$testMethod == 'wad') {
+  if (input$testMethod == "wad") {
     data <- data
   } else {
-    data <- data[result$q.value <= input$pcFDR,]
+    data <- data[result$q.value <= input$pcFDR, ]
   }
-  
+
   # PCA processing
   if (input$pcTransform == TRUE) {
     data <- t(log1p(data))
@@ -104,11 +109,12 @@ observeEvent(input$pcRun, {
     data <- t(data)
   }
   data.pca <- prcomp(data[, apply(data, 2, var) != 0],
-                     center = input$pcCenter,
-                     scale. = input$pcScale)
-  
+    center = input$pcCenter,
+    scale. = input$pcScale
+  )
+
   variables$data.pca <- data.pca
-  
+
   output$runPCACode <- renderText({
     variables$runPCACode
   })
@@ -119,28 +125,30 @@ output$pcaVariances <- renderPlotly({
     # Scree Plot plotly object ----
     data.pca <- variables$data.pca
     summaryTable <- summary(data.pca)$importance
-    
+
     p <- plot_ly(
       x = colnames(summaryTable),
-      y = summaryTable[2,],
-      text = paste0(summaryTable[2,] * 100, "%"),
+      y = summaryTable[2, ],
+      text = paste0(summaryTable[2, ] * 100, "%"),
       textposition = "auto",
       type = "bar",
       name = "Proportion of Variance"
     ) %>%
       add_trace(
-        y = summaryTable[3,],
+        y = summaryTable[3, ],
         type = "scatter",
         mode = "lines+markers",
         name = "Cumulative Proportion"
       ) %>%
       layout(
         xaxis = list(title = "Principal Components"),
-        yaxis = list(title = "Proportion of Variance",
-                     tickformat = "%"),
+        yaxis = list(
+          title = "Proportion of Variance",
+          tickformat = "%"
+        ),
         title = "Scree Plot",
         legend = list(
-          orientation = 'h',
+          orientation = "h",
           xanchor = "center",
           x = 0.5,
           y = 1.05
@@ -173,10 +181,10 @@ output$pca2d <- renderPlotly({
     data <- left_join(x = data, y = group, by = "name")
     p <- plot_ly(
       data = data,
-      x = ~ PC1,
-      y = ~ PC2,
+      x = ~PC1,
+      y = ~PC2,
       color = ~ factor(group),
-      text = ~ name,
+      text = ~name,
       textposition = "top right",
       type = "scatter",
       mode = "markers+text"
@@ -209,11 +217,11 @@ output$pca3d <- renderPlotly({
     data <- left_join(x = data, y = group, by = "name")
     p <- plot_ly(
       data = data,
-      x = ~ PC1,
-      y = ~ PC2,
-      z = ~ PC3,
+      x = ~PC1,
+      y = ~PC2,
+      z = ~PC3,
       color = ~ factor(group),
-      text = ~ name,
+      text = ~name,
       textposition = "top right",
       type = "scatter3d",
       mode = "markers+text"
@@ -242,38 +250,43 @@ output$summaryPCA <- DT::renderDataTable({
     summaryTable <- summary(data.pca)$importance
     row.names(summaryTable)[1] <- "Standard Deviation"
     summaryTable <- t(summaryTable)
-     t <- DT::datatable(summaryTable, options = list(
+    t <- DT::datatable(summaryTable, options = list(
       dom = "Bt",
       buttons = list(
-        'copy',
-        'print',
+        "copy",
+        "print",
         list(
-          extend = 'collection',
-          buttons = c('csv', 'excel', 'pdf'),
-          text = 'Download'
+          extend = "collection",
+          buttons = c("csv", "excel", "pdf"),
+          text = "Download"
         )
       )
     )) %>%
-      formatRound(columns = colnames(summaryTable),
-                  digits = 3) %>% formatStyle(
-                    "Proportion of Variance",
-                    background = styleColorBar(range(0, 1), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  ) %>% formatStyle(
-                    "Standard Deviation",
-                    background = styleColorBar(range(0, summaryTable[, 1]), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  ) %>% formatStyle(
-                    "Cumulative Proportion",
-                    background = styleColorBar(range(0, 1), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  )
+      formatRound(
+        columns = colnames(summaryTable),
+        digits = 3
+      ) %>%
+      formatStyle(
+        "Proportion of Variance",
+        background = styleColorBar(range(0, 1), "lightblue"),
+        backgroundSize = "98% 88%",
+        backgroundRepeat = "no-repeat",
+        backgroundPosition = "center"
+      ) %>%
+      formatStyle(
+        "Standard Deviation",
+        background = styleColorBar(range(0, summaryTable[, 1]), "lightblue"),
+        backgroundSize = "98% 88%",
+        backgroundRepeat = "no-repeat",
+        backgroundPosition = "center"
+      ) %>%
+      formatStyle(
+        "Cumulative Proportion",
+        background = styleColorBar(range(0, 1), "lightblue"),
+        backgroundSize = "98% 88%",
+        backgroundRepeat = "no-repeat",
+        backgroundPosition = "center"
+      )
     variables$summaryPCA <- t
   } else {
     return()

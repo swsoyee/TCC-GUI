@@ -116,7 +116,8 @@ observeEvent(
     pvalueCut <- input$Cutpvalue
 
     downCount <-
-      nrow(dt[dt$m.value <= downCut & dt[["p.value"]] <= pvalueCut, ])
+      nrow(dt[dt$m.value <= downCut &
+        dt[["p.value"]] <= pvalueCut, ])
     upCount <-
       nrow(dt[dt$m.value >= upCut & dt[["p.value"]] <= pvalueCut, ])
 
@@ -397,7 +398,7 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
 
 output$download_all_volcano <- downloadHandler(
   filename = function() {
-    paste("MA-value-data-", Sys.Date(), ".csv", sep="")
+    paste("MA-value-data-", Sys.Date(), ".csv", sep = "")
   },
   content = function(file) {
     write.csv(resultTable(), file, row.names = FALSE)
