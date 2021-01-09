@@ -29,11 +29,11 @@ observeEvent(input$sider, {
           choices = list(
             list(
               "#B22222",
-              'black',
-              'white',
-              'blanchedalmond',
-              'steelblue',
-              'forestgreen'
+              "black",
+              "white",
+              "blanchedalmond",
+              "steelblue",
+              "forestgreen"
             ),
             as.list(brewer.pal(n = 9, name = "Reds")),
             as.list(brewer.pal(n = 9, name = "Greens")),
@@ -60,18 +60,18 @@ observeEvent(input$sider, {
 observeEvent(input$makeMAPlot, {
   output$maploty <- renderPlotly({
     validate(need(resultTable()$a.value != "", "No MA values for ploting."))
-    
+
     req(input$makeMAPlot)
     isolate({
       # key for connecting MA Plot and Barplot
       key <- resultTable()$gene_id
-      
+
       if (is.null(input$resultTableInPlot_rows_selected)) {
         annotation <- list()
       } else {
         markerSelect <-
           resultTable()[input$resultTableInPlot_rows_selected, ]
-        
+
         annotation <- list(
           x = markerSelect$a.value,
           y = markerSelect$m.value,
@@ -84,7 +84,7 @@ observeEvent(input$makeMAPlot, {
           ay = 40
         )
       }
-      
+
       # If test method is `WAD`, it will not generate p.value,
       # So we can't pick up DEGs according to p.value, no color
       # information for marking the DEGs.
@@ -95,14 +95,14 @@ observeEvent(input$makeMAPlot, {
             "DEG" = paste("(0,", input$maFDR, "]", sep = ""),
             "non-DEG" = paste("(", input$maFDR, ",1]", sep = "")
           )
-        
+
         p <- plot_ly(
           data = resultTable(),
-          x = ~ a.value,
-          y = ~ m.value,
+          x = ~a.value,
+          y = ~m.value,
           type = "scatter",
           mode = "markers",
-          color = ~ x,
+          color = ~x,
           colors = c(input$fdrColor, "#000000"),
           marker = list(size = input$pointSize),
           hoverinfo = "text+name",
@@ -116,7 +116,7 @@ observeEvent(input$makeMAPlot, {
             "</br>Rank:",
             rank
           ),
-          key =  ~ key,
+          key = ~key,
           source = "ma"
         ) %>%
           layout(
@@ -131,12 +131,16 @@ observeEvent(input$makeMAPlot, {
             ),
             annotations = annotation,
             legend = list(
-              orientation = 'h',
+              orientation = "h",
               xanchor = "center",
               x = 0.5,
               y = 1.05
             )
-          )
+          ) %>%
+          config(toImageButtonOptions = list(
+            format = "svg",
+            filename = "MA_Plot"
+          ))
         variables$MAPlotObject <- p
         p
       } else {
@@ -159,7 +163,7 @@ observeEvent(input$makeMAPlot, {
             "</br>Rank:",
             rank
           ),
-          key =  ~ key,
+          key = ~key,
           source = "ma"
         ) %>%
           layout(
@@ -168,12 +172,16 @@ observeEvent(input$makeMAPlot, {
             title = "MA Plot",
             annotations = annotation,
             legend = list(
-              orientation = 'h',
+              orientation = "h",
               xanchor = "center",
               x = 0.5,
               y = 1.05
             )
-          )
+          ) %>%
+          config(toImageButtonOptions = list(
+            format = "svg",
+            filename = "MA_Plot"
+          ))
         variables$MAPlotObject <- p
         p
       }
@@ -184,12 +192,14 @@ observeEvent(input$makeMAPlot, {
 
 # Under FDR cutoff, preview the gene number ----
 output$maFDRpreview <- renderText({
-  count <- nrow(resultTable()[resultTable()$q.value <= input$maFDR,])
-  paste0("<font color=\"",
-         input$fdrColor,
-         "\"><b>",
-         count,
-         " genes</b></font>")
+  count <- nrow(resultTable()[resultTable()$q.value <= input$maFDR, ])
+  paste0(
+    "<font color=\"",
+    input$fdrColor,
+    "\"><b>",
+    count,
+    " genes</b></font>"
+  )
 })
 
 # Render MAPlotUI ----
@@ -233,20 +243,22 @@ output$geneBarPlot <- renderPlotly({
   # Get expression level (Normalized)
   expressionNor <-
     t(t(variables$norData[row.names(variables$norData) == gene_id, ]))
-  
+
   data <- variables$CountData
   data.cl <- variables$groupListConvert
-  
+
   expression <- t(expression[data.cl != 0])
   data.cl <- data.cl[data.cl != 0]
-  
+
   xOrder <-
     data.frame("name" = row.names(expression), "group" = data.cl)
-  xOrderVector <- unique(xOrder[order(xOrder$group),]$name)
-  xform <- list(categoryorder = "array",
-                categoryarray = xOrderVector,
-                title = "")
-  
+  xOrderVector <- unique(xOrder[order(xOrder$group), ]$name)
+  xform <- list(
+    categoryorder = "array",
+    categoryarray = xOrderVector,
+    title = ""
+  )
+
   plot_ly(
     x = ~ row.names(expression),
     y = ~ expression[, 1],
@@ -275,7 +287,11 @@ output$geneBarPlot <- renderPlotly({
       xaxis = xform,
       yaxis = list(title = "Raw Count"),
       title = colnames(expression)
-    )
+    ) %>%
+    config(toImageButtonOptions = list(
+      format = "svg",
+      filename = colnames(expression)
+    ))
 })
 
 
@@ -292,7 +308,7 @@ output$resultTableInPlot <- DT::renderDataTable({
       fdrCut <- 0
       fdrColor <- "#B22222"
     }
-    
+
     DT::datatable(
       resultTable(),
       colnames = c(
@@ -313,15 +329,15 @@ output$resultTableInPlot <- DT::renderDataTable({
       ),
       extensions = c("Scroller", "Buttons"),
       option = list(
-        dom = 'Bfrtip',
+        dom = "Bfrtip",
         buttons =
           list(
-            'copy',
-            'print',
+            "copy",
+            "print",
             list(
-              extend = 'collection',
-              buttons = c('csv', 'excel', 'pdf'),
-              text = 'Download'
+              extend = "collection",
+              buttons = c("csv", "excel", "pdf"),
+              text = "Download"
             )
           ),
         deferRender = TRUE,
@@ -334,15 +350,20 @@ output$resultTableInPlot <- DT::renderDataTable({
           visible = FALSE, targets = -1
         ))
       )
-    ) %>% formatRound(
-      columns = c("a.value",
-                  "m.value",
-                  "p.value",
-                  "q.value"),
-      digits = 3
-    ) %>% formatStyle("gene_id",
-                      "q.value",
-                      color = styleInterval(fdrCut, c(fdrColor, "")))
+    ) %>%
+      formatRound(
+        columns = c(
+          "a.value",
+          "m.value",
+          "p.value",
+          "q.value"
+        ),
+        digits = 3
+      ) %>%
+      formatStyle("gene_id",
+        "q.value",
+        color = styleInterval(fdrCut, c(fdrColor, ""))
+      )
   }
 })
 
@@ -352,10 +373,10 @@ output$resultTableInPlot <- DT::renderDataTable({
 output$fdrCutoffTableInMAPage <- DT::renderDataTable({
   # Create Table
   df <- make_summary_for_tcc_result(resultTable())
-  
+
   df <- df[, c("Cutoff", "Count", "Percentage")]
   colnames(df) <- c("Cut-off", "DEGs(#)", "DEGs(%)")
-  
+
   # Render Table
   DT::datatable(
     df,
@@ -363,7 +384,7 @@ output$fdrCutoffTableInMAPage <- DT::renderDataTable({
     option = list(
       pageLength = 10,
       columnDefs = list(list(
-        className = 'dt-right', targets = "_all"
+        className = "dt-right", targets = "_all"
       )),
       dom = "tp"
     ),
@@ -377,12 +398,12 @@ output$fdrCutoffTableInMAPage <- DT::renderDataTable({
 output$fdrCutoffPlotInMAPage <- renderPlotly({
   # Create table
   df <- make_summary_for_tcc_result(resultTable())
-  
+
   # Render Plotly
   plot_ly(
     data = df,
     x = ~ as.numeric(Cutoff),
-    y = ~ Between_Count,
+    y = ~Between_Count,
     type = "bar",
     hoverinfo = "text",
     text = ~ paste(
@@ -395,7 +416,7 @@ output$fdrCutoffPlotInMAPage <- renderPlotly({
     )
   ) %>%
     add_trace(
-      y = ~ Under_Count,
+      y = ~Under_Count,
       yaxis = "y2",
       type = "scatter",
       mode = "lines+markers",
@@ -427,5 +448,9 @@ output$fdrCutoffPlotInMAPage <- renderPlotly({
       ),
       showlegend = FALSE,
       margin = list(r = 50)
-    )
+    ) %>%
+    config(toImageButtonOptions = list(
+      format = "svg",
+      filename = "FDR_vs_DEGs"
+    ))
 })

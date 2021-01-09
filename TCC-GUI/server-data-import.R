@@ -1,14 +1,14 @@
 # server-data-import.R
 
 output$dataSourceSelect <- renderUI({
-  if( is.null(variables$simulationData)) {
+  if (is.null(variables$simulationData)) {
     selectInput(
       "SampleDatabase",
       "Select Sample Data",
       choices = c(
-        "hypoData (sample dataset)" = "sample_data/data_hypodata_3vs3.txt"#,
+        "hypoData (sample dataset)" = "sample_data/data_hypodata_3vs3.txt" # ,
         # "katz.mouse" = "sample_data/katzmouse_count_table.txt",
-        #"cheung" = "sample_data/cheung_count_table.txt"
+        # "cheung" = "sample_data/cheung_count_table.txt"
       )
     )
   } else {
@@ -36,14 +36,14 @@ observeEvent(input$CountDataSample, {
   } else {
     variables$CountData <- data.frame(variables$simulationData$count)
   }
-  
+
   sendSweetAlert(
     session = session,
     title = "DONE",
     text = "Count data were successfully loaded.",
     type = "success"
   )
-  
+
   sampleGroup <- switch(
     input$SampleDatabase,
     "sample_data/data_hypodata_3vs3.txt" = paste(
@@ -53,18 +53,19 @@ observeEvent(input$CountDataSample, {
       "G2_rep1,Group2",
       "G2_rep2,Group2",
       "G2_rep3,Group2",
-      sep = '\n'
+      sep = "\n"
     ),
     "simulationData" = paste0(row.names(variables$simulationData$group),
-                              ",G",
-                              variables$simulationData$group$group,
-                              collapse = "\n"),
+      ",G",
+      variables$simulationData$group$group,
+      collapse = "\n"
+    ),
     "sample_data/katzmouse_count_table.txt" = paste(
       "SRX026633,1",
       "SRX026632,2",
       "SRX026631,1",
       "SRX026630,2",
-      sep = '\n'
+      sep = "\n"
     ),
     "sample_data/cheung_count_table.txt" = paste(
       "NA06985,1",
@@ -108,11 +109,10 @@ observeEvent(input$CountDataSample, {
       "NA12872,2",
       "NA12874,2",
       "NA12891,2",
-      sep = '\n'
+      sep = "\n"
     )
   )
   updateTextAreaInput(session, "groupSelectViaText", value = sampleGroup)
-  
 })
 
 
@@ -120,31 +120,33 @@ observeEvent(input$CountDataSample, {
 
 observeEvent(input$uploadCountData, {
   showNotification("Start uploading file...", type = "message")
-  tryCatch({
-    variables$CountData <-
-      data.frame(fread(input$uploadCountData$datapath), row.names = 1)
-    variables$tccObject <- NULL
-    v$importActionValue <- FALSE
-    showNotification("Received uploaded file.", type = "message")
-  },
-  error = function(e) {
-    sendSweetAlert(
-      session = session,
-      title = "Input data error!",
-      text = as.character(message(e)),
-      type = "error"
-    )
-    return()
-  },
-  warning = function(w) {
-    sendSweetAlert(
-      session = session,
-      title = "Input data warning!",
-      text = "Some error is in your dataset, it maybe cause some problem we cannot expected.",
-      type = "warning"
-    )
-    return()
-  })
+  tryCatch(
+    {
+      variables$CountData <-
+        data.frame(fread(input$uploadCountData$datapath), row.names = 1)
+      variables$tccObject <- NULL
+      v$importActionValue <- FALSE
+      showNotification("Received uploaded file.", type = "message")
+    },
+    error = function(e) {
+      sendSweetAlert(
+        session = session,
+        title = "Input data error!",
+        text = as.character(message(e)),
+        type = "error"
+      )
+      return()
+    },
+    warning = function(w) {
+      sendSweetAlert(
+        session = session,
+        title = "Input data warning!",
+        text = "Some error is in your dataset, it maybe cause some problem we cannot expected.",
+        type = "warning"
+      )
+      return()
+    }
+  )
 })
 
 datasetInput <- reactive({
@@ -159,9 +161,10 @@ output$table <- DT::renderDataTable({
   # Create 19 breaks and 20 rgb color values ranging from white to blue
   brks <-
     quantile(df %>% select_if(is.numeric),
-             probs = seq(.05, .95, .05),
-             na.rm = TRUE)
-  
+      probs = seq(.05, .95, .05),
+      na.rm = TRUE
+    )
+
   DT::datatable(
     df,
     colnames = c("Gene Name" = 1),
@@ -186,7 +189,7 @@ output$emptyTable <- renderUI({
   if (nrow(datasetInput()) == 0) {
     tags$p("No data to show. Click", tags$code("Sample"), "or", tags$code("Upload"), "your own dataset.")
   } else {
-    DT::dataTableOutput('table')
+    DT::dataTableOutput("table")
   }
 })
 
@@ -209,78 +212,80 @@ observeEvent(input$confirmedGroupList, {
     )
     return()
   }
-  
-  tryCatch({
-    progressSweetAlert(
-      session = session,
-      id = "dataImportProgress",
-      title = "Processing group info",
-      display_pct = TRUE,
-      value = 0
-    )
-    
-    group <- fread(input$groupSelectViaText, header = FALSE)
-    variables$groupList <-
-      lapply(unique(group$V2), function(x) {
-        group[group$V2 == x, ]$V1
-      })
-    names(variables$groupList) <- unique(group$V2)
-    
-    data.cl <- rep(0, ncol(variables$CountData))
-    
-    for (i in 1:length(variables$groupList)) {
-      data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] = names(variables$groupList[i])
+
+  tryCatch(
+    {
+      progressSweetAlert(
+        session = session,
+        id = "dataImportProgress",
+        title = "Processing group info",
+        display_pct = TRUE,
+        value = 0
+      )
+
+      group <- fread(input$groupSelectViaText, header = FALSE)
+      variables$groupList <-
+        lapply(unique(group$V2), function(x) {
+          group[group$V2 == x, ]$V1
+        })
+      names(variables$groupList) <- unique(group$V2)
+
+      data.cl <- rep(0, ncol(variables$CountData))
+
+      for (i in 1:length(variables$groupList)) {
+        data.cl[unlist(lapply(variables$groupList[[i]], convert2cl, df = variables$CountData))] <- names(variables$groupList[i])
+      }
+
+      # Storage convert group list to local
+      variables$groupListConvert <- data.cl
+
+      # Create TCC Object
+      tcc <-
+        new("TCC", variables$CountData[data.cl != 0], data.cl[data.cl != 0])
+      variables$tccObject <- tcc
+      variables$count.data <- tcc$count
+
+      updateProgressBar(
+        session = session,
+        id = "dataImportProgress",
+        title = "Summarizing data",
+        value = 90
+      )
+
+      closeSweetAlert(session = session)
+      sendSweetAlert(
+        session = session,
+        title = "DONE",
+        text = "Group labels were successfully assigned.",
+        type = "success"
+      )
+
+      v$importActionValue <- input$confirmedGroupList
+    },
+    error = function(e) {
+      sendSweetAlert(
+        session = session,
+        title = "ERROR",
+        text = "Check your group information format!",
+        type = "error"
+      )
+      return()
+    },
+    warning = function(w) {
+      sendSweetAlert(
+        session = session,
+        title = "Group error!",
+        text = "Check your group information format!",
+        type = "error"
+      )
+      return()
     }
-    
-    # Storage convert group list to local
-    variables$groupListConvert <- data.cl
-    
-    # Create TCC Object
-    tcc <-
-      new("TCC", variables$CountData[data.cl != 0], data.cl[data.cl != 0])
-    variables$tccObject <- tcc
-    variables$count.data <- tcc$count
-    
-    updateProgressBar(
-      session = session,
-      id = "dataImportProgress",
-      title = "Summarizing data",
-      value = 90
-    )
-    
-    closeSweetAlert(session = session)
-    sendSweetAlert(
-      session = session,
-      title = "DONE",
-      text = "Group labels were successfully assigned.",
-      type = "success"
-    )
-    
-    v$importActionValue <- input$confirmedGroupList
-  },
-  error = function(e) {
-    sendSweetAlert(
-      session = session,
-      title = "ERROR",
-      text = "Check your group information format!",
-      type = "error"
-    )
-    return()
-  },
-  warning = function(w) {
-    sendSweetAlert(
-      session = session,
-      title = "Group error!",
-      text = "Check your group information format!",
-      type = "error"
-    )
-    return()
-  })
+  )
 })
 
 output$importDataSummary <- renderUI({
   dt <- datasetInput()
-  
+
   rowCount <- nrow(dt)
   groupCount <- length(variables$groupList)
   groupText <- sapply(variables$groupList, length)
@@ -289,12 +294,12 @@ output$importDataSummary <- renderUI({
   } else {
     gText <- NULL
   }
-  
+
   # AS Part
   data <- variables$CountData
   data.cl <- variables$groupListConvert
   cName <- unlist(variables$groupList)
-  
+
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
     data <- tcc$count
@@ -302,7 +307,7 @@ output$importDataSummary <- renderUI({
     # Filtering
     obj <- as.logical(rowSums(data) > 0)
     data <- unique(data[obj, ])
-    
+
     # AS calculation
     d <- as.dist(1 - cor(data, method = "spearman"))
     AS <-
@@ -346,36 +351,45 @@ output$sampleDistributionBox <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
     data <- tcc$count
-    
+
     # Filter
     if (input$sampleDistributionFilterLow != -1) {
-      data <- data[rowSums(data) > input$sampleDistributionFilterLow,]
+      data <- data[rowSums(data) > input$sampleDistributionFilterLow, ]
     }
-    
+
     cpm <- log2(data + 1)
     cpm_stack <- data.frame(stack(cpm))
 
     # Add Group info
     group <-
-      data.frame("col" = rownames(tcc$group),
-                 "group" = tcc$group$group)
+      data.frame(
+        "col" = rownames(tcc$group),
+        "group" = tcc$group$group
+      )
 
     data <- left_join(cpm_stack, group, by = "col")
     data <- arrange(data, group)
-    
+
     print(head(data))
     p <- plot_ly(
       data = data,
-      x = ~ col,
-      y = ~ value,
+      x = ~col,
+      y = ~value,
       type = "box",
-      split = ~ group,
-      color = ~ group
-    ) %>% layout(
-      title = input$sampleDistributionTitle,
-      xaxis = list(title = input$sampleDistributionXlab, categoryarray = "array", categoryarray = ~col),
-      yaxis = list(title = input$sampleDistributionYlab)
-    )
+      split = ~group,
+      color = ~group
+    ) %>%
+      layout(
+        title = input$sampleDistributionTitle,
+        xaxis = list(title = input$sampleDistributionXlab, categoryarray = "array", categoryarray = ~col),
+        yaxis = list(title = input$sampleDistributionYlab)
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = input$sampleDistributionTitle
+        )
+      )
     variables$sampleDistributionBar <- p
     p
   } else {
@@ -391,12 +405,12 @@ output$sampleDistributionDensity <- renderPlotly({
       # count <-
       #   filterLowCountGenes(tcc, low.count = as.numeric(input$densityFilter))$count
       count <-
-        tcc$count[rowSums(tcc$count) > as.numeric(input$densityFilter),]
+        tcc$count[rowSums(tcc$count) > as.numeric(input$densityFilter), ]
     } else {
       count <- tcc$count
     }
     data <- log2(count + 1)
-    
+
     group <- tcc$group
     densityTable <- apply(data, 2, function(x) {
       density(x)
@@ -407,16 +421,22 @@ output$sampleDistributionDensity <- renderPlotly({
         p,
         x = densityTable[[i]][[1]],
         y = densityTable[[i]][[2]],
-        color = group[rownames(group) == names(densityTable[i]),],
+        color = group[rownames(group) == names(densityTable[i]), ],
         name = names(densityTable[i])
       )
     }
-    
+
     pp <- p %>%
       layout(
         title = input$sampleDistributionDenstityTitle,
         xaxis = list(title = input$sampleDistributionDensityXlab),
         yaxis = list(title = input$sampleDistributionDensityYlab)
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = input$sampleDistributionDenstityTitle
+        )
       )
     variables$sampleDistributionDensity <- pp
     pp
@@ -477,11 +497,13 @@ output$sampleDistributionBoxPanel <- renderUI({
     tagList(fluidRow(
       column(
         3,
-        sliderInput(inputId = "sampleDistributionFilterLow", 
-                    label = "Filter low genes",
-                    min = -1, 
-                    max = 20, 
-                    value = 0),
+        sliderInput(
+          inputId = "sampleDistributionFilterLow",
+          label = "Filter low genes",
+          min = -1,
+          max = 20,
+          value = 0
+        ),
         textInput(
           inputId = "sampleDistributionTitle",
           label = "Title",
@@ -517,25 +539,25 @@ output$lowCountFilterByCutoff <- renderPlotly({
     tcc <- variables$tccObject
     data <- tcc$count
     originalCount <- nrow(data)
-    
+
     lowCount <-
       sapply(0:input$lowCountSlide, function(x) {
         sum(rowSums(tcc$count) > x)
         # nrow(filterLowCountGenes(tcc, low.count = x)$count)
       })
-    
+
     lowCountdt <- data.frame(
       "Cutoff" = 0:input$lowCountSlide,
       "Filtered" = originalCount - lowCount,
       "Remain" = lowCount
     )
-    
+
     plot_ly(
       lowCountdt,
       name = "Remain",
-      x =  ~ Cutoff,
-      y =  ~ Remain,
-      text = ~ Remain,
+      x = ~Cutoff,
+      y = ~Remain,
+      text = ~Remain,
       textposition = "outside",
       hoverinfo = "text+name",
       hovertext = ~ paste0(
@@ -550,18 +572,26 @@ output$lowCountFilterByCutoff <- renderPlotly({
         "%)"
       ),
       type = "bar"
-    ) %>% add_trace(
-      name = "Filtered",
-      y =  ~ Filtered,
-      text = ~ Filtered,
-      type = "bar",
-      textposition = "inside"
-    )  %>% layout(
-      title = "Filtering Threshold for Low Count Genes",
-      barmode = "stack",
-      xaxis = list(title = "Filtering Low Count Cut off"),
-      yaxis = list(title = "Gene number")
-    )
+    ) %>%
+      add_trace(
+        name = "Filtered",
+        y = ~Filtered,
+        text = ~Filtered,
+        type = "bar",
+        textposition = "inside"
+      ) %>%
+      layout(
+        title = "Filtering Threshold for Low Count Genes",
+        barmode = "stack",
+        xaxis = list(title = "Filtering Low Count Cut off"),
+        yaxis = list(title = "Gene number")
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Filtering_Threshold_for_Low_Count_Genes"
+        )
+      )
   } else {
     return()
   }
@@ -609,7 +639,7 @@ output$mdsPlotObject <- renderPlotly({
           1 - cor(tcc$count, method = input$mdsMethod),
           method = input$mdsDistMethod
         )))
-    } else{
+    } else {
       mds <-
         data.frame(cmdscale(dist(
           1 - cor(tcc$count, method = input$mdsMethod),
@@ -626,14 +656,23 @@ output$mdsPlotObject <- renderPlotly({
       y = mdsJ[, 2],
       type = "scatter",
       mode = "text",
-      text =  ~ name,
-      color = ~ group
-    ) %>% layout(title = paste0(input$mds, " Plot"))
+      text = ~name,
+      color = ~group
+    ) %>%
+      layout(title = paste0(input$mds, " Plot")) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = paste0(input$mds, "_Plot")
+        )
+      )
 
     variables$mdsPlotplot <- p
-    variables$mdsPlot[["params"]] <- list("mds" = input$mds,
-                                      "mdsMethod" = input$mdsMethod,
-                                      "mdsDistMethod" = input$mdsDistMethod)
+    variables$mdsPlot[["params"]] <- list(
+      "mds" = input$mds,
+      "mdsMethod" = input$mdsMethod,
+      "mdsDistMethod" = input$mdsDistMethod
+    )
     p
   } else {
     return()
@@ -682,8 +721,10 @@ output$mdsUI <- renderUI({
         selectInput(
           inputId = "mds",
           label = "MDS Method",
-          choices = c("Classical MDS" = "Classical MDS",
-                      "Nonmetric MDS" = "Nonmetric MDS")
+          choices = c(
+            "Classical MDS" = "Classical MDS",
+            "Nonmetric MDS" = "Nonmetric MDS"
+          )
         )
       ),
       column(9, plotlyOutput("mdsPlotObject") %>% withSpinner())
@@ -703,13 +744,14 @@ output$pcaPlotObjectScree <- renderPlotly({
       data <- tcc$count
     }
     data <- data[apply(data, 1, var) != 0, ]
-    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+    if (!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)) {
       data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
     }
-    
+
     data.pca.all <- prcomp(data,
-                           center = input$pcaCenter,
-                           scale. = input$pcaScale)
+      center = input$pcaCenter,
+      scale. = input$pcaScale
+    )
     summaryTable <- summary(data.pca.all)$importance
     p <- plot_ly(
       x = colnames(summaryTable),
@@ -727,14 +769,22 @@ output$pcaPlotObjectScree <- renderPlotly({
       ) %>%
       layout(
         xaxis = list(title = "Principal Components"),
-        yaxis = list(title = "Proportion of Variance",
-                     tickformat = "%"),
+        yaxis = list(
+          title = "Proportion of Variance",
+          tickformat = "%"
+        ),
         title = "Scree Plot",
         legend = list(
-          orientation = 'h',
+          orientation = "h",
           xanchor = "center",
           x = 0.5,
           y = 1.05
+        )
+      ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Scree_Plot"
         )
       )
     variables$screePlot <- p
@@ -753,13 +803,14 @@ output$pcaPlotObject3d <- renderPlotly({
       data <- tcc$count
     }
     data <- data[apply(data, 1, var) != 0, ]
-    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+    if (!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)) {
       data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
     }
     data.pca.all <- prcomp(data,
-                           center = input$pcaCenter,
-                           scale. = input$pcaScale)
-    
+      center = input$pcaCenter,
+      scale. = input$pcaScale
+    )
+
     data <- data.frame(data.pca.all$x)
     data$name <- rownames(data)
     group <- tcc$group
@@ -767,16 +818,22 @@ output$pcaPlotObject3d <- renderPlotly({
     data <- left_join(x = data, y = group, by = "name")
     p <- plot_ly(
       data = data,
-      x = ~ PC1,
-      y = ~ PC2,
-      z = ~ PC3,
+      x = ~PC1,
+      y = ~PC2,
+      z = ~PC3,
       color = ~ factor(group),
-      text = ~ name,
+      text = ~name,
       textposition = "top right",
       type = "scatter3d",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Plot (3D)")
+      layout(title = "PCA Plot (3D)") %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "PCA_Plot_in_3D"
+        )
+      )
     variables$pca3d <- p
     p
   } else {
@@ -793,12 +850,13 @@ output$pcaPlotObject2d <- renderPlotly({
       data <- tcc$count
     }
     data <- data[apply(data, 1, var) != 0, ]
-    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+    if (!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)) {
       data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
     }
     data.pca.all <- prcomp(data,
-                           center = input$pcaCenter,
-                           scale. = input$pcaScale)
+      center = input$pcaCenter,
+      scale. = input$pcaScale
+    )
     data <- data.frame(data.pca.all$x)
     data$name <- rownames(data)
     group <- tcc$group
@@ -806,15 +864,21 @@ output$pcaPlotObject2d <- renderPlotly({
     data <- left_join(x = data, y = group, by = "name")
     p <- plot_ly(
       data = data,
-      x = ~ PC1,
-      y = ~ PC2,
+      x = ~PC1,
+      y = ~PC2,
       color = ~ factor(group),
-      text = ~ name,
+      text = ~name,
       textposition = "top right",
       type = "scatter",
       mode = "markers+text"
     ) %>%
-      layout(title = "PCA Plot (2D)")
+      layout(title = "PCA Plot (2D)") %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "PCA_Plot_in_2D"
+        )
+      )
     variables$pca2d <- p
     p
   } else {
@@ -832,53 +896,61 @@ output$pcaSummaryObject <- DT::renderDataTable({
       data <- tcc$count
     }
     data <- data[apply(data, 1, var) != 0, ]
-    if(!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)){
+    if (!is.na(input$pcaTopGene) & input$pcaTopGene < nrow(data)) {
       data <- t(data[order(apply(data, 1, var), decreasing = TRUE)[1:input$pcaTopGene], ])
     }
     data.pca.all <- prcomp(data,
-                           center = input$pcaCenter,
-                           scale. = input$pcaScale)
-    
-    variables$pcaParameter <- list("pcaTransform" = input$pcaTransform,
-                                   "pcaCenter" = input$pcaCenter,
-                                   "pcaScale" = input$pcaScale,
-                                   "pcaTopGene" = input$pcaTopGene)
-    
+      center = input$pcaCenter,
+      scale. = input$pcaScale
+    )
+
+    variables$pcaParameter <- list(
+      "pcaTransform" = input$pcaTransform,
+      "pcaCenter" = input$pcaCenter,
+      "pcaScale" = input$pcaScale,
+      "pcaTopGene" = input$pcaTopGene
+    )
+
     summaryTable <- summary(data.pca.all)$importance
     row.names(summaryTable)[1] <- "Standard Deviation"
     summaryTable <- t(summaryTable)
     t <- DT::datatable(summaryTable, options = list(
       dom = "Bt",
       buttons = list(
-        'copy',
-        'print',
+        "copy",
+        "print",
         list(
-          extend = 'collection',
-          buttons = c('csv', 'excel', 'pdf'),
-          text = 'Download'
+          extend = "collection",
+          buttons = c("csv", "excel", "pdf"),
+          text = "Download"
         )
       )
     )) %>%
-      formatRound(columns = colnames(summaryTable),
-                  digits = 3) %>% formatStyle(
-                    "Proportion of Variance",
-                    background = styleColorBar(range(0, 1), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  ) %>% formatStyle(
-                    "Standard Deviation",
-                    background = styleColorBar(range(0, summaryTable[, 1]), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  ) %>% formatStyle(
-                    "Cumulative Proportion",
-                    background = styleColorBar(range(0, 1), 'lightblue'),
-                    backgroundSize = '98% 88%',
-                    backgroundRepeat = 'no-repeat',
-                    backgroundPosition = 'center'
-                  )
+      formatRound(
+        columns = colnames(summaryTable),
+        digits = 3
+      ) %>%
+      formatStyle(
+        "Proportion of Variance",
+        background = styleColorBar(range(0, 1), "lightblue"),
+        backgroundSize = "98% 88%",
+        backgroundRepeat = "no-repeat",
+        backgroundPosition = "center"
+      ) %>%
+      formatStyle(
+        "Standard Deviation",
+        background = styleColorBar(range(0, summaryTable[, 1]), "lightblue"),
+        backgroundSize = "98% 88%",
+        backgroundRepeat = "no-repeat",
+        backgroundPosition = "center"
+      ) %>%
+      formatStyle(
+        "Cumulative Proportion",
+        background = styleColorBar(range(0, 1), "lightblue"),
+        backgroundSize = "98% 88%",
+        backgroundRepeat = "no-repeat",
+        backgroundPosition = "center"
+      )
     variables$summaryPCA <- t
     t
   } else {
@@ -905,7 +977,7 @@ output$pcaUI <- renderUI({
           ),
           title = "How many of the most variable genes should be used for calculating the PCA. Use all none-zero row variance gene if none value is supplied.",
           placement = "left"
-        ), 
+        ),
         tipify(
           materialSwitch(
             inputId = "pcaTransform",
@@ -940,21 +1012,21 @@ output$pcaUI <- renderUI({
           placement = "left"
         )
       ),
-      column(9,
-             tabsetPanel(
-               tabPanel(
-                 title = "Summary Table",
-                 DT::dataTableOutput("pcaSummaryObject") %>% withSpinner()
-               )
-               ,
-               tabPanel(
-                 title = "Scree Plot",
-                 plotlyOutput("pcaPlotObjectScree") %>% withSpinner()
-               )
-               ,
-               tabPanel(title = "3D Plot", plotlyOutput("pcaPlotObject3d") %>% withSpinner()),
-               tabPanel(title = "2D Plot", plotlyOutput("pcaPlotObject2d") %>% withSpinner())
-             ))
+      column(
+        9,
+        tabsetPanel(
+          tabPanel(
+            title = "Summary Table",
+            DT::dataTableOutput("pcaSummaryObject") %>% withSpinner()
+          ),
+          tabPanel(
+            title = "Scree Plot",
+            plotlyOutput("pcaPlotObjectScree") %>% withSpinner()
+          ),
+          tabPanel(title = "3D Plot", plotlyOutput("pcaPlotObject3d") %>% withSpinner()),
+          tabPanel(title = "2D Plot", plotlyOutput("pcaPlotObject2d") %>% withSpinner())
+        )
+      )
     ))
   } else {
     helpText("No data for ploting. Please import dataset and assign group information first.")
@@ -965,7 +1037,7 @@ output$pcaUI <- renderUI({
 output$dendPlotObject <- renderPlotly({
   if (length(variables$tccObject) > 0) {
     tcc <- variables$tccObject
-    data <- tcc$count[rowSums(tcc$count) > 0,]
+    data <- tcc$count[rowSums(tcc$count) > 0, ]
     data <- data.frame(1 - cor(data, method = input$dendCor))
     data.cl.count <- length(unique(tcc$group$group))
     heatmaply(
@@ -976,7 +1048,13 @@ output$dendPlotObject <- renderPlotly({
       labRow = rownames(data),
       labCol = colnames(data),
       colors = rev(GnBu(500))
-    )
+    ) %>%
+      config(
+        toImageButtonOptions = list(
+          format = "svg",
+          filename = "Hierarchical_Clustering"
+        )
+      )
   } else {
     return()
   }
@@ -997,7 +1075,7 @@ output$dendUI <- renderUI({
             "Ward.D2" = "ward.D2",
             "Single" = "single",
             "UPGMA (Average)" = "average",
-            "WPGMA (Mcquitty)" = "mcquitty"#,
+            "WPGMA (Mcquitty)" = "mcquitty" # ,
             # "WPGMC (Median)" = "median",
             # "UPGMC (centroid)" = "centroid"
           )
@@ -1005,8 +1083,10 @@ output$dendUI <- renderUI({
         selectInput(
           inputId = "dendCor",
           label = "Distance Measure",
-          choices = c("Spearman" = "spearman",
-                      "Pearson" = "pearson")
+          choices = c(
+            "Spearman" = "spearman",
+            "Pearson" = "pearson"
+          )
         )
       ),
       column(9, plotlyOutput("dendPlotObject") %>% withSpinner())

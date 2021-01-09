@@ -12,20 +12,24 @@ observeEvent(input$sider, {
         radioGroupButtons(
           inputId = "heatmapGeneSelectType",
           label = "Select Genes",
-          choices = c("By List" = "By list",
-                      # "By name",
-                      "By FDR" = "By FDR"),
+          choices = c(
+            "By List" = "By list",
+            # "By name",
+            "By FDR" = "By FDR"
+          ),
           justified = TRUE,
           status = "primary"
         ),
-        
+
         uiOutput("heatmapSelectGene"),
-        
+
         radioGroupButtons(
           inputId = "heatmapData",
           label = "Source",
-          choices = c("Original" = "o",
-                      "Normalized" = "n"),
+          choices = c(
+            "Original" = "o",
+            "Normalized" = "n"
+          ),
           justified = TRUE,
           status = "primary"
         ),
@@ -85,8 +89,10 @@ observeEvent(input$sider, {
         radioGroupButtons(
           inputId = "heatmapSwap",
           label = "Direction",
-          choices = list("Horizontal" = "h",
-                         "Vertical" = "v"),
+          choices = list(
+            "Horizontal" = "h",
+            "Vertical" = "v"
+          ),
           justified = TRUE,
           status = "primary"
         ),
@@ -127,9 +133,16 @@ observeEvent(input$sider, {
 
 # Preview gene count -----
 observeEvent(input$heatmapFDR, {
-  gene_count <- nrow(resultTable()[resultTable()$q.value <= input$heatmapFDR, ])
+  gene_count <-
+    nrow(resultTable()[resultTable()$q.value <= input$heatmapFDR, ])
   output$heatmapGeneCountPreview <- renderText({
-    paste0("Gene number: ", gene_count, " | Generation time: ~", round(gene_count/30,2), "s")
+    paste0(
+      "Gene number: ",
+      gene_count,
+      " | Generation time: ~",
+      round(gene_count / 30, 2),
+      "s"
+    )
   })
 })
 
@@ -171,11 +184,11 @@ observeEvent(input$colorSelectionMethod, {
           choices = list(
             list(
               "blue",
-              'black',
-              'white',
-              'blanchedalmond',
-              'steelblue',
-              'forestgreen'
+              "black",
+              "white",
+              "blanchedalmond",
+              "steelblue",
+              "forestgreen"
             ),
             as.list(brewer.pal(n = 9, name = "Blues")),
             as.list(brewer.pal(n = 9, name = "Greens")),
@@ -191,10 +204,10 @@ observeEvent(input$colorSelectionMethod, {
             choices = list(
               list(
                 "white",
-                'black',
-                'blanchedalmond',
-                'steelblue',
-                'forestgreen'
+                "black",
+                "blanchedalmond",
+                "steelblue",
+                "forestgreen"
               ),
               as.list(brewer.pal(n = 9, name = "Blues")),
               as.list(brewer.pal(n = 9, name = "Greens")),
@@ -210,11 +223,11 @@ observeEvent(input$colorSelectionMethod, {
           choices = list(
             list(
               "red",
-              'black',
-              'white',
-              'blanchedalmond',
-              'steelblue',
-              'forestgreen'
+              "black",
+              "white",
+              "blanchedalmond",
+              "steelblue",
+              "forestgreen"
             ),
             as.list(brewer.pal(n = 9, name = "Blues")),
             as.list(brewer.pal(n = 9, name = "Greens")),
@@ -234,7 +247,8 @@ observeEvent(input$colorSelectionMethod, {
 colorPanel <- reactive({
   colorPal <- c("white")
   # Create color palette
-  if (input$colorSelectionMethod == "Color map" && length(input$heatmapColor) > 0) {
+  if (input$colorSelectionMethod == "Color map" &&
+    length(input$heatmapColor) > 0) {
     colorPal <- switch(
       input$heatmapColor,
       "PiYG" = PiYG(input$heatmapColorNumber),
@@ -251,11 +265,13 @@ colorPanel <- reactive({
       "coolwarm" = cool_warm(input$heatmapColorNumber)
     )
   }
-  if (input$colorSelectionMethod == "Two colors" && length(input$heatmapTwoColorLow) > 0) {
+  if (input$colorSelectionMethod == "Two colors" &&
+    length(input$heatmapTwoColorLow) > 0) {
     colorPal <-
       colorRampPalette(c(input$heatmapTwoColorLow, input$heatmapTwoColorHigh))(input$heatmapColorNumber)
   }
-  if (input$colorSelectionMethod == "Three colors" && length(input$heatmapTwoColorLow) > 0) {
+  if (input$colorSelectionMethod == "Three colors" &&
+    length(input$heatmapTwoColorLow) > 0) {
     colorPal <-
       colorRampPalette(
         c(
@@ -265,7 +281,7 @@ colorPanel <- reactive({
         )
       )(input$heatmapColorNumber)
   }
-  
+
   colorPal
 })
 
@@ -309,24 +325,23 @@ output$heatmapSelectGene <- renderUI({
     #   choices = row.names(variables$CountData),
     #   multiple = TRUE
     # ),
-    "By FDR" = tagList(
-      if (input$testMethod != 'wad') {
-        tagList(
-          sliderInput(
-            "heatmapFDR",
-            "FDR Cut-off",
-            min = 0.01,
-            max = 1,
-            value = 0.01
-          ),
-          textOutput("heatmapGeneCountPreview")
-        )
-      } else {
-        tagList(
+    "By FDR" = tagList(if (input$testMethod != "wad") {
+      tagList(
+        sliderInput(
+          "heatmapFDR",
+          "FDR Cut-off",
+          min = 0.01,
+          max = 1,
+          value = 0.01
+        ),
+        textOutput("heatmapGeneCountPreview")
+      )
+    } else {
+      tagList(
         tags$p("No FDR value for WAD method, please select genes by rank."),
-        numericInput("heatmapFDRTop", "Number of top-ranked genes", value = 50))
-      }
-    )
+        numericInput("heatmapFDRTop", "Number of top-ranked genes", value = 50)
+      )
+    })
   )
 })
 
@@ -351,7 +366,7 @@ observeEvent(input$heatmapRun, {
   # Select Sample (Column)
   # Grouping.
   data.cl <- variables$groupListConvert
-  
+
   # Using Original Dataset or Normalized Dataset.
   if (input$heatmapData == "o") {
     data <- variables$CountData[data.cl != 0]
@@ -359,250 +374,307 @@ observeEvent(input$heatmapRun, {
     data <- variables$norData
   }
   data.cl <- data.cl[data.cl != 0]
-  
+
   # Select DEGs (Row)
-  tryCatch({
-    if (input$heatmapGeneSelectType == "By list") {
-      selectedListForHeatmap <-
-        row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = '[\r\n]'))
-      heatmapTitle <- "Heatmap of specific genes"
-    }
-    
-    if (input$heatmapGeneSelectType == "By FDR") {
-      if (input$testMethod == 'wad') {
+  tryCatch(
+    {
+      if (input$heatmapGeneSelectType == "By list") {
         selectedListForHeatmap <-
-          row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop,]$gene_id
-        
+          row.names(data) %in% unlist(strsplit(x = input$heatmapTextList, split = "[\r\n]"))
         heatmapTitle <- "Heatmap of specific genes"
-      } else {
-        selectedListForHeatmap <-
-          row.names(data) %in% resultTable()[resultTable()$q.value <= input$heatmapFDR,]$gene_id
-        
-        heatmapTitle <-
-          paste0("Heatmap of gene expression (q.value < ",
-                 input$heatmapFDR,
-                 ", ",
-                 sum(selectedListForHeatmap),
-                 "DEGs)")
       }
-    }
-    
-    data <- data[selectedListForHeatmap, ]
-    
-    if (nrow(data) == 0) {
+
+      if (input$heatmapGeneSelectType == "By FDR") {
+        if (input$testMethod == "wad") {
+          selectedListForHeatmap <-
+            row.names(data) %in% resultTable()[resultTable()$rank <= input$heatmapFDRTop, ]$gene_id
+
+          heatmapTitle <- "Heatmap of specific genes"
+        } else {
+          selectedListForHeatmap <-
+            row.names(data) %in% resultTable()[resultTable()$q.value <= input$heatmapFDR, ]$gene_id
+
+          heatmapTitle <-
+            paste0(
+              "Heatmap of gene expression (q.value < ",
+              input$heatmapFDR,
+              ", ",
+              sum(selectedListForHeatmap),
+              "DEGs)"
+            )
+        }
+      }
+
+      data <- data[selectedListForHeatmap, ]
+
+      if (nrow(data) == 0) {
+        sendSweetAlert(
+          session = session,
+          title = "ERROR",
+          text = "Genes list is empty!",
+          type = "error"
+        )
+        return()
+      } else {
+        showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
+        showNotification("Generating, please be patient...", type = "message")
+      }
+
+      colorPal <- colorPanel()
+
+      dataBackup <- t(data)
+
+      updateProgressBar(
+        session = session,
+        id = "heatmapProgress",
+        title = "Converting data",
+        value = 30
+      )
+      # Create Plotly object
+      output$heatmap <- renderPlotly({
+        isolate({
+          runHeatmap$height <- input$heatmapHeight
+          # Log transform and normalization
+          if (input$heatmapLogTrans == TRUE) {
+            dataBackup <- log1p(dataBackup)
+          }
+          if (input$heatmapNor == TRUE) {
+            dataBackup <- heatmaply::normalize(dataBackup)
+          }
+
+          # This part is for code output ----
+
+
+          value <- as.character(data.frame(round(dataBackup, 2)))
+          sample_name <- row.names(dataBackup)
+          gene_name <- colnames(dataBackup)
+
+          value_row <-
+            strsplit(x = gsub("c\\(", "", value), split = "(\\), )|(\\))")
+          value_row <-
+            data.frame(matrix(unlist(value_row)), row.names = gene_name)
+          data <-
+            data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")
+          data <-
+            data.frame(lapply(data, as.numeric), row.names = gene_name)
+
+          code <- paste0(
+            "# Your values of data\n",
+            "value <- ",
+            paste0(
+              "c(",
+              paste0("'", value, "'", collapse = ",\n"),
+              ")",
+              collapse = ""
+            ),
+            "\n\n# Your gene name\n",
+            "gene_name <- ",
+            paste0(
+              "c(",
+              paste0("'", gene_name, "'", collapse = ","),
+              ")",
+              collapse = ""
+            ),
+            "\n\n# Your sample name\n",
+            "sample_name <- ",
+            paste0(
+              "c(",
+              paste0("'", sample_name, "'", collapse = ","),
+              ")",
+              collapse = ""
+            ),
+            "\n\n# Convert string to data.frame\n",
+            "library(tidyr)",
+            '\nvalue_row <- strsplit(x = gsub("c\\\\(", "", value), split = "(\\\\), )|(\\\\))")',
+            "\nvalue_row <- data.frame(matrix(unlist(value_row)), row.names = gene_name)",
+            '\ndata <- data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")',
+            "\ndata <- data.frame(lapply(data,as.numeric), row.names = gene_name)",
+            "\n\n# Generate heatmap\n",
+            "library(heatmaply)\n"
+          )
+          if (input$heatmapSwap == "h") {
+            output$heatmapRcode <- renderText({
+              codeHeatmap <- paste0(
+                "heatmaply(t(data), k_row = ",
+                length(variables$groupList),
+                ", color = ",
+                paste0(
+                  "c(",
+                  paste0("'", colorPal, "'", collapse = ","),
+                  ")",
+                  collapse = ""
+                ),
+                ", dist_method = '",
+                input$heatmapDist,
+                "', hclust_method = '",
+                input$heatmapCluster,
+                "', xlab = 'Sample', ylab = 'Gene', scale = '",
+                input$heatmapScale,
+                "', labRow = colnames(data), labCol = row.names(data))",
+                collapse = ""
+              )
+              paste0(code, codeHeatmap, collapse = "")
+            })
+            updateProgressBar(
+              session = session,
+              id = "heatmapProgress",
+              title = "Ploting",
+              value = 70
+            )
+            p <- heatmaply(
+              dataBackup,
+              k_row = length(variables$groupList),
+              colors = colorPal,
+              dist_method = input$heatmapDist,
+              hclust_method = input$heatmapCluster,
+              xlab = "Gene",
+              ylab = "Sample",
+              main = heatmapTitle,
+              margins = c(150, 100, 40, 20),
+              scale = input$heatmapScale,
+              labCol = colnames(dataBackup),
+              labRow = row.names(dataBackup)
+            ) %>%
+              config(
+                toImageButtonOptions = list(
+                  format = "svg",
+                  filename = heatmapTitle
+                )
+              )
+
+            variables$heatmapObject <- p
+            p
+          } else {
+            output$heatmapRcode <- renderText({
+              codeHeatmap <- paste0(
+                "heatmaply(data, k_row = ",
+                length(variables$groupList),
+                ", color = ",
+                paste0(
+                  "c(",
+                  paste0("'", colorPal, "'", collapse = ","),
+                  ")",
+                  collapse = ""
+                ),
+                ", dist_method = '",
+                input$heatmapDist,
+                "', hclust_method = '",
+                input$heatmapCluster,
+                "', xlab = 'Gene', ylab = 'Sample', scale = '",
+                input$heatmapScale,
+                "', labCol = colnames(data), labRow = row.names(data))",
+                collapse = ""
+              )
+              paste0(code, codeHeatmap, collapse = "")
+            })
+            updateProgressBar(
+              session = session,
+              id = "heatmapProgress",
+              title = "Ploting",
+              value = 70
+            )
+            p <- heatmaply(
+              t(dataBackup),
+              k_col = length(variables$groupList),
+              colors = colorPal,
+              dist_method = input$heatmapDist,
+              hclust_method = input$heatmapCluster,
+              xlab = "Sample",
+              ylab = "Gene",
+              main = heatmapTitle,
+              margins = c(150, 100, 40, 20),
+              scale = input$heatmapScale,
+              labCol = row.names(dataBackup),
+              labRow = colnames(dataBackup)
+            ) %>%
+              config(
+                toImageButtonOptions = list(
+                  format = "svg",
+                  filename = heatmapTitle
+                )
+              )
+
+            variables$heatmapObject <- p
+            p
+          }
+        })
+      })
+
+      updateProgressBar(
+        session = session,
+        id = "heatmapProgress",
+        title = "Extracting data",
+        value = 90
+      )
+      # Generate Result table
+      output$resultTableInHeatmap <- DT::renderDataTable({
+        # Combine TCC Result and Raw Count Data
+        gene_id <- row.names(data)
+        data <- cbind(data, gene_id = gene_id)
+
+        resultTable <- merge(variables$result, data, by = "gene_id")
+
+        DT::datatable(
+          resultTable,
+          option = list(
+            scrollX = TRUE,
+            pageLength = 10,
+            searchHighlight = TRUE,
+            orderClasses = TRUE
+          )
+        ) %>%
+          formatRound(
+            columns = c(
+              "a.value",
+              "m.value",
+              "p.value",
+              "q.value",
+              colnames(data)[colnames(data) != "gene_id"]
+            ),
+            digits = 3
+          ) %>%
+          formatStyle(
+            "estimatedDEG",
+            target = "row",
+            backgroundColor = styleEqual(1, "lightblue")
+          )
+      })
+
+      updateProgressBar(
+        session = session,
+        id = "heatmapProgress",
+        title = "All done",
+        value = 100
+      )
+
+      runHeatmap$runHeatmapValue <- input$heatmapRun
+
+      closeSweetAlert(session = session)
       sendSweetAlert(
         session = session,
-        title = "ERROR",
-        text = "Genes list is empty!",
+        title = "Completed!",
+        type = "success"
+      )
+    },
+    error = function(e) {
+      sendSweetAlert(
+        session = session,
+        title = "List contents error!",
+        text = "Genes list incorrect!",
         type = "error"
       )
       return()
-    } else {
-      showNotification(paste0(dim(data)[1], " DEGs, ", dim(data)[2], " sample will be used."))
-      showNotification("Generating, please be patient...", type = "message")
-    }
-    
-    colorPal <- colorPanel()
-    
-    dataBackup <- t(data)
-    
-    updateProgressBar(
-      session = session,
-      id = "heatmapProgress",
-      title = "Converting data",
-      value = 30
-    )
-    # Create Plotly object
-    output$heatmap <- renderPlotly({
-      isolate({
-        runHeatmap$height <- input$heatmapHeight
-        # Log transform and normalization
-        if (input$heatmapLogTrans == TRUE) {
-          dataBackup <-  log1p(dataBackup)
-        }
-        if (input$heatmapNor == TRUE) {
-          dataBackup <- heatmaply::normalize(dataBackup)
-        }
-        
-        # This part is for code output ----
-        
-        
-        value <- as.character(data.frame(round(dataBackup, 2)))
-        sample_name <- row.names(dataBackup)
-        gene_name <- colnames(dataBackup)
-        
-        value_row <-
-          strsplit(x = gsub("c\\(", "", value), split = "(\\), )|(\\))")
-        value_row <-
-          data.frame(matrix(unlist(value_row)), row.names = gene_name)
-        data <-
-          data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")
-        data <- data.frame(lapply(data,as.numeric), row.names = gene_name)
-        
-        code <- paste0(
-          "# Your values of data\n",
-          "value <- ",
-          paste0("c(", paste0("'", value, "'", collapse = ",\n"), ")", collapse = ""),
-          "\n\n# Your gene name\n",
-          "gene_name <- ",
-          paste0("c(", paste0("'", gene_name, "'", collapse = ","), ")", collapse = ""),
-          "\n\n# Your sample name\n",
-          "sample_name <- ", paste0("c(", paste0("'", sample_name, "'", collapse = ","), ")", collapse = ""),
-          "\n\n# Convert string to data.frame\n",
-          "library(tidyr)",
-          '\nvalue_row <- strsplit(x = gsub("c\\\\(", "", value), split = "(\\\\), )|(\\\\))")',
-          "\nvalue_row <- data.frame(matrix(unlist(value_row)), row.names = gene_name)",
-          '\ndata <- data.frame(value_row) %>% separate(colnames(value_row), sample_name, ",")',
-          "\ndata <- data.frame(lapply(data,as.numeric), row.names = gene_name)",
-          "\n\n# Generate heatmap\n",
-          "library(heatmaply)\n"
-        )
-        if (input$heatmapSwap == "h") {
-          output$heatmapRcode <- renderText({
-            codeHeatmap <- paste0(
-              "heatmaply(t(data), k_row = ", length(variables$groupList), 
-              ", color = ", paste0("c(", paste0("'", colorPal, "'", collapse = ","), ")", collapse = ""),
-              ", dist_method = '", input$heatmapDist,
-              "', hclust_method = '", input$heatmapCluster,
-              "', xlab = 'Sample', ylab = 'Gene', scale = '", input$heatmapScale,
-              "', labRow = colnames(data), labCol = row.names(data))", collapse = ""
-            )
-            paste0(code, codeHeatmap, collapse = "")
-          })
-          updateProgressBar(
-            session = session,
-            id = "heatmapProgress",
-            title = "Ploting",
-            value = 70
-          )
-          p <- heatmaply(
-            dataBackup,
-            k_row = length(variables$groupList),
-            colors = colorPal,
-            dist_method = input$heatmapDist,
-            hclust_method = input$heatmapCluster,
-            xlab = "Gene",
-            ylab = "Sample",
-            main = heatmapTitle,
-            margins = c(150, 100, 40, 20),
-            scale = input$heatmapScale,
-            labCol = colnames(dataBackup),
-            labRow = row.names(dataBackup)
-          )
-          
-          variables$heatmapObject <- p
-          p
-        } else {
-          output$heatmapRcode <- renderText({
-            codeHeatmap <- paste0(
-              "heatmaply(data, k_row = ", length(variables$groupList), 
-              ", color = ", paste0("c(", paste0("'", colorPal, "'", collapse = ","), ")", collapse = ""),
-              ", dist_method = '", input$heatmapDist,
-              "', hclust_method = '", input$heatmapCluster,
-              "', xlab = 'Gene', ylab = 'Sample', scale = '", input$heatmapScale,
-              "', labCol = colnames(data), labRow = row.names(data))", collapse = ""
-            )
-            paste0(code, codeHeatmap, collapse = "")
-          })
-          updateProgressBar(
-            session = session,
-            id = "heatmapProgress",
-            title = "Ploting",
-            value = 70
-          )
-          p <- heatmaply(
-            t(dataBackup),
-            k_col = length(variables$groupList),
-            colors = colorPal,
-            dist_method = input$heatmapDist,
-            hclust_method = input$heatmapCluster,
-            xlab = "Sample",
-            ylab = "Gene",
-            main = heatmapTitle,
-            margins = c(150, 100, 40, 20),
-            scale = input$heatmapScale,
-            labCol = row.names(dataBackup),
-            labRow = colnames(dataBackup)
-          )
-          
-          variables$heatmapObject <- p
-          p
-        }
-
-      })
-    })
-    
-    updateProgressBar(
-      session = session,
-      id = "heatmapProgress",
-      title = "Extracting data",
-      value = 90
-    )
-    # Generate Result table
-    output$resultTableInHeatmap <- DT::renderDataTable({
-      # Combine TCC Result and Raw Count Data
-      gene_id <- row.names(data)
-      data <- cbind(data, gene_id = gene_id)
-      
-      resultTable <- merge(variables$result, data, by = "gene_id")
-      
-      DT::datatable(
-        resultTable,
-        option = list(
-          scrollX = TRUE,
-          pageLength = 10,
-          searchHighlight = TRUE,
-          orderClasses = TRUE
-        )
-      ) %>% formatRound(
-        columns = c(
-          "a.value",
-          "m.value",
-          "p.value",
-          "q.value",
-          colnames(data)[colnames(data) != "gene_id"]
-        ),
-        digits = 3
-      ) %>% formatStyle(
-        "estimatedDEG",
-        target = 'row',
-        backgroundColor = styleEqual(1, "lightblue")
+    },
+    warning = function(w) {
+      sendSweetAlert(
+        session = session,
+        title = "List contents error!",
+        text = "Genes list incorrect!",
+        type = "error"
       )
-    })
-    
-    updateProgressBar(
-      session = session,
-      id = "heatmapProgress",
-      title = "All done",
-      value = 100
-    )
-    
-    runHeatmap$runHeatmapValue <- input$heatmapRun
-    
-    closeSweetAlert(session = session)
-    sendSweetAlert(session = session,
-                   title = "Completed!",
-                   type = "success")
-  },
-  error = function(e) {
-    sendSweetAlert(
-      session = session,
-      title = "List contents error!",
-      text = "Genes list incorrect!",
-      type = "error"
-    )
-    return()
-  },
-  warning = function(w) {
-    sendSweetAlert(
-      session = session,
-      title = "List contents error!",
-      text = "Genes list incorrect!",
-      type = "error"
-    )
-    return()
-  })
-  
+      return()
+    }
+  )
 })
 
 # Render interactive heatmap plot -----------------------------------------
@@ -612,7 +684,7 @@ output$heatmapPlot <- renderUI({
   if (runHeatmap$runHeatmapValue) {
     plotlyOutput("heatmap", height = runHeatmap$height) %>% withSpinner()
   }
-  else{
+  else {
     helpText("Click [Generate Heatmap] to plot the heatmap first.")
   }
 })

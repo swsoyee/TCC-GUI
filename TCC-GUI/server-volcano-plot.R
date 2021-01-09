@@ -116,7 +116,8 @@ observeEvent(
     pvalueCut <- input$Cutpvalue
 
     downCount <-
-      nrow(dt[dt$m.value <= downCut & dt[["p.value"]] <= pvalueCut, ])
+      nrow(dt[dt$m.value <= downCut &
+        dt[["p.value"]] <= pvalueCut, ])
     upCount <-
       nrow(dt[dt$m.value >= upCut & dt[["p.value"]] <= pvalueCut, ])
 
@@ -288,6 +289,12 @@ observeEvent(input$makeVolcanoPlot, {
               line = list(dash = "dot", width = 2)
             )
           )
+        ) %>%
+        config(
+          toImageButtonOptions = list(
+            format = "svg",
+            filename = input$graphicTitle
+          )
         )
       variables$VolcanoPlotObject <- p
       p
@@ -397,7 +404,7 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
 
 output$download_all_volcano <- downloadHandler(
   filename = function() {
-    paste("MA-value-data-", Sys.Date(), ".csv", sep="")
+    paste("MA-value-data-", Sys.Date(), ".csv", sep = "")
   },
   content = function(file) {
     write.csv(resultTable(), file, row.names = FALSE)
@@ -473,5 +480,11 @@ output$geneBarPlotInVolcano <- renderPlotly({
       xaxis = xform,
       yaxis = list(title = "Raw Count"),
       title = colnames(expression)
+    ) %>%
+    config(
+      toImageButtonOptions = list(
+        format = "svg",
+        filename = colnames(expression)
+      )
     )
 })
