@@ -1,20 +1,16 @@
-<p align="center">
-    <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tccLogo.png" width="121" height="60">  
-</p>
-
 # 📊 TCC-GUI: Graphical User Interface for TCC package
+
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/TCC-GUI/www/tcc-gui-logo.png" width="100" align="right">  
 
 ![last commit](https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg)
 ![license](https://img.shields.io/github/license/swsoyee/TCC-GUI.svg)
 [![citations](https://img.shields.io/badge/citations-13-blue?link=https://scholar.google.com/scholar?rlz=1C5CHFA_enJP843JP843&um=1&ie=UTF-8&lr&cites=4813951894701221269)](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-019-4179-2)
 
----
-
-<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Home.png" width="420" align="right" style="max-width: 50%">
-
 [`TCC`](http://bioconductor.org/packages/TCC/)<sup>1</sup> is a [`R`](https://www.r-project.org/)/[`Bioconductor`](https://www.bioconductor.org/) package provides a series of functions for performing differential expression  (**DE**)  analysis from    RNA-seq count data using a robust normalization strategy (called **DEGES**).  
 
 The basic idea of **DEGES** is that potential differentially expressed genes (**DEGs**) among compared samples should be removed before data normalization to obtain a well-ranked gene list where true **DEGs** are top-ranked and **non-DEGs** are bottom ranked. This can be done by performing the multi-step normalization procedures based on **DEGES** (**DEG elimination strategy**) implemented in TCC.  
+
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Home.png" width="420" align="right" style="max-width: 50%">
 
 TCC internally uses functions provided by [`edgeR`](https://www.bioconductor.org/packages/release/bioc/html/edgeR.html)<sup>2</sup>, [`DESeq`](https://www.bioconductor.org/packages/release/bioc/html/DESeq.html)<sup>3</sup>, [`DESeq2`](https://www.bioconductor.org/packages/release/bioc/html/DESeq2.html)<sup>4</sup>, and [`baySeq`](https://www.bioconductor.org/packages/release/bioc/html/baySeq.html)<sup>5</sup> . The multi-step normalization of TCC can be done by using functions in the four packages.  
 
