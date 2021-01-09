@@ -9,7 +9,7 @@
 
 ---
 
-<img src="https://github.com/swsoyee/TCC-GUI/blob/master/ScreenShot/Home.png" width="420" align="right" style="max-width: 50%">
+<img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/Home.png" width="420" align="right" style="max-width: 50%">
 
 [`TCC`](http://bioconductor.org/packages/TCC/)<sup>1</sup> is a [`R`](https://www.r-project.org/)/[`Bioconductor`](https://www.bioconductor.org/) package provides a series of functions for performing differential expression  (**DE**)  analysis from    RNA-seq count data using a robust normalization strategy (called **DEGES**).  
 
@@ -25,79 +25,67 @@ In this `GUI version of TCC (TCC-GUI)`, all parameter settings are available jus
 
 | Simulation Data Generation                                | Exploratory Analysis                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png"> |
+| ![Simulation Data Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta1.png) | ![Exploratory Analysis](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta2.png) |
 | <p align="center">**TCC Computation**</p>                                  | <p align="center">**MA Plot Generation**</p>                                    |
-| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png"> |
+| ![TCC Computation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta3.png) | ![MA Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta4.png) |
 | <p align="center">**Volcano Plot Generation**</p>                               | <p align="center">**Heatmap Generation**</p>                                    |
-| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png"> |
+| ![Volcano Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta5.png) | ![Heatmap Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta7.png) |
 | <p align="center">**Expression Level Plot Generation**</p>                      | <p align="center">**Report Generation**</p>                                     |
-| <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png"> | <img src="https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png"> |
+| ![Expression Level Plot Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta8.png) | ![Report Generation](https://raw.githubusercontent.com/swsoyee/TCC-GUI/master/ScreenShot/beta9.png) |
 
 ## 📔 Usage
 
-### 🌐 Online version  
+### Online version
 
-Go to 🔗[`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/).  
+Access [`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/) hosted by shinyapps.io. Due to the limitations of the free version of shinyapps, you may not be able to use the tool in some cases, in which case you may consider downloading the source code and launch the tool in a your machine (see below).  
 
-### 💻 Standalone version  
+### Standalone version  
 
-<details>
-<summary><b>📲 Installation</b></summary>  
+If you are familiar with git, **Method 1** is highly recommended.
 
----
+### Method 1
 
-Make sure that you have already installed those packages in your environment.  
+1. Use the command below to clone the source code to your local directory.
 
-`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`, `MASS`.  
+    ```bash
+    git clone https://github.com/swsoyee/TCC-GUI.git ~/Desktop/TCC-GUI
+    ```
 
-If any package is missing, Please run the following command in your [`RStudio`](https://www.rstudio.com/) and it will install all packages automatically.  
+2. When you open this project in R at first time, the following message will be print in console. Use `renv::restore()` to install packages.
 
-```R
-# Check "BiocManager"
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+    ```r
+    # Bootstrapping renv 0.12.5 --------------------------------------------------
+    * Downloading renv 0.12.5 from CRAN ... OK
+    * Installing renv 0.12.5 ... Done!
+    * Successfully installed and loaded renv 0.12.5.
+    * Project '~/Desktop/TCC-GUI' loaded. [renv 0.12.5]
+    * The project library is out of sync with the lockfile.
+    * Use `renv::restore()` to install packages recorded in the lockfile.
+    ````
 
-# Package list
-libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "heatmaply", "tidyr","utils","rmarkdown","data.table","RColorBrewer", "knitr", "cluster", "shinycssloaders", "shinyBS", "MASS", "TCC")
+3. If you are using `RStudio`, just open the `ui.R`, `server.R` or `global.R` in `TCC-GUI` directory, and click the `Run App` button to launch the application. Or use the commend below to complete the same thing.
 
-# Install packages if missing
-for (i in libs){
-  if( !is.element(i, .packages(all.available = TRUE)) ) {
-     BiocManager::install(i, suppressUpdates=TRUE)
-  }
-}
-```
+    ```r
+    shiny::runApp(appDir = "TCC-GUI/")
+    ```
 
-</details>
-
-<details>  
-<summary><b>⭕ Launch</b></summary>  
-
----
-
-Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
-
-#### Method 1
-
-```R
-shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI", launch.browser = TRUE)
-```
-
-This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it.  
-
-#### Method 2
+### Method 2
 
 1. Click `Clone or download` button on the top of this page, then click [`Download ZIP`](https://github.com/swsoyee/TCC-GUI/archive/master.zip);  
 2. Unzip the file to your working directory (use `getwd()` to know your working directory);  
-3. Run the code of launching (according to your structure of working directory it may be different).  
+3. Run the code to launch the application (according to your structure of working directory it may be different).  
 
-  ```R
-  shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
-  ```
+    ```R
+    # install packages by using renv
+    renv::restore()
 
-</details>
+    # launch the application
+    shiny::runApp("TCC-GUI-master//TCC-GUI")
+    ```
 
 ## 📕 Publication
+
+If you have use `TCC-GUI` in your work, please cite the original paper and consider to give this repository a ⭐Star!  
 
 > **TCC-GUI: a Shiny-based application for differential expression analysis of RNA-Seq count data**  
 Wei Su, Jianqiang Sun, Kentaro Shimizu and Koji Kadota  
