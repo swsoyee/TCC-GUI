@@ -334,7 +334,7 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
       filter = "bottom",
       caption = tags$caption(
         tags$li(
-          "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
+          "Above buttons only deal with loaded part of the whole table (max to 99 rows). Please use the botton under the table to download all data as csv. "
         ),
         tags$li(
           "Gene Name was colored and set bold according to Fold Change and P-value cut-off respectively."
@@ -392,6 +392,17 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
     }
   }
 })
+
+# Button for downloading all data
+
+output$download_all_volcano <- downloadHandler(
+  filename = function() {
+    paste("MA-value-data-", Sys.Date(), ".csv", sep="")
+  },
+  content = function(file) {
+    write.csv(resultTable(), file, row.names = FALSE)
+  }
+)
 
 # This function render a button of R code of making vocalno plot ----
 

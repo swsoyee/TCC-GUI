@@ -33,7 +33,8 @@ fluidPage(fluidRow(
       solidHeader = TRUE,
       status = "info",
       width = NULL,
-      DT::dataTableOutput("resultTableInVolcanalPlot")
+      DT::dataTableOutput("resultTableInVolcanalPlot"),
+      downloadButton("download_all_volcano","Download all data as csv")
     )
   )
 ))
