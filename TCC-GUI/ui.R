@@ -15,7 +15,7 @@ tagList(dashboardPage(
       messageItem(
         from = "Source Code",
         message = "Available on Github",
-        time = sprintf("Update ad %s", Sys.Date()),
+        time = sprintf("Update ad %s", as.Date(max(file.info(list.files())$mtime))),
         href = "https://github.com/swsoyee/TCC-GUI"
       ),
       messageItem(
@@ -156,7 +156,7 @@ tags$footer(
   tags$a(" Bioinformation Engineering Lab, ", href = "http://www.bi.a.u-tokyo.ac.jp/"),
   tags$a(" Graduate School of Agricultural and Life Sciences / Faculty of Agriculture, ", href = "http://www.a.u-tokyo.ac.jp/english/index.html"),
   tags$a(" The University of Tokyo ", href = "https://www.u-tokyo.ac.jp/en/index.html"),
-  tags$p(sprintf("Version %s", gsub("-", ".", as.character(Sys.Date())))),
+  tags$p(sprintf("Version %s", gsub("-", ".", as.Date(max(file.info(list.files())$mtime))))),
   style = "
   bottom:0;
   width:100%;
