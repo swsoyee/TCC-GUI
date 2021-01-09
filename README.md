@@ -35,22 +35,55 @@ In this `GUI version of TCC (TCC-GUI)`, all parameter settings are available jus
 
 ## 📔 Usage
 
-### Online version  
+### 🌐 Online version  
 
-Access [`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/) hosted by shinyapps.io. Due to the limitations of the free version of shinyapps, you may not be able to use the tool in some cases, in which case you may consider downloading the source code and launch the tool in a your machine (see below).  
+Go to 🔗[`TCC-GUI`](https://infinityloop.shinyapps.io/TCC-GUI/).  
 
-### Standalone version  
+### 💻 Standalone version  
+
+<details>
+<summary><b>📲 Installation</b></summary>  
+
+---
+
+Make sure that you have already installed those packages in your environment.  
+
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`, `MASS`.  
+
+If any package is missing, Please run the following command in your [`RStudio`](https://www.rstudio.com/) and it will install all packages automatically.  
+
+```R
+# Check "BiocManager"
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+# Package list
+libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "heatmaply", "tidyr","utils","rmarkdown","data.table","RColorBrewer", "knitr", "cluster", "shinycssloaders", "shinyBS", "MASS", "TCC")
+
+# Install packages if missing
+for (i in libs){
+  if( !is.element(i, .packages(all.available = TRUE)) ) {
+     BiocManager::install(i, suppressUpdates=TRUE)
+  }
+}
+```
+
+</details>
+
+<details>  
+<summary><b>⭕ Launch</b></summary>  
+
+---
+
+Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
 
 #### Method 1
 
-Run the following command to launch `TCC-GUI` in your local environment. It will automatically download the source code and launch the application.
-
-```r
-# install.packages("shiny")
+```R
 shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI", launch.browser = TRUE)
 ```
 
-Since it will always download the latest source code from Github before launching, so you may consider downloading all the source code by yourself and launch it.  
+This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it.  
 
 #### Method 2
 
@@ -58,9 +91,11 @@ Since it will always download the latest source code from Github before launchin
 2. Unzip the file to your working directory (use `getwd()` to know your working directory);  
 3. Run the code of launching (according to your structure of working directory it may be different).  
 
-    ```r
-    shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
-    ```
+  ```R
+  shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
+  ```
+
+</details>
 
 ## 📕 Publication
 
