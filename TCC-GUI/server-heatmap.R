@@ -534,7 +534,13 @@ observeEvent(input$heatmapRun, {
               scale = input$heatmapScale,
               labCol = colnames(dataBackup),
               labRow = row.names(dataBackup)
-            )
+            ) %>%
+              config(
+                toImageButtonOptions = list(
+                  format = "svg",
+                  filename = heatmapTitle
+                )
+              )
 
             variables$heatmapObject <- p
             p
@@ -580,7 +586,13 @@ observeEvent(input$heatmapRun, {
               scale = input$heatmapScale,
               labCol = row.names(dataBackup),
               labRow = colnames(dataBackup)
-            )
+            ) %>%
+              config(
+                toImageButtonOptions = list(
+                  format = "svg",
+                  filename = heatmapTitle
+                )
+              )
 
             variables$heatmapObject <- p
             p
