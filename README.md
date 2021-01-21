@@ -42,13 +42,13 @@ If you are familiar with git, **Method 1** is highly recommended.
 
 ### Method 1
 
-1. Use the command below to clone the source code to your local directory.
+1. Use the command below to clone the source code to your local directory. We assume you already know how to clone a project using Git from the command line, if not please refer to [Git Basics - Getting a Git Repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository).
 
     ```bash
     git clone https://github.com/swsoyee/TCC-GUI.git ~/Desktop/TCC-GUI
     ```
 
-2. When you open this project in R at first time, the following message will be print in console. Use `renv::restore()` to install packages.
+2. When you open this project (just double click `TCC-GUI.Rproj`) in R at first time, the following message will be print in console, and the package `renv` will be install automatically (if not, please install `renv` manually or [create a issue for help](https://github.com/swsoyee/TCC-GUI/issues/new/choose)). Next, use `renv::restore()` to install all other packages which are needed.
 
     ```r
     # Bootstrapping renv 0.12.5 --------------------------------------------------
@@ -73,16 +73,21 @@ If you are familiar with git, **Method 1** is highly recommended.
 ### Method 2
 
 1. Click `Clone or download` button on the top of this page, then click [`Download ZIP`](https://github.com/swsoyee/TCC-GUI/archive/master.zip);  
-2. Unzip the file to your working directory (use `getwd()` to know your working directory);  
-3. Run the code to launch the application (according to your structure of working directory it may be different).  
+2. Unzip the file to your working directory;
+3. Double click `TCC-GUI.Rproj` to open the project;
+4. Make sure the `renv` package is install automatically (also see Method 1 step 2);
+4. Run the code to launch the application (according to your structure of working directory it may be different).  
 
     ```R
     # install packages by using renv
     renv::restore()
 
-    # launch the application
+    # run the command and launch the application
     shiny::runApp(appDir = "TCC-GUI-master//TCC-GUI")
     ```
+    If you are using RStudio, there will be a `Run App` button in the souce code file panel when you open file `ui.R`, `server.R` or `global.R`. Click the button and TCC-GUI will be launched.
+
+If you have any question about `TCC-GUI`, simply [create a issue for help (prefer)](https://github.com/swsoyee/TCC-GUI/issues/new/choose) or send E-mail to us. We will answer your question as soon as possible.
 
 ## 📕 Publication
 
