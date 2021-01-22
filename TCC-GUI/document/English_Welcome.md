@@ -29,7 +29,7 @@ Please check other tab in `Guidance` for details.
 
 ---
 
-If you have any question, comment or advise about the application, please contact📧[suwei(at)bi.a.u-tokyo.ac.jp](mailto:suwei@bi.a.u-tokyo.ac.jp) or 📧[kadota(at)bi.a.u-tokyo.ac.jp](mailto:kadota@bi.a.u-tokyo.ac.jp).   
+If you have any question about the application, comment and advise, please contact 📧[koji.kadota(at)gmail.com](mailto:koji.kadota@gmail.com) or 📧[suwei(at)bi.a.u-tokyo.ac.jp](mailto:suwei@bi.a.u-tokyo.ac.jp). 
 
 Also, you can access 🔗[Github](https://github.com/swsoyee/TCC-GUI/issues) and open a new issue for bug report or function requirement (you can write in English, Chinese or Japanese as you like).  
 
