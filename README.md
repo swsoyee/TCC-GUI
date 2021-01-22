@@ -87,6 +87,59 @@ If you are familiar with git, **Method 1** is highly recommended.
     ```
     If you are using RStudio, there will be a `Run App` button in the souce code file panel when you open file `ui.R`, `server.R` or `global.R`. Click the button and TCC-GUI will be launched.
 
+If the above method still does not work, please try the old version installation method below or feel free to contact us.
+
+<details>
+<summary><b>Old Installation Method</b></summary>  
+    
+### Pre-installation
+
+Make sure that you have already installed those packages in your environment.   
+
+`shiny`, `shinydashboard`, `shinyWidgets`, `plotly`, `dplyr`, `TCC`, `DT`, `heatmaply`,  `rmarkdown`, `data.table`, `tidyr`, `RColorBrewer`, `utils`, `knitr`, `cluster`, `shinycssloaders`, `shinyBS`, `renv`, `MASS`.    
+
+If any package is missing, Please run the following command in your [`RStudio`](https://www.rstudio.com/) and it will install all packages automatically.  
+
+```R
+# Check "BiocManager"
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+# Package list
+libs <- c("shiny", "shinydashboard", "shinyWidgets", "plotly", "dplyr", "DT", "heatmaply", "tidyr","utils","rmarkdown","data.table","RColorBrewer", "knitr", "cluster", "shinycssloaders", "shinyBS", "renv", "MASS", "TCC")
+
+# Install packages if missing
+for (i in libs){
+  if( !is.element(i, .packages(all.available = TRUE)) ) {
+     BiocManager::install(i, suppressUpdates=TRUE)
+  }
+}
+```
+
+### Start the App
+
+Run the following command to launch `TCC-GUI` in your local environment, then it will download `TCC-GUI` automatically from github and launch.  
+
+##### Method 1  
+```R
+shiny::runGitHub("TCC-GUI", "swsoyee", subdir = "TCC-GUI", launch.browser = TRUE)
+```
+
+This method always download the source code from github before launching, so maybe you can try to download all the source code by yourself and launch it.   
+
+##### Method 2  
+1. Click `Clone or download` button on the top of this page, then click [`Download ZIP`](https://github.com/swsoyee/TCC-GUI/archive/master.zip);  
+2. Unzip the file to your working directory (use `getwd()` to know your working directory);  
+3. Run the code of launching (according to your structure of working directory it may be different).   
+
+  ```R
+  shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
+  ```
+
+</details>
+
+---
+
 If you have any question about `TCC-GUI`, simply [create a issue for help (prefer)](https://github.com/swsoyee/TCC-GUI/issues/new/choose) or send E-mail to us. We will answer your question as soon as possible.
 
 ## 📕 Publication
