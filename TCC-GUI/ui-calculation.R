@@ -12,14 +12,13 @@ fluidPage(useSweetAlert(), fluidRow(column(
         "normMethod",
         "Normalization Method",
         c("TMM" = "tmm",
-          "DESeq" = "deseq")
+          "DESeq2" = "deseq2")
       ),
       selectInput(
         "testMethod",
         "DEG Identification Method",
         c(
           "edgeR" = "edger",
-          "DESeq" = "deseq",
           "DESeq2" = "deseq2",
           "baySeq" = "bayseq",
           "SAMSeq" = "samseq",

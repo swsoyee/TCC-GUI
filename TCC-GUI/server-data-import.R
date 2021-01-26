@@ -370,7 +370,6 @@ output$sampleDistributionBox <- renderPlotly({
     data <- left_join(cpm_stack, group, by = "col")
     data <- arrange(data, group)
 
-    print(head(data))
     p <- plot_ly(
       data = data,
       x = ~col,
