@@ -310,16 +310,20 @@ output$importDataSummary <- renderUI({
 
     # AS calculation
     d <- as.dist(1 - cor(data, method = "spearman"))
-    AS <-
-      mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
-    AS <- tagList(
-      popify(
-        tags$p(tags$b("AS"), ":", round(AS, 3)),
-        title = "Average Silhouettes",
-        content = '<p>A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).</p><p><b>Reference</b><br>Zhao, Shitao, et al. <a href="https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8">"Silhouette Scores for Arbitrary Defined Groups in Gene Expression Data and Insights into Differential Expression Results."</a> <i>Biological procedures online</i> 20.1 (2018): 5.</p>',
-        placement = "bottom"
+    if (length(unique(data.cl)) == length(data.cl)) {
+      AS <- helpText("Average Silhouettes cannot be calculated since only one sample in each group.")
+    } else {
+      AS <-
+        mean(silhouette(rank(data.cl, ties.method = "min"), d)[, "sil_width"])
+      AS <- tagList(
+        popify(
+          tags$p(tags$b("AS"), ":", round(AS, 3)),
+          title = "Average Silhouettes",
+          content = '<p>A higher AS value <font color="##00C0EF">[0, 1]</font> indicates a higher degree of group separation (i.e., a higher percentage of DEG).</p><p><b>Reference</b><br>Zhao, Shitao, et al. <a href="https://biologicalproceduresonline.biomedcentral.com/articles/10.1186/s12575-018-0067-8">"Silhouette Scores for Arbitrary Defined Groups in Gene Expression Data and Insights into Differential Expression Results."</a> <i>Biological procedures online</i> 20.1 (2018): 5.</p>',
+          placement = "bottom"
+        )
       )
-    )
+    }
   } else {
     AS <- helpText("Assign group information needed.")
   }
