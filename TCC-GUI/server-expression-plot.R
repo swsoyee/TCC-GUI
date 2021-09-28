@@ -119,7 +119,7 @@ output$geneBoxPlotExpression <- renderPlotly({
             yaxis = list(rangemode = "tozero"),
             annotations = list(
               x = 0.5,
-              y = 1.1,
+              y = 1,
               text = row.names(data[i, ]),
               showarrow = F,
               xref = "paper",
