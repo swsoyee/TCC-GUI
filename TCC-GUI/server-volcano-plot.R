@@ -345,6 +345,9 @@ output$resultTableInVolcanalPlot <- DT::renderDataTable({
         ),
         tags$li(
           "Gene Name was colored and set bold according to Fold Change and P-value cut-off respectively."
+        ),
+        tags$li(
+          HTML("Please go to the <code>TCC Computation</code> tab and click on the <code>Download All Result (CSV)</code> button to download the table If you want a high-precision calculation result.")
         )
       ),
       extensions = c("Scroller", "Buttons"),

@@ -5,8 +5,9 @@ account: infinityloop
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 340384
-bundleId: 4143236
+bundleId: 5246542
 url: https://infinityloop.shinyapps.io/TCC-GUI/
-when: 1611637615.67841
+when: 1636775983.89283
+lastSyncTime: 1636775983.89285
 asMultiple: FALSE
 asStatic: FALSE

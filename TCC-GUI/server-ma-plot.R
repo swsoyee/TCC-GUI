@@ -325,7 +325,12 @@ output$resultTableInPlot <- DT::renderDataTable({
         tags$li(
           "Above buttons only deal with loaded part of the whole table (max to 99 rows)."
         ),
-        tags$li("Gene Name was colored according to FDR cut-off.")
+        tags$li(
+          "Gene Name is colored according to FDR cut-off."
+        ),
+        tags$li(
+          HTML("Please go to the <code>TCC Computation</code> tab and click on the <code>Download All Result (CSV)</code> button to download the table If you want a high-precision calculation result.")
+        )
       ),
       extensions = c("Scroller", "Buttons"),
       option = list(
