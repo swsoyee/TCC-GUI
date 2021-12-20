@@ -1,31 +1,43 @@
-abstract: “Differential expression (DE) is a fundamental step in the analysis of RNA-Seq count data. We had previously developed an R/Bioconductor package (called TCC) for this purpose. While this package has the unique feature of an in-built robust normalization method, its use has so far been limited to R users only. There is thus, a need for an alternative to DE analysis by TCC for non-R users.”
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
 authors:
-  -
-    affiliation: “Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan”
-    family-names: Su
+  - family-names: Su
     given-names: Wei
-    orcid: 0000-0002-9302-5332
-  -
-    affiliation: “Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan”
-    family-names: Sun
+    email: swsoyee@gmail.com
+    affiliation: Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan
+    orcid: 'https://orcid.org/0000-0002-9302-5332'
+  - family-names: Sun
     given-names: Jianqiang
-    orcid: 0000-0002-3438-3199
-  -
-    affiliation: “Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan”
-    family-names: Shimizu
-    given-names: Kentaro
-  -
-    affiliation: “Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan”
-    family-names: Kadota
+    affiliation: Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan
+    orcid: 'https://orcid.org/0000-0002-3438-3199'
+  - family-names: Kadota
     given-names: Koji
-    orcid: 0000-0002-3907-4336
-cff-version: “1.2.0"
-date-released: 2019-03-13
-doi: “10.1186/s13104-019-4179-2”
-keywords:
-  - “RNA-Seq”
-  - Shiny
-license: MIT
-message: “If you use this software, please cite it using these metadata.”
-repository-code: “https://github.com/swsoyee/TCC-GUI”
-title: “TCC-GUI”
+    email: koji.kadota@gmail.com
+    affiliation: Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan
+    orcid: 'https://orcid.org/0000-0002-3907-4336'
+title: "TCC-GUI"
+url: "https://github.com/swsoyee/TCC-GUI"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Su
+      given-names: Wei
+      email: swsoyee@gmail.com
+      affiliation: Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan
+      orcid: 'https://orcid.org/0000-0002-9302-5332'
+    - family-names: Sun
+      given-names: Jianqiang
+      affiliation: Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan
+      orcid: 'https://orcid.org/0000-0002-3438-3199'
+    - family-names: Kadota
+      given-names: Koji
+      email: koji.kadota@gmail.com
+      affiliation: Graduate School of Agricultural and Life Sciences, The University of Tokyo, Yayoi 1-1-1, Bunkyo-ku, Tokyo, 113-8657, Japan
+      orcid: 'https://orcid.org/0000-0002-3907-4336'
+  doi: "10.1186/s13104-019-4179-2"
+  journal: "BMC Research Notes"
+  month: 3
+  title: "TCC-GUI: a Shiny-based application for differential expression analysis of RNA-Seq count data"
+  issue: 133
+  volume: 12
+  year: 2019
