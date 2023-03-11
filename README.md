@@ -72,7 +72,7 @@ If you are familiar with git, **Method 1** is highly recommended.
 
 ### Method 2
 
-1. Click `Code` button on the top of this page, then click [`Download ZIP`](https://github.com/swsoyee/TCC-GUI/archive/master.zip);  
+1. Click `Code` button on the top of this page, then click [`Download ZIP`](https://github.com/swsoyee/TCC-GUI/archive/refs/heads/master.zip);  
 2. Unzip the file to your working directory;
 3. Double click `TCC-GUI.Rproj` to open the project;
 4. Make sure the `renv` package is install automatically (also see Method 1 step 2);
