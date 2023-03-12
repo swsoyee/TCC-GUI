@@ -205,7 +205,7 @@
     },
     "DT": {
       "Package": "DT",
-      "Version": "0.24",
+      "Version": "0.27",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -217,7 +217,7 @@
         "magrittr",
         "promises"
       ],
-      "Hash": "c814c35b0bc58613b4632c8acaf80b04"
+      "Hash": "3444e6ed78763f9f13aaa39f2481eb34"
     },
     "DelayedArray": {
       "Package": "DelayedArray",
@@ -1457,16 +1457,16 @@
     },
     "markdown": {
       "Package": "markdown",
-      "Version": "1.1",
+      "Version": "1.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
-        "mime",
+        "commonmark",
         "utils",
         "xfun"
       ],
-      "Hash": "61e4a10781dd00d7d81dd06ca9b94e95"
+      "Hash": "d209cfd1f4ff7260eae5a7f07da3aa4f"
     },
     "matrixStats": {
       "Package": "matrixStats",
@@ -1914,7 +1914,7 @@
     },
     "shinyWidgets": {
       "Package": "shinyWidgets",
-      "Version": "0.7.3",
+      "Version": "0.7.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1928,7 +1928,7 @@
         "sass",
         "shiny"
       ],
-      "Hash": "93797f9ae8185c55a2f775f331591a55"
+      "Hash": "fd889b32caa37b8ed9b1e9e7ef1564bc"
     },
     "shinycssloaders": {
       "Package": "shinycssloaders",
