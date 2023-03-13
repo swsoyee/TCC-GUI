@@ -58,7 +58,7 @@ If you are familiar with git, **Method 1** is highly recommended.
     Installing BiocManager [1.30.20] ...
     	OK [linked cache in 0.36 milliseconds]
     * Installed 1 package in 9 milliseconds.
-    * Project '~/Downloads/TCC-GUI-master' loaded. [renv 0.17.0]
+    * Project '~/Desktop/TCC-GUI' loaded. [renv 0.17.0]
     * One or more packages recorded in the lockfile are not installed.
     * Use `renv::status()` for more details.
     > renv::restore()
