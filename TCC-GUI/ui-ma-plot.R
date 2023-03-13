@@ -3,7 +3,7 @@
 fluidPage(fluidRow(column(
   3,
   box(
-    title = tagList(icon("cogs"), "MA Plot Parameters"),
+    title = tagList(icon("gears"), "MA Plot Parameters"),
     solidHeader = TRUE,
     status = "primary",
     width = NULL,
@@ -17,7 +17,7 @@ fluidPage(fluidRow(column(
       DT::dataTableOutput("fdrCutoffTableInMAPage")
     ),
     tabPanel(
-      tagList(icon("bar-chart"), "Plot"),
+      tagList(icon("chart-column"), "Plot"),
       plotlyOutput("fdrCutoffPlotInMAPage") %>% withSpinner()
     )
   ),
@@ -34,7 +34,7 @@ fluidPage(fluidRow(column(
 column(
   9,
   box(
-    title = tagList(icon("line-chart"), "MA Plot"),
+    title = tagList(icon("chart-line"), "MA Plot"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,

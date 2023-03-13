@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = tagList(icon("cogs"), "PCA Parameters"),
+    title = tagList(icon("gears"), "PCA Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
@@ -23,7 +23,7 @@ column(
   tabBox(
     title = "",
     width = NULL,
-    tabPanel(tagList(icon("bar-chart"), "Scree Plot"),
+    tabPanel(tagList(icon("chart-column"), "Scree Plot"),
              uiOutput("screePlotUI")),
     tabPanel(tagList(icon("cube"), "PCA Plot (3D)"),
              uiOutput("pca3dPlotUI")),
@@ -31,7 +31,7 @@ column(
              uiOutput("pca2dPlotUI"))
   ),
   box(
-    title = tagList(icon("info-circle"), "Summary of PCA"),
+    title = tagList(icon("circle-info"), "Summary of PCA"),
     width = NULL,
     solidHeader = TRUE,
     status = "info",

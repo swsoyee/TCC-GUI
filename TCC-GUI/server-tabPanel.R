@@ -23,7 +23,7 @@ observeEvent(input$TCC, {
     menuItem(
       "MA Plot",
       tabName = "maplotTab",
-      icon = icon("line-chart"),
+      icon = icon("chart-line"),
       badgeLabel = "Step 3",
       badgeColor = "maroon"
     )
@@ -32,7 +32,7 @@ observeEvent(input$TCC, {
     menuItem(
       "Volcano Plot",
       tabName = "volcanoplotTab",
-      icon = icon("area-chart"),
+      icon = icon("chart-area"),
       badgeLabel = "Step 3",
       badgeColor = "maroon"
     )
@@ -50,7 +50,7 @@ observeEvent(input$TCC, {
     menuItem(
       "Heatmap",
       tabName = "heatmapTab",
-      icon = icon("th"),
+      icon = icon("table-cells"),
       badgeLabel = "Step 3",
       badgeColor = "maroon"
     )
@@ -59,7 +59,7 @@ observeEvent(input$TCC, {
     menuItem(
       "Expression Level",
       tabName = "expressionTab",
-      icon = icon("bar-chart"),
+      icon = icon("chart-column"),
       badgeLabel = "Step 3",
       badgeColor = "maroon"
     )
@@ -68,7 +68,7 @@ observeEvent(input$TCC, {
     menuItem(
       "Report",
       tabName = "reportTab",
-      icon = icon("file-pdf-o"),
+      icon = icon("file-pdf"),
       badgeLabel = "Step 4",
       badgeColor = "fuchsia"
     )

@@ -3,7 +3,7 @@
 fluidPage(useSweetAlert(), fluidRow(column(
   3,
   box(
-    title = tagList(icon("cogs"), "TCC Computation Parameters"),
+    title = tagList(icon("gears"), "TCC Computation Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",

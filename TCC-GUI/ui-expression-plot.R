@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = tagList(icon("cogs"), "Expression Level Parameters"),
+    title = tagList(icon("gears"), "Expression Level Parameters"),
     solidHeader = TRUE,
     width = NULL,
     status = "primary",
@@ -17,9 +17,9 @@ fluidPage(column(
     collapsible = TRUE,
     collapsed = TRUE,
     tabsetPanel(
-      tabPanel(title = tagList(icon("bar-chart"), "Barplot"),
+      tabPanel(title = tagList(icon("chart-column"), "Barplot"),
                verbatimTextOutput("expressionLevelCodeText")),
-      tabPanel(title = tagList(icon("line-chart"), "Boxplot"),
+      tabPanel(title = tagList(icon("chart-line"), "Boxplot"),
                verbatimTextOutput("expressionLevelBoxCodeText"))
     )
   )
@@ -29,9 +29,9 @@ column(
   tabBox(
     title = "Expression Level",
     width = NULL,
-    tabPanel(title = tagList(icon("bar-chart"), "Barplot"),
+    tabPanel(title = tagList(icon("chart-column"), "Barplot"),
              uiOutput("geneBarPlotUI")),
-    tabPanel(title = tagList(icon("line-chart"), "Boxplot"),
+    tabPanel(title = tagList(icon("chart-line"), "Boxplot"),
              uiOutput("geneBoxPlotUI"))
   ),
   tabBox(
@@ -39,7 +39,7 @@ column(
     width = NULL,
     tabPanel(title = tagList(icon("table"), "Expression Table"),
              DT::dataTableOutput("geneTable")),
-    tabPanel(title = tagList(icon("columns"), "Result Table"),
+    tabPanel(title = tagList(icon("table-columns"), "Result Table"),
              DT::dataTableOutput("geneTableCal"))
   )
 ))

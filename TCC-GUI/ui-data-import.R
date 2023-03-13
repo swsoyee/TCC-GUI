@@ -21,7 +21,7 @@ fluidPage(fluidRow(column(
       ))
     ),
     tabPanel(
-      tagList(icon("cloud-upload"), "Upload"),
+      tagList(icon("cloud-arrow-up"), "Upload"),
       fileInput(
         "uploadCountData",
         "Upload Count Data",
@@ -67,7 +67,7 @@ fluidPage(fluidRow(column(
     footer = helpText("TCC-GUI expect first label should be Group1 (G1) and the next be Group2 (G2), and so on.")
   ),
   box(
-    title = tagList(icon("info-circle"), "Summary"),
+    title = tagList(icon("circle-info"), "Summary"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
@@ -87,7 +87,7 @@ column(
     title = "",
     width = NULL,
     tabPanel(
-      title = tagList(icon("bar-chart"), "Count Distribution"),
+      title = tagList(icon("chart-column"), "Count Distribution"),
       uiOutput("sampleDistributionBoxPanel")
     ),
     tabPanel(
@@ -95,7 +95,7 @@ column(
       uiOutput("lowCountFilterByCutoffUI")
     ),
     tabPanel(
-      title = tagList(icon("area-chart"), "Density Plot"),
+      title = tagList(icon("chart-area"), "Density Plot"),
       uiOutput("sampleDistributionDensityPanel")
     ),
     tabPanel(title = tagList(icon("object-group"), "MDS Plot"),

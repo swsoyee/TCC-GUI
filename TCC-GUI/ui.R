@@ -10,15 +10,15 @@ tagList(
           from = "TCC Algorithm",
           message = "Go to BMC Bioinformatics",
           icon = icon("book"),
-          time = "Published 2013-07-09",
+          # time = "Published 2013-07-09",
           href = "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-14-219"
         ),
         messageItem(
           from = "Source Code",
           message = "Available on Github",
-          time = sprintf("Update ad %s", as.Date(max(
-            file.info(list.files())$mtime
-          ))),
+          # time = sprintf("Update ad %s", as.Date(max(
+          #   file.info(list.files())$mtime
+          # ))),
           href = "https://github.com/swsoyee/TCC-GUI"
         ),
         messageItem(
@@ -27,7 +27,7 @@ tagList(
           icon = icon("users"),
           href = "http://www.bi.a.u-tokyo.ac.jp/"
         ),
-        icon = icon("info-circle"),
+        icon = icon("circle-info"),
         headerText = "INFORMATIONS"
       )
     ),
@@ -41,7 +41,7 @@ tagList(
         menuItem(
           "Data Simulation",
           tabName = "simulationData",
-          icon = icon("random"),
+          icon = icon("shuffle"),
           badgeLabel = "Step 0",
           badgeColor = "yellow"
         ),
@@ -80,7 +80,7 @@ tagList(
             ),
             tabPanel(
               title = "Data Simulation",
-              icon = icon("random"),
+              icon = icon("shuffle"),
               fluidRow(column(
                 includeMarkdown("document/English_Simulation_Data.md"),
                 width = 10,
@@ -107,7 +107,7 @@ tagList(
             ),
             tabPanel(
               title = "MA Plot",
-              icon = icon("line-chart"),
+              icon = icon("chart-line"),
               fluidRow(column(
                 includeMarkdown("document/English_MA_plot.md"),
                 width = 10,
@@ -116,7 +116,7 @@ tagList(
             ),
             tabPanel(
               title = "Volcano Plot",
-              icon = icon("area-chart"),
+              icon = icon("chart-area"),
               fluidRow(column(
                 includeMarkdown("document/English_Volcano_plot.md"),
                 width = 10,
@@ -125,7 +125,7 @@ tagList(
             ),
             tabPanel(
               title = "Heatmap",
-              icon = icon("th"),
+              icon = icon("table-cells"),
               fluidRow(
                 column(
                   includeMarkdown("document/English_Heatmap.md"),
@@ -136,7 +136,7 @@ tagList(
             ),
             tabPanel(
               title = "Expression Level Plot",
-              icon = icon("bar-chart"),
+              icon = icon("chart-column"),
               fluidRow(column(
                 includeMarkdown("document/English_Expression.md"),
                 width = 10,

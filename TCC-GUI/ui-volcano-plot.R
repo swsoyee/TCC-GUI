@@ -3,7 +3,7 @@ fluidPage(fluidRow(
   column(
     3,
     box(
-      title = tagList(icon("cogs"), "Volcano Plot Parameters"),
+      title = tagList(icon("gears"), "Volcano Plot Parameters"),
       solidHeader = TRUE,
       status = "primary",
       width = NULL,
@@ -22,7 +22,7 @@ fluidPage(fluidRow(
   column(
     9,
     box(
-      title = tagList(icon("line-chart"), "Volcano Plot"),
+      title = tagList(icon("chart-line"), "Volcano Plot"),
       solidHeader = TRUE,
       status = "info",
       width = NULL,

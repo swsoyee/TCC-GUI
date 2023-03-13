@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = tagList(icon("cogs"), "Heatmap Parameters"),
+    title = tagList(icon("gears"), "Heatmap Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
@@ -22,7 +22,7 @@ fluidPage(column(
 column(
   9,
   box(
-    title = tagList(icon("th"), "Heatmap"),
+    title = tagList(icon("table-cells"), "Heatmap"),
     width = NULL,
     solidHeader = TRUE,
     status = "info", 

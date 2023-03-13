@@ -3,7 +3,7 @@
 fluidPage(column(
   3,
   box(
-    title = tagList(icon("cogs"), "Data Simulation Parameters"),
+    title = tagList(icon("gears"), "Data Simulation Parameters"),
     width = NULL,
     solidHeader = TRUE,
     status = "primary",
@@ -48,7 +48,7 @@ fluidPage(column(
     footer = "Only support single-factor experimental design now."
   ),
   box(
-    title = tagList(icon("info-circle"), "Summary"),
+    title = tagList(icon("circle-info"), "Summary"),
     solidHeader = TRUE,
     status = "info",
     width = NULL,
