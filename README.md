@@ -51,14 +51,16 @@ If you are familiar with git, **Method 1** is highly recommended.
 2. When you open this project (just double click `TCC-GUI.Rproj`) in R at first time, the following message will be print in console, and the package `renv` will be install automatically (if not, please install `renv` manually or [create a issue for help](https://github.com/swsoyee/TCC-GUI/issues/new/choose)). Next, use `renv::restore()` to install all other packages which are needed.
 
     ```r
-    # Bootstrapping renv 0.12.5 --------------------------------------------------
-    * Downloading renv 0.12.5 from CRAN ... OK
-    * Installing renv 0.12.5 ... Done!
-    * Successfully installed and loaded renv 0.12.5.
-    * Project '~/Desktop/TCC-GUI' loaded. [renv 0.12.5]
-    * The project library is out of sync with the lockfile.
-    * Use `renv::restore()` to install packages recorded in the lockfile.
-    
+    # Bootstrapping renv 0.17.0 --------------------------------------------------
+    * Downloading renv 0.17.0 ... OK (downloaded binary)
+    * Installing renv 0.17.0 ... Done!
+    * Successfully installed and loaded renv 0.17.0.
+    Installing BiocManager [1.30.20] ...
+    	OK [linked cache in 0.36 milliseconds]
+    * Installed 1 package in 9 milliseconds.
+    * Project '~/Downloads/TCC-GUI-master' loaded. [renv 0.17.0]
+    * One or more packages recorded in the lockfile are not installed.
+    * Use `renv::status()` for more details.
     > renv::restore()
     The following package(s) will be updated:
     ...
@@ -69,6 +71,8 @@ If you are familiar with git, **Method 1** is highly recommended.
     ```r
     shiny::runApp(appDir = "TCC-GUI/")
     ```
+
+For more information, please refer to the [wiki](https://github.com/swsoyee/TCC-GUI/wiki/Log-info-during-local-installation).
 
 ### Method 2
 
