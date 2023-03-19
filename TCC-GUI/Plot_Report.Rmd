@@ -194,6 +194,7 @@ cat("```\n")
 ```
 
 ### 1.5.1 Summary Table of PCA
+
 ```{r}
 if(length(params$summaryPCA) > 0){
   params$summaryPCA
@@ -203,6 +204,7 @@ if(length(params$summaryPCA) > 0){
 ```
 
 ### 1.5.2 Scree plot  
+
 ```{r}
 if(length(params$screePlot) > 0){
   params$screePlot
@@ -212,6 +214,7 @@ if(length(params$screePlot) > 0){
 ```
 
 ### 1.5.3 3D  
+
 ```{r}
 if(length(params$pca3d) > 0){
   params$pca3d
@@ -221,6 +224,7 @@ if(length(params$pca3d) > 0){
 ```
 
 ### 1.5.4 2D  
+
 ```{r}
 if(length(params$pca2d) > 0){
   params$pca2d
@@ -233,6 +237,7 @@ if(length(params$pca2d) > 0){
 
 This part is about TCC Computation processing.  
 TCC Parameters is shown as below. 
+
 ```{r tcc parameters}
 tccPara <- rbind(
   c("params\\$CountData", "Count data", class(params$CountData)),
@@ -253,6 +258,7 @@ kable(head(params$CountData, 10), caption = "First 10 row of original dataset.")
 ```
 
 List of group infomation is shown as below:  
+
 ```{r groupListConvert, results='markup'}
 params$groupListConvert
 ```
@@ -260,6 +266,7 @@ params$groupListConvert
 Computation code is shown as below.  
 
 (If you want to run this piece of code directly, loading data into your own R environment is necessary. Using `data <- data.table::fread(YOUR_FILE_PATH)` to replace `data <- params$CountData` is a highly efficiency way of reading row count text file. Next create a variable `data.cl` to save group information list.)  
+
 ```{r tcc computation, echo=TRUE, eval=FALSE}
 library(TCC)
 # Dataset
@@ -290,6 +297,7 @@ norData <- tcc$getNormalizedData()
 ```
 
 Here is a preview of your TCC results.  
+
 ```{r tcc result}
 kable(head(params$result, 10), caption = "First 10 row of TCC result table")
 kable(head(params$norData, 10), caption = "First 10 row of normalized data")
@@ -297,17 +305,19 @@ kable(head(params$norData, 10), caption = "First 10 row of normalized data")
 
 
 ## 3. MA Plot  
+
 ```{r}
-if(params$MAPlotObject != ""){
+if(length(params$MAPlotObject) > 0){
   params$MAPlotObject
 } else {
   "Not available"
 }
 ```
 
-## 4. Volcano Plot  
+## 4. Volcano Plot 
+
 ```{r}
-if(params$VolcanoPlotObject != ""){
+if(length(params$VolcanoPlotObject) > 0){
   params$VolcanoPlotObject
 } else {
   "Not available"
@@ -315,8 +325,9 @@ if(params$VolcanoPlotObject != ""){
 ```
 
 ## 6. Heatmap  
+
 ```{r}
-if(params$heatmapObject != ""){
+if(length(params$heatmapObject) > 0){
   params$heatmapObject
 } else {
   "Not available"
@@ -326,6 +337,7 @@ if(params$heatmapObject != ""){
 ## 7. Expression Level  
 
 ### Selected Genes
+
 ```{r}
 if(length(params$expressionLevelBar) > 0){
   params$expressionLevelBar
@@ -335,6 +347,7 @@ if(length(params$expressionLevelBar) > 0){
 ```
 
 ### Barplot  
+
 ```{r}
 if(length(params$expressionLevelBar) > 0){
   params$expressionLevelBar
@@ -344,6 +357,7 @@ if(length(params$expressionLevelBar) > 0){
 ```
 
 ### Boxplot  
+
 ```{r}
 if(length(params$expressionLevelBox) > 0){
   params$expressionLevelBox
