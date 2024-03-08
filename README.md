@@ -4,7 +4,7 @@
 
 ![last commit](https://img.shields.io/github/last-commit/swsoyee/TCC-GUI.svg)
 ![license](https://img.shields.io/github/license/swsoyee/TCC-GUI.svg)
-[![citations](https://img.shields.io/badge/citations-64-blue?link=https://scholar.google.com/scholar?rlz=1C5CHFA_enJP843JP843&um=1&ie=UTF-8&lr&cites=4813951894701221269)](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=4813951894701221269&as_sdt=5)
+[![citations](https://img.shields.io/badge/citations-89-blue?link=https://scholar.google.com/scholar?rlz=1C5CHFA_enJP843JP843&um=1&ie=UTF-8&lr&cites=4813951894701221269)](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=4813951894701221269&as_sdt=5)
 
 [`TCC`](http://bioconductor.org/packages/TCC/)<sup>1</sup> is a [`R`](https://www.r-project.org/)/[`Bioconductor`](https://www.bioconductor.org/) package provides a series of functions for performing differential expression  (**DE**)  analysis from    RNA-seq count data using a robust normalization strategy (called **DEGES**).  
 
