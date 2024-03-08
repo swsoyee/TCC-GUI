@@ -69,7 +69,7 @@ If you are familiar with git, **Method 1** is highly recommended.
 3. If you are using `RStudio`, just open the `ui.R`, `server.R` or `global.R` in `TCC-GUI` directory, and click the `Run App` button to launch the application. Or use the commend below to complete the same thing.
 
     ```r
-    shiny::runApp(appDir = "TCC-GUI/")
+    shiny::runApp(appDir = "TCC-GUI")
     ```
 
 For more information, please refer to the [wiki](https://github.com/swsoyee/TCC-GUI/wiki/Log-info-during-local-installation).
@@ -87,7 +87,7 @@ For more information, please refer to the [wiki](https://github.com/swsoyee/TCC-
     renv::restore()
 
     # run the command and launch the application
-    shiny::runApp(appDir = "TCC-GUI-master//TCC-GUI")
+    shiny::runApp(appDir = "TCC-GUI")
     ```
     If you are using RStudio, there will be a `Run App` button in the souce code file panel when you open file `ui.R`, `server.R` or `global.R`. Click the button and TCC-GUI will be launched.
 
@@ -137,7 +137,7 @@ This method always download the source code from github before launching, so may
 3. Run the code of launching (according to your structure of working directory it may be different).   
 
   ```R
-  shiny::runApp("TCC-GUI-master//TCC-GUI", launch.browser = TRUE)
+  shiny::runApp("TCC-GUI", launch.browser = TRUE)
   ```
 
 </details>
